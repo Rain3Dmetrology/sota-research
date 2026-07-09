@@ -259,3 +259,85 @@ remaining = client.get_remaining_usages_sync()
 ### Test Token
 
 Use `TEST_TOKEN` to access only the DeepFruits paper (ID: `9397e7acd062245d37350f5c05faf56e9cfae0d6`).
+
+---
+
+## 9. OpenAlex API (v1.3+)
+
+**Base URL:** `https://api.openalex.org`
+**Auth:** None required (polite pool: add `mailto=` param for higher rate limit)
+**Rate Limit:** 10 req/s recommended, 100,000/day (polite pool)
+
+### Search Works (Papers)
+
+```bash
+curl "https://api.openalex.org/works?search=vision+transformer&per_page=10&sort=relevance_score:desc"
+```
+
+### Filter by Preprints
+
+```bash
+curl "https://api.openalex.org/works?search=anomaly+detection&filter=type:preprint&per_page=5"
+```
+
+### Get Citation Data
+
+```bash
+curl "https://api.openalex.org/works?filter=doi:10.1109/CVPR52729.2023.01954&select=id,title,cited_by_count,publication_year"
+```
+
+### Key Response Fields
+
+| Field | Path |
+|-------|------|
+| Title | `results[].title` |
+| Citation Count | `results[].cited_by_count` |
+| Publication Year | `results[].publication_year` |
+| DOI | `results[].doi` |
+| Type | `results[].type` |
+
+---
+
+## 10. Hugging Face Mirror (v1.4+)
+
+**Base URL:** `https://hf-mirror.com/api`
+**Auth:** None required
+**Note:** Automatic fallback when `huggingface.co` is unreachable.
+
+---
+
+## 11. Gitee API v5 (v1.4+)
+
+**Base URL:** `https://gitee.com/api/v5`
+**Auth:** Personal Access Token (`?access_token=...`)
+
+### Search Repositories
+
+```bash
+curl "https://gitee.com/api/v5/search/repositories?access_token=YOUR_TOKEN&q=deep+learning&per_page=5"
+```
+
+### Known Issues
+
+Search API may return empty results platform-wide (confirmed as of 2026-07).
+
+---
+
+## 12. GitLab API v4 (v1.4+)
+
+**Base URL:** `https://gitlab.com/api/v4`
+**Auth:** None required (public projects)
+
+### Search Projects
+
+```bash
+curl "https://gitlab.com/api/v4/projects?search=anomaly+detection&per_page=5"
+```
+
+### Limitations
+
+GitLab.com is blocked in China (DNS level since 2020).
+
+---
+
+*Last updated: 2026-07-09 (v1.5.0)*
