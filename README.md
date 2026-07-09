@@ -17,8 +17,8 @@
 ### 方式一：Claude Code / Codex CLI
 
 ```bash
-# 克隆仓库并重命名为 sota-research（推荐）
-git clone https://github.com/Rain3Dmetrology/sota-research-skill.git sota-research
+# 克隆仓库（目录名即为 sota-research，无需重命名）
+git clone https://github.com/Rain3Dmetrology/sota-research.git sota-research
 
 # 复制到个人 skills 目录（全局可用）
 cp -r sota-research/ ~/.claude/skills/
@@ -38,15 +38,9 @@ cp -r sota-research/ .claude/skills/
 [Agent Skills 开放标准](https://agentskills.io/)，跨平台兼容。
 
 ```bash
-git clone https://github.com/Rain3Dmetrology/sota-research-skill.git sota-research
+git clone https://github.com/Rain3Dmetrology/sota-research.git
 cp -r sota-research/ <your-agent-skills-directory>/
 ```
-
-### 方式三：下载 Release 压缩包（无需 git）
-
-前往 [Releases](https://github.com/Rain3Dmetrology/sota-research-skill/releases) 页面下载最新版本，解压后将文件夹重命名为 `sota-research`，然后复制到 skills 目录。
-
-### 方式四：独立使用
 
 ```bash
 git clone https://github.com/Rain3Dmetrology/sota-research-skill.git sota-research
@@ -176,6 +170,7 @@ Papers With Code 已于 2025 年 7 月被 Meta 关闭。本工作流使用 CodeS
 
 | 版本 | 日期 | 更新内容 |
 |------|------|---------|
+| 1.5.0 | 2026-07-09 | 规范合规修复、代码质量改进、安装验证脚本、仓库名规范统一 |
 | 1.4.0 | 2026-07-09 | HF mirror fallback、Gitee/GitLab 搜索、CodeSOTA 交叉验证、arXiv+OpenAlex 验证 |
 | 1.3.0 | 2026-07-09 | OpenAlex 三层降级源 |
 | 1.1.0 | 2026-07-09 | 新增 SOTA 评分系统、ModelScope 支持、Hugging Face 支持 |

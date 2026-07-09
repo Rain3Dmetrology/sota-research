@@ -2,23 +2,22 @@
 name: sota-research
 description: >
   AI/CV SOTA research workflow: discover papers, analyze methods, expand related work,
-  find code implementations across GitHub/HuggingFace/ModelScope, score & rank them,
+  find code implementations across GitHub/HuggingFace/ModelScope/Gitee/GitLab, score & rank them,
   and track latest arXiv preprints. Use when user asks to research a topic, find SOTA
-  models, compare implementations, do literature review, or track preprints.
-when_to_use: >
-  Triggers: "research", "SOTA", "find papers", "compare implementations",
-  "literature review", "arxiv", "huggingface search", "modelscope search",
-  "vision transformer", "image segmentation", "code reproduction", "论文检索",
-  "SOTA排行", "代码复现", "预印本追踪", "学术工作流", "发现模式", "领域收敛",
-  "模糊搜索", "关联搜索", "discover", "搜索论文代码"
-version: "1.4.0"
-author: "Research Workflow Team"
-license: "MIT"
+  models, compare implementations, do literature review, track preprints, or mentions
+  keywords: research, SOTA, find papers, compare implementations, literature review,
+  arxiv, huggingface search, modelscope search, code reproduction, 论文检索, SOTA排行,
+  代码复现, 预印本追踪, 学术工作流, discover, 搜索论文代码.
+license: MIT
+compatibility: Python 3.8+, internet access required for API calls. Optional: SerpApi, GitHub Token, Semantic Scholar, ModelScope, Gitee tokens for enhanced results.
+metadata:
+  version: "1.5.0"
+  author: "Research Workflow Team"
 ---
 
 # SOTA Research Workflow Skill — 完整工作流
 
-> 版本: 1.4.0 | 更新日期: 2026-07-09 | 许可证: MIT
+> 版本: 1.5.0 | 更新日期: 2026-07-09 | 许可证: MIT
 
 ---
 
