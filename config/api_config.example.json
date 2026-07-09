@@ -1,0 +1,33 @@
+{
+  "_comment": "Copy this file to api_config.json and fill in your API keys. Remove _comment fields.",
+  "serpapi_key": "YOUR_SERPAPI_KEY_HERE",
+  "github_token": "ghp_YOUR_GITHUB_TOKEN_HERE",
+  "semantic_scholar_key": "YOUR_SEMANTIC_SCHOLAR_API_KEY_OR_LEAVE_EMPTY",
+  "modelscope_token": "ms-YOUR_MODELSCOPE_TOKEN_HERE",
+  "connected_papers_token": "YOUR_CONNECTED_PAPERS_TOKEN_OR_LEAVE_EMPTY",
+
+  "_endpoints": {
+    "codesota_api": "https://www.codesota.com/api/sota",
+    "semantic_scholar_api": "https://api.semanticscholar.org/graph/v1",
+    "arxiv_api": "http://export.arxiv.org/api/query",
+    "github_api": "https://api.github.com",
+    "huggingface_api": "https://huggingface.co/api",
+    "modelscope_api": "https://modelscope.cn/openapi/v1",
+    "openalex_api": "https://api.openalex.org",
+    "serpapi_base": "https://serpapi.com/search",
+    "connected_papers_pypi": "connectedpapers-py"
+  },
+
+  "_rate_limits": {
+    "serpapi": "100 searches/month (free tier)",
+    "semantic_scholar_no_key": "100 requests per 5 minutes",
+    "semantic_scholar_with_key": "100 requests per minute",
+    "github_no_token": "60 requests per hour",
+    "github_with_token": "5000 requests per hour",
+    "huggingface": "No hard limit (be reasonable)",
+    "modelscope": "Free with account",
+    "arxiv": "No hard limit (3 second interval recommended)",
+    "codesota": "No rate limit (cache 5 min)",
+    "openalex": "No hard limit (polite pool: <10 req/s gets faster responses)"
+  }
+}
