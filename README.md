@@ -6,17 +6,20 @@
 
 本 Skill 技能包实现了一个 5 步自动化科研工作流，覆盖从论文发现到代码复现的完整链路：
 
-1. **SOTA 发现** — CodeSOTA API + SerpApi Google Scholar
-2. **论文深度分析** — Semantic Scholar API（TLDR、被引、参考文献）
+1. **SOTA 发现** — CodeSOTA API + SerpApi Google Scholar + OpenAlex（三层降级）
+2. **论文深度分析** — Semantic Scholar API（TLDR、被引、参考文献）+ OpenAlex 交叉验证
 3. **同族工作扩展** — Google Scholar Related + Semantic Scholar Recommendations
-4. **多平台实现检索 + SOTA 评分** — GitHub + Hugging Face + ModelScope
-5. **最新预印本追踪** — arXiv API
+4. **多平台实现检索 + SOTA 评分** — GitHub + Hugging Face (+Mirror) + ModelScope + Gitee + GitLab
+5. **最新预印本追踪** — arXiv API + OpenAlex 预印本交叉验证
 
 ## 安装
 
 ### 方式一：Claude Code / Codex CLI
 
 ```bash
+# 克隆仓库并重命名为 sota-research（推荐）
+git clone https://github.com/Rain3Dmetrology/sota-research-skill.git sota-research
+
 # 复制到个人 skills 目录（全局可用）
 cp -r sota-research/ ~/.claude/skills/
 
@@ -24,15 +27,29 @@ cp -r sota-research/ ~/.claude/skills/
 cp -r sota-research/ .claude/skills/
 ```
 
+> 如果已经克隆了仓库，也可以手动重命名后再复制：
+> ```bash
+> cp -r sota-research-skill/ ~/.claude/skills/sota-research/
+> ```
+
 ### 方式二：其他 Agent（Cursor、Windsurf、Gemini CLI）
 
 将 `sota-research/` 目录放到对应 Agent 的 skills 目录下。本 Skill 遵循
 [Agent Skills 开放标准](https://agentskills.io/)，跨平台兼容。
 
-### 方式三：独立使用
+```bash
+git clone https://github.com/Rain3Dmetrology/sota-research-skill.git sota-research
+cp -r sota-research/ <your-agent-skills-directory>/
+```
+
+### 方式三：下载 Release 压缩包（无需 git）
+
+前往 [Releases](https://github.com/Rain3Dmetrology/sota-research-skill/releases) 页面下载最新版本，解压后将文件夹重命名为 `sota-research`，然后复制到 skills 目录。
+
+### 方式四：独立使用
 
 ```bash
-# 直接运行脚本
+git clone https://github.com/Rain3Dmetrology/sota-research-skill.git sota-research
 cd sota-research/
 python3 scripts/research_workflow.py "vision transformer"
 ```
@@ -66,7 +83,9 @@ export CONNECTED_PAPERS_API_KEY="your_token"  # 可选
 | **ModelScope** | [modelscope.cn](https://modelscope.cn) | 免费 | 我的账号 → Access Token → 创建只读 Token |
 | **Connected Papers** | 邮件 hello@connectedpapers.com | 500 次 | 申请 early-access token |
 | **Hugging Face** | 无需 | 无限制 | 公开 API，无需认证 |
+| **Gitee** | [gitee.com/personal-access-tokens](https://gitee.com/personal-access-tokens) | 限制 | 可选，国内代码仓库搜索 |
 | **arXiv** | 无需 | 无限制 | 公开 API，3 秒间隔 |
+| **OpenAlex** | 无需 | 无限制 | 公开 API，论文交叉验证 |
 | **CodeSOTA** | 无需 | 无限制 | 公开 API |
 
 ## 使用方式
@@ -157,6 +176,8 @@ Papers With Code 已于 2025 年 7 月被 Meta 关闭。本工作流使用 CodeS
 
 | 版本 | 日期 | 更新内容 |
 |------|------|---------|
+| 1.4.0 | 2026-07-09 | HF mirror fallback、Gitee/GitLab 搜索、CodeSOTA 交叉验证、arXiv+OpenAlex 验证 |
+| 1.3.0 | 2026-07-09 | OpenAlex 三层降级源 |
 | 1.1.0 | 2026-07-09 | 新增 SOTA 评分系统、ModelScope 支持、Hugging Face 支持 |
 | 1.0.0 | 2026-07-09 | 初始版本，5 步工作流 |
 
