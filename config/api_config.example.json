@@ -5,6 +5,8 @@
   "semantic_scholar_key": "YOUR_SEMANTIC_SCHOLAR_API_KEY_OR_LEAVE_EMPTY",
   "modelscope_token": "ms-YOUR_MODELSCOPE_TOKEN_HERE",
   "connected_papers_token": "YOUR_CONNECTED_PAPERS_TOKEN_OR_LEAVE_EMPTY",
+  "gitee_token": "YOUR_GITEE_ACCESS_TOKEN_OR_LEAVE_EMPTY",
+  "hf_mirror": "https://hf-mirror.com",
 
   "_endpoints": {
     "codesota_api": "https://www.codesota.com/api/sota",
@@ -12,8 +14,11 @@
     "arxiv_api": "http://export.arxiv.org/api/query",
     "github_api": "https://api.github.com",
     "huggingface_api": "https://huggingface.co/api",
+    "hf_mirror_api": "https://hf-mirror.com/api",
     "modelscope_api": "https://modelscope.cn/openapi/v1",
     "openalex_api": "https://api.openalex.org",
+    "gitee_api": "https://gitee.com/api/v5",
+    "gitlab_api": "https://gitlab.com/api/v4",
     "serpapi_base": "https://serpapi.com/search",
     "connected_papers_pypi": "connectedpapers-py"
   },
@@ -25,7 +30,10 @@
     "github_no_token": "60 requests per hour",
     "github_with_token": "5000 requests per hour",
     "huggingface": "No hard limit (be reasonable)",
+    "hf_mirror": "No hard limit (mirror, China accessible)",
     "modelscope": "Free with account",
+    "gitee": "No hard limit (requires access_token)",
+    "gitlab": "No hard limit (public API)",
     "arxiv": "No hard limit (3 second interval recommended)",
     "codesota": "No rate limit (cache 5 min)",
     "openalex": "No hard limit (polite pool: <10 req/s gets faster responses)"
