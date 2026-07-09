@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Research Workflow v1.3: 引导式收敛学术论文与代码复现工作流
+Research Workflow v1.4: 引导式收敛学术论文与代码复现工作流
 五步链路 + 发现模式(Discover Mode) + 中英文兼容 + 模糊/关联搜索 + OpenAlex 兜底
 
 APIs:
@@ -27,6 +27,7 @@ import json
 import re
 import sys
 import time
+import os
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -37,10 +38,9 @@ from pathlib import Path
 # =============================================================================
 # Configuration
 # =============================================================================
+
 # NOTE: All API keys/tokens should be set via environment variables or
 #       config/api_config.json. Do NOT hardcode credentials in this file.
-import os
-
 def _load_config():
     """Load API keys from environment variables or config file."""
     config_path = Path(__file__).parent.parent / "config" / "api_config.json"
@@ -60,6 +60,8 @@ GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", _CFG.get("github_token", ""))
 SEMANTIC_SCHOLAR_API_KEY = os.environ.get("SEMANTIC_SCHOLAR_API_KEY", _CFG.get("semantic_scholar_key", ""))
 CONNECTED_PAPERS_TOKEN = os.environ.get("CONNECTED_PAPERS_API_KEY", _CFG.get("connected_papers_token", ""))
 MODELSCOPE_TOKEN = os.environ.get("MODELSCOPE_TOKEN", _CFG.get("modelscope_token", ""))
+GITEE_TOKEN = os.environ.get("GITEE_TOKEN", _CFG.get("gitee_token", ""))
+HF_MIRROR = os.environ.get("HF_MIRROR", _CFG.get("hf_mirror", "https://hf-mirror.com"))
 
 SEMANTIC_SCHOLAR_BASE = "https://api.semanticscholar.org/graph/v1"
 ARXIV_BASE = "http://export.arxiv.org/api/query"
@@ -69,9 +71,11 @@ CODESOTA_BASE = "https://www.codesota.com/api/sota"
 HF_BASE = "https://huggingface.co"
 MODELSCOPE_BASE = "https://modelscope.cn/openapi/v1"
 OPENALEX_BASE = "https://api.openalex.org"
+GITEE_BASE = "https://gitee.com/api/v5"
+GITLAB_BASE = "https://gitlab.com/api/v4"
 
 HEADERS = {
-    "User-Agent": "ResearchWorkflow/1.3 (Academic Research Tool)",
+    "User-Agent": "ResearchWorkflow/1.4 (Academic Research Tool)",
 }
 if GITHUB_TOKEN:
     HEADERS["Authorization"] = f"token {GITHUB_TOKEN}"
@@ -485,6 +489,17 @@ def step1_sota_discovery(query, max_papers=5, codesota_task=None):
     elif codesota_results and "error" in codesota_results:
         log(f"  [CodeSOTA] Task '{search_task}' not found in registry.")
 
+    # --- 1a-x: CodeSOTA 交叉验证 (OpenAlex 被引数验证) ---
+    codesota_papers_for_verification = [p for p in papers if p["source"].startswith("CodeSOTA") and p.get("url")]
+    if codesota_papers_for_verification:
+        log(f"  [Cross-Validate] Verifying {len(codesota_papers_for_verification)} CodeSOTA results via OpenAlex...")
+        for cp in codesota_papers_for_verification[:3]:
+            model_name = cp.get("title", "").replace("SOTA: ", "").replace("Runner-up: ", "")
+            oa_check = _cross_validate_scores(model_name)
+            if oa_check:
+                cp["cross_validation"] = oa_check
+        log(f"  [Cross-Validate] Verification complete")
+
     time.sleep(1)
 
     # --- 1b: SerpApi Google Scholar Search ---
@@ -611,6 +626,36 @@ def _search_openalex(query, max_papers=5):
         log(f"  [OpenAlex] Error: {e}")
 
     return results
+
+
+def _cross_validate_scores(model_name):
+    """通过 OpenAlex 交叉验证 CodeSOTA 排行分数。
+    搜索同名论文，获取被引数、年份等元数据，供人工判断数据新鲜度。"""
+    try:
+        url = (
+            f"{OPENALEX_BASE}/works"
+            f"?search={urllib.parse.quote(model_name)}"
+            f"&per_page=3"
+            f"&sort=cited_by_count:desc"
+            f"&select=id,title,cited_by_count,publication_year,primary_location,doi"
+        )
+        raw = api_get(url, timeout=10, retries=1)
+        if not raw:
+            return None
+        data = json.loads(raw)
+        matches = []
+        for w in data.get("results", []):
+            matches.append({
+                "title": w.get("title", "")[:80],
+                "cited_by": w.get("cited_by_count", 0),
+                "year": w.get("publication_year"),
+                "doi": w.get("doi", ""),
+            })
+        if matches:
+            return {"source": "OpenAlex", "matches": matches}
+    except Exception as e:
+        log(f"  [Cross-Validate] Error: {e}")
+    return None
 
 
 def _extract_authors(pub_info):
@@ -891,6 +936,24 @@ def _search_huggingface(search_queries, max_per_query=5, max_total=8):
         )
         hf_data = api_get_json(hf_url)
 
+        # Fallback to HF_MIRROR if huggingface.co fails (SSL issues, etc.)
+        if not hf_data:
+            try:
+                mirror_url = (
+                    f"{HF_MIRROR}/api/models"
+                    f"?search={urllib.parse.quote(keywords)}"
+                    f"&sort=downloads"
+                    f"&direction=-1"
+                    f"&limit={max_per_query}"
+                    f"&full=false"
+                )
+                log(f"    [Hugging Face] Retrying via HF_MIRROR: {mirror_url[:80]}")
+                hf_data = api_get_json(mirror_url)
+                if hf_data:
+                    log(f"    [Hugging Face] HF_MIRROR succeeded")
+            except Exception as e:
+                log(f"    [Hugging Face] HF_MIRROR fallback error: {e}")
+
         if hf_data and isinstance(hf_data, list):
             for m in hf_data:
                 model_id = m.get("id", "")
@@ -1059,6 +1122,100 @@ def _search_modelscope(search_queries, max_total=5):
 
     models.sort(key=lambda x: x.get("score", 0), reverse=True)
     return models[:max_total]
+
+
+def _search_gitee(search_queries, max_per_query=5, max_total=5):
+    """Gitee (码云) 仓库搜索 - 中文开源社区补充。
+    需要配置 gitee_token (api_config.json 或 GITEE_TOKEN 环境变量)。"""
+    results = []
+    gitee_token = os.environ.get("GITEE_TOKEN", _CFG.get("gitee_token", ""))
+    if not gitee_token:
+        log("  [Gitee] Skipped (no gitee_token configured)")
+        return results
+    seen = set()
+    for q in search_queries:
+        if len(results) >= max_total:
+            break
+        url = (f"{GITEE_BASE}/search/repositories"
+               f"?access_token={gitee_token}"
+               f"&q={urllib.parse.quote(q)}"
+               f"&order=star_count&sort=desc&per_page={max_per_query}")
+        try:
+            raw = api_get(url, timeout=15, retries=1)
+            if not raw:
+                continue
+            data = json.loads(raw)
+            if isinstance(data, dict) and "items" in data:
+                items = data["items"]
+            elif isinstance(data, list):
+                items = data
+            else:
+                continue
+            for item in items:
+                full_name = item.get("full_name") or item.get("path") or ""
+                if full_name in seen:
+                    continue
+                seen.add(full_name)
+                results.append({
+                    "platform": "Gitee",
+                    "name": full_name,
+                    "url": item.get("html_url") or f"https://gitee.com/{full_name}",
+                    "description": (item.get("description") or "")[:200],
+                    "stars": item.get("stargazers_count") or item.get("star_count") or 0,
+                    "forks": item.get("forks_count") or 0,
+                    "language": item.get("language") or "",
+                    "license": (item.get("license", {}) or {}).get("spdx_id") if isinstance(item.get("license"), dict) else (item.get("license") or ""),
+                    "updated": item.get("updated_at") or "",
+                    "topics": [],
+                    "open_issues": item.get("open_issues_count") or 0,
+                })
+                if len(results) >= max_total:
+                    break
+        except Exception as e:
+            log(f"  [Gitee] Error: {e}")
+        time.sleep(1)
+    return results
+
+
+def _search_gitlab(search_queries, max_per_query=5, max_total=5):
+    """GitLab 公开项目搜索 - 国际开源社区补充"""
+    results = []
+    seen = set()
+    for q in search_queries:
+        if len(results) >= max_total:
+            break
+        url = f"{GITLAB_BASE}/projects?search={urllib.parse.quote(q)}&per_page={max_per_query}"
+        try:
+            raw = api_get(url, timeout=15, retries=1)
+            if not raw:
+                continue
+            data = json.loads(raw)
+            if not isinstance(data, list):
+                continue
+            for item in data:
+                iid = item.get("id")
+                if iid in seen:
+                    continue
+                seen.add(iid)
+                results.append({
+                    "platform": "GitLab",
+                    "name": item.get("path_with_namespace") or "",
+                    "url": item.get("web_url") or "",
+                    "description": (item.get("description") or "")[:200],
+                    "stars": item.get("star_count") or 0,
+                    "forks": item.get("forks_count") or 0,
+                    "language": item.get("repository_language") or "",
+                    "license": (item.get("license", {}) or {}).get("name") if isinstance(item.get("license"), dict) else (item.get("license") or ""),
+                    "updated": item.get("last_activity_at") or "",
+                    "topics": item.get("topics") or [],
+                    "open_issues": item.get("open_issues_count") or 0,
+                })
+                if len(results) >= max_total:
+                    break
+        except Exception as e:
+            log(f"  [GitLab] Error: {e}")
+        time.sleep(1)
+    return results
 
 
 def _score_and_rank_implementations(implementations, query):
@@ -1242,15 +1399,19 @@ def step4_code_search(papers, analyses, related, query="", max_repos=10, max_mod
     hf_models = _search_huggingface(search_queries, max_per_query=5, max_total=max_models)
     hf_arxiv_models = _search_huggingface_by_arxiv(arxiv_ids, max_total=5)
     ms_models = _search_modelscope(search_queries, max_total=5)
+    gitee_repos = _search_gitee(search_queries, max_total=5)
+    gitlab_projects = _search_gitlab(search_queries, max_total=5)
 
-    all_results = github_repos + hf_models + hf_arxiv_models + ms_models
+    all_results = github_repos + hf_models + hf_arxiv_models + ms_models + gitee_repos + gitlab_projects
     all_results = _score_and_rank_implementations(all_results, query)
 
     total_github = sum(1 for r in all_results if r.get("platform") == "GitHub")
     total_hf = sum(1 for r in all_results if r.get("platform", "").startswith("Hugging Face"))
     total_ms = sum(1 for r in all_results if r.get("platform") == "ModelScope")
+    total_gitee = sum(1 for r in all_results if r.get("platform") == "Gitee")
+    total_gitlab = sum(1 for r in all_results if r.get("platform") == "GitLab")
 
-    log(f"  [Step 4] GitHub: {total_github} repos | Hugging Face: {total_hf} models | ModelScope: {total_ms} models")
+    log(f"  [Step 4] GitHub: {total_github} repos | Hugging Face: {total_hf} models | ModelScope: {total_ms} models | Gitee: {total_gitee} | GitLab: {total_gitlab}")
     log(f"  [Step 4] Total: {len(all_results)} implementations (scored & ranked)\n")
     return all_results
 
@@ -1333,6 +1494,35 @@ def step5_arxiv_preprints(query, arxiv_cat=None, months=3, max_papers=10):
             "pdf_url": pdf_url,
             "url": link or f"https://arxiv.org/abs/{arxiv_id}",
         })
+
+    # --- 5b: OpenAlex 交叉验证 arXiv 预印本 ---
+    if preprints:
+        log(f"  [arXiv + OpenAlex] Cross-validating {len(preprints)} preprints...")
+        oa_titles = set()
+        try:
+            oa_url = (
+                f"{OPENALEX_BASE}/works"
+                f"?search={urllib.parse.quote(query)}"
+                f"&filter=from_publication_date:{six_months_ago.strftime('%Y-%m-%d')},type:preprint"
+                f"&per_page={max_papers}"
+                f"&sort=relevance_score:desc"
+                f"&select=id,title,cited_by_count,publication_year,primary_location_source_display_name"
+            )
+            oa_raw = api_get(oa_url, timeout=15, retries=1)
+            if oa_raw:
+                oa_data = json.loads(oa_raw)
+                for w in oa_data.get("results", []):
+                    oa_titles.add(w.get("title", ""))
+                # 标记 arXiv 论文是否在 OpenAlex 也有记录
+                for p in preprints:
+                    p["oa_verified"] = any(
+                        _similarity(p.get("title", "").lower(), t.lower()) > 0.7
+                        for t in oa_titles
+                    )
+                verified = sum(1 for p in preprints if p.get("oa_verified"))
+                log(f"  [arXiv + OpenAlex] {verified}/{len(preprints)} preprints verified in OpenAlex")
+        except Exception as e:
+            log(f"  [arXiv + OpenAlex] Cross-validation error: {e}")
 
     log(f"  [Step 5] Found {len(preprints)} recent preprints\n")
     return preprints
@@ -1550,8 +1740,8 @@ def generate_report(query, papers, analyses, related, repos, preprints, output_p
     lines.append("")
 
     lines.append("---\n")
-    lines.append(f"*Report generated by Research Workflow v1.3 | {now}*")
-    lines.append(f"*APIs used: CodeSOTA, SerpApi (Google Scholar), OpenAlex, Semantic Scholar, GitHub, Hugging Face, ModelScope, arXiv*")
+    lines.append(f"*Report generated by Research Workflow v1.4 | {now}*")
+    lines.append(f"*APIs used: CodeSOTA, SerpApi (Google Scholar), OpenAlex, Semantic Scholar, GitHub, Hugging Face, ModelScope, Gitee, GitLab, arXiv*")
 
     report = "\n".join(lines)
 
@@ -1570,7 +1760,7 @@ def run_workflow(query, max_papers=3, arxiv_cat=None, months=3, output=None, cod
 
     print()
     print("╔══════════════════════════════════════════════════════════════╗")
-    print("║          Research Workflow v1.3 — 学术论文与代码复现          ║")
+    print("║          Research Workflow v1.4 — 学术论文与代码复现          ║")
     print("║  发现论文 → 理解方法 → 扩展同族 → 获取代码 → 追踪预印本       ║")
     print("╚══════════════════════════════════════════════════════════════╝")
     print(f"\n  Query: {query}")
@@ -1615,7 +1805,7 @@ def run_workflow(query, max_papers=3, arxiv_cat=None, months=3, output=None, cod
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Research Workflow v1.3: 引导式收敛学术论文与代码复现工作流",
+        description="Research Workflow v1.4: 引导式收敛学术论文与代码复现工作流",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:

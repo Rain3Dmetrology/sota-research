@@ -11,14 +11,14 @@ when_to_use: >
   "vision transformer", "image segmentation", "code reproduction", "论文检索",
   "SOTA排行", "代码复现", "预印本追踪", "学术工作流", "发现模式", "领域收敛",
   "模糊搜索", "关联搜索", "discover", "搜索论文代码"
-version: "1.3.0"
+version: "1.4.0"
 author: "Research Workflow Team"
 license: "MIT"
 ---
 
 # SOTA Research Workflow Skill — 完整工作流
 
-> 版本: 1.3.0 | 更新日期: 2026-07-09 | 许可证: MIT
+> 版本: 1.4.0 | 更新日期: 2026-07-09 | 许可证: MIT
 
 ---
 
@@ -50,6 +50,7 @@ license: "MIT"
 │        └─ 2.7亿+ 作品，按相关性排序，提取 DOI/OA/被引数       │
 │  降级链: CodeSOTA → Google Scholar → OpenAlex               │
 │  去重:   三源结果自动按标题去重合并                         │
+│  交叉验证: CodeSOTA 结果通过 OpenAlex 被引数验证 (v1.4)     │
 │  输出: 目标论文列表 (title, source, cited_by, url, doi)     │
 │  API:   CodeSOTA (免费) + SerpApi (100次/月)                │
 │         + OpenAlex (免费/无限, polite pool)                  │
@@ -109,24 +110,45 @@ license: "MIT"
 │        └─ 工程就绪度 (10分): pipeline/task, params          │
 │        评级: A+(>=80) | A(>=65) | B+(>=50) | B(>=35)       │
 │              | C(>=20) | D(<20)                             │
+│  ├─ 4d. Gitee API v5 [v1.4 NEW]                            │
+│  │     └─ /search/repositories?access_token=TOKEN          │
+│  │     提取: stars, forks, language, description, updated_at  │
+│  ├─ 4e. GitLab API v4 [v1.4 NEW]                          │
+│  │     └─ /projects?search=关键词&per_page=5               │
+│  │     提取: stars, forks_count, open_issues, last_activity  │
+│  ├─ 4f. HF_MIRROR Fallback [v1.4 NEW]                     │
+│  │     └─ huggingface.co SSL 失败时自动切换 hf-mirror.com    │
+│  └─ 4g. SOTA 评分系统 (100分制)                            │
+│        ├─ 社区活跃度 (30分): stars/likes, forks, downloads │
+│        ├─ 代码质量   (25分): license, language, description │
+│        ├─ 维护状态   (20分): last_update, open_issues       │
+│        ├─ 相关性     (15分): 关键词匹配(name/desc/tags)      │
+│        └─ 工程就绪度 (10分): pipeline/task, params          │
+│        评级: A+(>=80) | A(>=65) | B+(>=50) | B(>=35)       │
+│              | C(>=20) | D(<20)                             │
 │  输出: SOTA评分比较总表 + A级推荐详解                       │
-│        + GitHub/HF/ModelScope 分平台列表                    │
+│        + GitHub/HF/ModelScope/Gitee/GitLab 分平台列表      │
 │  API:   GitHub (无Token:60/hr, Token:5000/hr)            │
-│         Hugging Face (免费/无限)                           │
+│         Hugging Face (免费/无限, HF_MIRROR自动降级)       │
 │         ModelScope (Bearer Token, 免费注册)                │
+│         Gitee (需要 access_token)                         │
+│         GitLab (免费/无限, 无需认证)                       │
 └──────────────────────────────────────────────────────────┘
          │
          ▼
 ┌──────────────────────────────────────────────────────────┐
-│ Step 5: 最新预印本追踪                                     │
-│  └─ arXiv API                                             │
-│     ├─ 搜索: all:关键词 + cat:cs.CV (可指定分类)            │
-│     ├─ 排序: submittedDate descending                      │
-│     ├─ 时间范围: 最近 3-6 个月 (可配置 --months 参数)       │
-│     └─ 提取: title, abstract, authors, categories,        │
-│            published, arxiv_id, pdf_url                   │
-│  输出: 最新预印本列表 (按日期降序排列)                      │
+│ Step 5: 最新预印本追踪 + OpenAlex 交叉验证 (v1.4)       │
+│  ├─ 5a. arXiv API                                         │
+│  │     ├─ 搜索: all:关键词 + cat:cs.CV (可指定分类)          │
+│  │     ├─ 排序: submittedDate descending                    │
+│  │     ├─ 时间范围: 最近 3-6 个月 (可配置 --months 参数)   │
+│  │     └─ 提取: title, abstract, authors, categories,     │
+│  │            published, arxiv_id, pdf_url                 │
+│  └─ 5b. OpenAlex 交叉验证 [v1.4 NEW]                      │
+│        └─ 预印本论文通过 OpenAlex 验证被引数和发表信息       │
+│  输出: 最新预印本列表 (按日期降序排列, 含交叉验证数据)      │
 │  API:   arXiv (免费/无限, 建议3秒请求间隔)                  │
+│         OpenAlex (免费/无限, 用于交叉验证)                   │
 └──────────────────────────────────────────────────────────┘
          │
          ▼
@@ -141,7 +163,9 @@ license: "MIT"
 │  ├─ 6. GitHub 仓库列表 (带评级标签)                        │
 │  ├─ 7. Hugging Face 模型列表 (带评级标签)                  │
 │  ├─ 8. ModelScope 模型列表 (带评级标签)                    │
-│  └─ 9. 最新 arXiv 预印本表格                               │
+│  ├─ 9. Gitee 仓库列表 (带评级标签)  [v1.4 NEW]            │
+│  ├─ 10. GitLab 项目列表 (带评级标签) [v1.4 NEW]           │
+│  └─ 11. 最新 arXiv 预印本表格 (+ OpenAlex 交叉验证)       │
 └──────────────────────────────────────────────────────────┘
 ```
 
@@ -160,6 +184,9 @@ license: "MIT"
 | 7 | ModelScope OpenAPI | Step 4: 魔搭模型搜索 | Bearer Token | 免费注册 | https://modelscope.cn → Access Token |
 | 8 | arXiv API | Step 5: 预印本搜索 | 无需认证 | 无限 (3s间隔) | http://export.arxiv.org/api |
 | 9 | Connected Papers | Step 3: 论文关系图谱 (待启用) | Early-access token | 500次 | 邮件 hello@connectedpapers.com |
+| 10 | Gitee API v5 | Step 4: Gitee 仓库搜索 (v1.4) | access_token (query参数) | 无硬性限制 | https://gitee.com/api/v5 |
+| 11 | GitLab API v4 | Step 4: GitLab 项目搜索 (v1.4) | 无需认证 | 免费无限 | https://gitlab.com/api/v4 |
+| 12 | HF Mirror | Step 4: Hugging Face 国内降级 (v1.4) | 无需认证 | 无限 (镜像站) | https://hf-mirror.com |
 
 ### 认证配置方式
 
@@ -170,7 +197,9 @@ license: "MIT"
   "github_token": "ghp_你的GitHub Token",
   "semantic_scholar_key": "你的SS Key (可选,留空则走限速模式)",
   "modelscope_token": "ms-你的ModelScope Token",
-  "connected_papers_token": "你的CP Token (可选,申请中)"
+  "connected_papers_token": "你的CP Token (可选,申请中)",
+  "gitee_token": "你的Gitee Access Token (可选,用于搜索)",
+  "hf_mirror": "https://hf-mirror.com (可选,HF降级镜像站)"
 }
 ```
 
@@ -181,6 +210,7 @@ export GITHUB_TOKEN="..."
 export SEMANTIC_SCHOLAR_API_KEY="..."  # 可选
 export MODELSCOPE_TOKEN="..."
 export CONNECTED_PAPERS_API_KEY="..."  # 可选
+export GITEE_TOKEN="..."  # 可选 (Gitee 搜索)
 ```
 
 ---
@@ -259,10 +289,18 @@ curl "https://serpapi.com/search?engine=google_scholar&q=related:{title}&api_key
 # Step 4: 代码检索
 curl -H "Authorization: token {GH_TOKEN}" "https://api.github.com/search/repositories?q={query}+language:python&sort=stars"
 curl "https://huggingface.co/api/models?search={query}&sort=downloads&direction=-1&limit=5"
+# HF_MIRROR fallback (国内网络)
+curl "https://hf-mirror.com/api/models?search={query}&sort=downloads&direction=-1&limit=5"
 curl -H "Authorization: Bearer {MS_TOKEN}" "https://modelscope.cn/openapi/v1/models?search={query}&limit=10"
+# Gitee (需要 access_token)
+curl "https://gitee.com/api/v5/search/repositories?q={query}&access_token={GITEE_TOKEN}"
+# GitLab
+curl "https://gitlab.com/api/v4/projects?search={query}&per_page=5"
 
-# Step 5: 预印本
+# Step 5: 预印本 + 交叉验证
 curl "http://export.arxiv.org/api/query?search_query=all:{query}&max_results=10&sortBy=submittedDate&sortOrder=descending"
+# OpenAlex 交叉验证预印本被引数
+curl "https://api.openalex.org/works?search={title}&per_page=3&sort=cited_by_count:desc&select=id,title,cited_by_count,publication_year,doi"
 ```
 
 ---
@@ -364,7 +402,7 @@ sota-research-skill/
 ├── SKILL.md                          # 本文件 (入口, 含YAML元数据)
 ├── README.md                         # 完整使用文档 (中文)
 ├── scripts/
-│   └── research_workflow.py          # 自动化脚本 v1.3 (70KB, 含 Discover + OpenAlex)
+│   └── research_workflow.py          # 自动化脚本 v1.4 (85KB, 含 Discover + OpenAlex + Gitee/GitLab + HF Mirror)
 ├── config/
 │   ├── api_config.example.json       # API配置模板 (含端点和限速说明)
 │   └── api_config.json               # 用户实际配置 (gitignored, 不入包)
@@ -427,6 +465,10 @@ python3 scripts/research_workflow.py "diffusion model" \
    审批时间不确定。当前使用 SerpApi Google Scholar related 作为降级方案。
 7. **SerpApi 免费版限制 100 次/月**，高频使用需升级付费版。
 8. **arXiv API 无硬性限速**，但官方建议 3 秒请求间隔，脚本已内置。
+9. **Gitee API 搜索需要 access_token**，需在 Gitee 个人设置中生成私人令牌。
+   未配置时自动跳过 Gitee 搜索，不影响其他平台。
+10. **HF Mirror (hf-mirror.com)** 在中国大陆网络环境下可用，用于解决
+    huggingface.co 的 SSL 限制。自动降级：HF 官方失败 → HF_MIRROR 重试。
 
 ---
 
