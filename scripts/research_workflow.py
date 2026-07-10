@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """
-Research Workflow v1.5.1: 引导式收敛学术论文与代码复现工作流
+Research Workflow v1.6.0: 引导式收敛学术论文与代码复现工作流
 五步链路 + 发现模式(Discover Mode) + 中英文兼容 + 模糊/关联搜索 + OpenAlex 兜底
 
 APIs:
-  Step 0 - 引导式领域收敛:  中文映射 + 关键词关联 + 模糊匹配 (本地)
-  Step 1 - SOTA 发现:      CodeSOTA API → SerpApi Google Scholar → OpenAlex (三层降级)
-  Step 2 - 论文深度分析:    Semantic Scholar API
-  Step 3 - 同族工作扩展:    SerpApi Google Scholar (主力) + Semantic Scholar recommendations
-  Step 4 - 多平台实现检索:   GitHub + Hugging Face + ModelScope + SOTA 评分
-  Step 5 - 最新预印本追踪:   arXiv API
+  Step 0 - 引导式领域收敛:  中文映射 + 关键词关联 + 模糊匹配 + 模型族匹配 (本地)
+  Step 1 - SOTA 发现:      CodeSOTA API → OpenAlex (主力并行源) → SerpApi Google Scholar (补充)
+  Step 2 - 论文深度分析:    OpenAlex (主力) + Semantic Scholar (补充 TLDR)
+  Step 3 - 同族工作扩展:    OpenAlex 双向引用 (主力) + Google Scholar + Semantic Scholar (补充)
+  Step 4 - 多平台实现检索:   GitHub + Hugging Face + ModelScope + SOTA 评分 (工程就绪度 25 分)
+  Step 5 - 最新预印本追踪:   arXiv API + Hugging Face Daily Papers
 
 Usage:
   # 发现模式 - 引导收敛到精确领域
@@ -39,26 +39,27 @@ from pathlib import Path
 # Configuration
 # =============================================================================
 
-# NOTE: All API keys/tokens should be set via environment variables or
-#       config/api_config.json. Do NOT hardcode credentials in this file.
 def _load_config():
-    """Load API keys from environment variables or config file."""
-    config_path = Path(__file__).parent.parent / "config" / "api_config.json"
-    cfg = {}
-    if config_path.exists():
-        try:
-            with open(config_path, "r", encoding="utf-8") as f:
-                cfg = json.load(f)
-        except Exception:
-            pass
-    return cfg
+    """Load API configuration from config file or environment variables."""
+    config_paths = [
+        Path(__file__).parent.parent / "config" / "api_config.json",
+        Path("config/api_config.json"),
+    ]
+    for p in config_paths:
+        if p.exists():
+            try:
+                with open(p, "r", encoding="utf-8") as f:
+                    return json.load(f)
+            except Exception:
+                pass
+    return {}
 
 _CFG = _load_config()
 
 SERPAPI_KEY = os.environ.get("SERPAPI_KEY", _CFG.get("serpapi_key", ""))
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", _CFG.get("github_token", ""))
 SEMANTIC_SCHOLAR_API_KEY = os.environ.get("SEMANTIC_SCHOLAR_API_KEY", _CFG.get("semantic_scholar_key", ""))
-CONNECTED_PAPERS_TOKEN = os.environ.get("CONNECTED_PAPERS_API_KEY", _CFG.get("connected_papers_token", ""))
+CONNECTED_PAPERS_TOKEN = os.environ.get("CONNECTED_PAPERS_TOKEN", _CFG.get("connected_papers_token", ""))
 MODELSCOPE_TOKEN = os.environ.get("MODELSCOPE_TOKEN", _CFG.get("modelscope_token", ""))
 GITEE_TOKEN = os.environ.get("GITEE_TOKEN", _CFG.get("gitee_token", ""))
 HF_MIRROR = os.environ.get("HF_MIRROR", _CFG.get("hf_mirror", "https://hf-mirror.com"))
@@ -69,6 +70,7 @@ GITHUB_BASE = "https://api.github.com"
 SERPAPI_BASE = "https://serpapi.com/search"
 CODESOTA_BASE = "https://www.codesota.com/api/sota"
 HF_BASE = "https://huggingface.co"
+HF_PAPERS_BASE = f"{HF_BASE}/api/papers"
 MODELSCOPE_BASE = "https://modelscope.cn/openapi/v1"
 OPENALEX_BASE = "https://api.openalex.org"
 OPENALEX_MAILTO = "sota-research-skill@example.com"
@@ -76,7 +78,7 @@ GITEE_BASE = "https://gitee.com/api/v5"
 GITLAB_BASE = "https://gitlab.com/api/v4"
 
 HEADERS = {
-    "User-Agent": "ResearchWorkflow/1.5.1 (Academic Research Tool)",
+    "User-Agent": "ResearchWorkflow/1.6.0 (Academic Research Tool)",
 }
 if GITHUB_TOKEN:
     HEADERS["Authorization"] = f"token {GITHUB_TOKEN}"
@@ -172,6 +174,19 @@ _C_CODESOTA_TASKS = {
     "表格回归": "tabular-regression",
     "雅达利游戏": "atari-games",
     "Mask填充": "fill-mask",
+    # CV 细分方向
+    "实例分割": "instance-segmentation",
+    "全景分割": "panoptic-segmentation",
+    "三维目标检测": "3d-object-detection",
+    "3D目标检测": "3d-object-detection",
+    "小目标检测": "small-object-detection",
+    "多目标跟踪": "multi-object-tracking",
+    "目标跟踪": "multi-object-tracking",
+    "工业缺陷检测": "industrial-defect-detection",
+    "缺陷检测": "industrial-defect-detection",
+    "无样本缺陷检测": "anomaly-detection",
+    "开放词汇检测": "open-vocabulary-detection",
+    "定位式检测": "grounded-detection",
 }
 
 _C_KEYWORD_ASSOCIATIONS = {
@@ -191,6 +206,19 @@ _C_KEYWORD_ASSOCIATIONS = {
     "document": ["document-ocr", "document-parsing", "document-layout-analysis", "document-understanding", "document-classification", "table-recognition"],
     "table": ["table-recognition", "table-question-answering", "tabular-classification", "tabular-regression"],
     "graph": ["node-classification", "link-prediction", "knowledge-graph-completion", "relation-extraction", "entity-linking"],
+    "instance": ["instance-segmentation"],
+    "panoptic": ["panoptic-segmentation"],
+    "3d": ["3d-object-detection"],
+    "tracking": ["multi-object-tracking"],
+    "mot": ["multi-object-tracking"],
+    "defect": ["industrial-defect-detection", "anomaly-detection"],
+    "open-vocabulary": ["open-vocabulary-detection"],
+    "grounded": ["grounded-detection", "open-vocabulary-detection"],
+    "small-object": ["small-object-detection"],
+    "industrial": ["industrial-defect-detection"],
+    "yolo": ["object-detection", "small-object-detection"],
+    "detr": ["object-detection"],
+    "sam": ["instance-segmentation", "panoptic-segmentation", "image-segmentation"],
 }
 
 _C_ALL_TASK_IDS = set([
@@ -215,7 +243,35 @@ _C_ALL_TASK_IDS = set([
     "video-to-video", "video-understanding", "voice-cloning", "web-agents", "zero-shot-classification",
     "polish-llm-general", "polish-cultural-competency", "polish-text-understanding",
     "polish-conversation-quality", "polish-emotional-intelligence",
+    "instance-segmentation", "panoptic-segmentation", "3d-object-detection",
+    "small-object-detection", "multi-object-tracking", "industrial-defect-detection",
+    "open-vocabulary-detection", "grounded-detection",
 ])
+
+
+# Model family mapping for Discover Mode
+_C_MODEL_FAMILY_MAP = {
+    "RT-DETR": ["object-detection", "3d-object-detection"],
+    "YOLOv3": ["object-detection", "small-object-detection"],
+    "YOLOv5": ["object-detection", "small-object-detection", "industrial-defect-detection"],
+    "YOLOv7": ["object-detection", "small-object-detection"],
+    "YOLOv8": ["object-detection", "instance-segmentation", "keypoint-detection"],
+    "YOLOv9": ["object-detection", "small-object-detection"],
+    "YOLOv10": ["object-detection"],
+    "YOLOv11": ["object-detection", "instance-segmentation", "panoptic-segmentation"],
+    "YOLO": ["object-detection", "small-object-detection"],
+    "DINO": ["object-detection"],
+    "Co-DETR": ["object-detection"],
+    "Grounding DINO": ["open-vocabulary-detection", "grounded-detection"],
+    "SAM": ["instance-segmentation", "panoptic-segmentation", "image-segmentation"],
+    "Segment Anything": ["instance-segmentation", "image-segmentation"],
+    "Mask R-CNN": ["instance-segmentation"],
+    "DETR": ["object-detection"],
+    "Dinomaly": ["anomaly-detection"],
+    "EfficientAD": ["anomaly-detection"],
+    "PatchCore": ["anomaly-detection"],
+    "FastRE": ["anomaly-detection"],
+}
 
 
 def _load_codesota_mapping():
@@ -348,6 +404,17 @@ def _match_codesota_task(query):
                 "reason": f"查询词精确匹配任务 ID '{tid}'",
             })
 
+    # --- 2.5: 模型族匹配 ---
+    for model_name, task_ids in _C_MODEL_FAMILY_MAP.items():
+        if model_name.lower() in clean_q:
+            for tid in task_ids:
+                candidates.append({
+                    "task_id": tid,
+                    "match_type": "模型族",
+                    "match_score": 0.85,
+                    "reason": f"模型 '{model_name}' 关联到任务 '{tid}'",
+                })
+
     # --- 3. 关键词关联搜索 ---
     for kw, tasks in KEYWORD_ASSOCIATIONS.items():
         if kw in clean_q or any(w in clean_q for w in kw.split('-')):
@@ -439,12 +506,12 @@ def step1_sota_discovery(query, max_papers=5, codesota_task=None):
     """
     Step 1: 三层降级论文发现。
       1a. CodeSOTA API    — 查 SOTA 模型 + 论文
-      1b. SerpApi (GS)    — 学术论文搜索 (主力补充)
-      1c. OpenAlex API    — 兜底 (当 GS 无结果或结果不足时触发)
+      1b. OpenAlex API    — 主力并行源 (学术论文搜索)
+      1c. SerpApi (GS)    — 补充 (当 1a+1b 结果不足时触发)
     如果已通过 discover() 收敛到精确任务，直接使用该任务 ID。
     """
     log("=" * 60)
-    log("STEP 1: SOTA 发现 — CodeSOTA → Google Scholar → OpenAlex")
+    log("STEP 1: SOTA 发现 — CodeSOTA → OpenAlex → Google Scholar")
     log("=" * 60)
 
     papers = []
@@ -474,6 +541,7 @@ def step1_sota_discovery(query, max_papers=5, codesota_task=None):
                 "metric": metric,
                 "notes": f"Current SOTA on {codesota_results.get('benchmark', 'N/A')}",
                 "codesota_task": search_task,
+                "benchmark_url": f"https://www.codesota.com/benchmark/{codesota_results.get('benchmark_slug', codesota_results.get('benchmark', search_task).lower().replace(' ', '-'))}",
             })
             seen_titles.add(f"SOTA: {model_name}")
         for ru in codesota_results.get("runners_up", [])[:3]:
@@ -485,6 +553,7 @@ def step1_sota_discovery(query, max_papers=5, codesota_task=None):
                     "url": ru.get("model_url", ""),
                     "score": ru.get("score", "N/A"),
                     "codesota_task": search_task,
+                    "benchmark_url": f"https://www.codesota.com/benchmark/{codesota_results.get('benchmark_slug', search_task)}",
                 })
                 seen_titles.add(title)
     elif codesota_results and "error" in codesota_results:
@@ -503,60 +572,73 @@ def step1_sota_discovery(query, max_papers=5, codesota_task=None):
 
     time.sleep(1)
 
-    # --- 1b: SerpApi Google Scholar Search ---
-    log(f"  [Google Scholar] Searching: {query}")
-    gs_url = (
-        f"{SERPAPI_BASE}?engine=google_scholar"
-        f"&q={urllib.parse.quote(query)}"
-        f"&api_key={SERPAPI_KEY}"
-        f"&num={max_papers + 2}"
-        f"&hl=en"
-    )
-    gs_data = api_get_json(gs_url)
-    gs_results = []
-
-    if gs_data and "organic_results" in gs_data:
-        for r in gs_data["organic_results"][:max_papers]:
-            title = r.get("title", "N/A")
-            if title not in seen_titles:
-                cited = r.get("inline_links", {}).get("cited_by", {}).get("total", 0)
-                pub_info = r.get("publication_info", {}).get("summary", "")
-                papers.append({
-                    "source": "Google Scholar",
-                    "title": title,
-                    "url": r.get("link", ""),
-                    "cited_by": cited,
-                    "pub_info": pub_info,
-                    "snippet": r.get("snippet", ""),
-                    "authors": _extract_authors(pub_info),
-                    "year": _extract_year(pub_info),
-                })
-                seen_titles.add(title)
-        gs_results = gs_data.get("related_searches", [])
+    # --- 1b: OpenAlex Search (主力并行源) ---
+    log(f"  [OpenAlex] Searching: {query}")
+    oa_results = _search_openalex(query, max_papers=max_papers)
+    for r in oa_results:
+        title = r.get("title", "")
+        if title and title not in seen_titles:
+            papers.append(r)
+            seen_titles.add(title)
+    if oa_results:
+        log(f"  [OpenAlex] Found {len(oa_results)} papers")
     else:
-        log(f"  [Google Scholar] No results returned.")
+        log(f"  [OpenAlex] No additional results")
 
     time.sleep(1)
 
-    # --- 1c: OpenAlex Fallback (当 GS 无结果或结果不足时) ---
-    needs_fallback = (len([p for p in papers if p["source"] == "Google Scholar"]) < 2)
-    if needs_fallback:
-        log(f"  [OpenAlex] Fallback search for: {query}")
-        oa_results = _search_openalex(query, max_papers=max_papers)
-        for r in oa_results:
-            title = r.get("title", "")
-            if title and title not in seen_titles:
-                papers.append(r)
-                seen_titles.add(title)
-        if oa_results:
-            log(f"  [OpenAlex] Found {len(oa_results)} supplementary papers")
+    # --- 1c: SerpApi Google Scholar Search (补充，仅在前两者结果不足时触发) ---
+    needs_serpapi = (len(papers) < max_papers)
+    if needs_serpapi:
+        log(f"  [Google Scholar] Searching: {query}")
+        gs_url = (
+            f"{SERPAPI_BASE}?engine=google_scholar"
+            f"&q={urllib.parse.quote(query)}"
+            f"&api_key={SERPAPI_KEY}"
+            f"&num={max_papers + 2}"
+            f"&hl=en"
+        )
+        gs_data = api_get_json(gs_url)
+
+        if gs_data and "organic_results" in gs_data:
+            for r in gs_data["organic_results"][:max_papers]:
+                title = r.get("title", "N/A")
+                if title not in seen_titles:
+                    cited = r.get("inline_links", {}).get("cited_by", {}).get("total", 0)
+                    pub_info = r.get("publication_info", {}).get("summary", "")
+                    papers.append({
+                        "source": "Google Scholar",
+                        "title": title,
+                        "url": r.get("link", ""),
+                        "cited_by": cited,
+                        "pub_info": pub_info,
+                        "snippet": r.get("snippet", ""),
+                        "authors": _extract_authors(pub_info),
+                        "year": _extract_year(pub_info),
+                    })
+                    seen_titles.add(title)
+            gs_results = gs_data.get("related_searches", [])
         else:
-            log(f"  [OpenAlex] No additional results")
+            log(f"  [Google Scholar] No results returned.")
     else:
-        log(f"  [OpenAlex] Skipped (Google Scholar returned sufficient results)")
+        log(f"  [Google Scholar] Skipped (sufficient results from CodeSOTA + OpenAlex)")
+        gs_results = []
 
     log(f"  [Step 1] Found {len(papers)} candidate papers\n")
     return papers, gs_results
+
+
+def _reconstruct_abstract(inverted_index):
+    """从 OpenAlex inverted index 重建摘要文本。"""
+    if not inverted_index:
+        return ""
+    try:
+        tokens = []
+        for pos, word in sorted(inverted_index.items(), key=lambda x: int(x[0])):
+            tokens.append(word)
+        return " ".join(tokens)
+    except Exception:
+        return ""
 
 
 def _search_openalex(query, max_papers=5):
@@ -574,7 +656,8 @@ def _search_openalex(query, max_papers=5):
             f"&per_page={max_papers}"
             f"&sort=relevance_score:desc"
             f"&select=id,title,display_name,cited_by_count,publication_year,"
-            f"primary_location,authorships,doi,open_access,type,biblio"
+            f"primary_location,authorships,doi,open_access,type,biblio,"
+            f"abstract_inverted_index,concepts,referenced_works,related_works"
         )
         raw = api_get(url, timeout=15, retries=1)
         if not raw:
@@ -622,11 +705,32 @@ def _search_openalex(query, max_papers=5):
                 "doi": doi,
                 "oa_pdf": oa_url,
                 "work_type": w.get("type", ""),
+                "openalex_id": w.get("id", ""),
+                "abstract_reconstructed": _reconstruct_abstract(w.get("abstract_inverted_index")),
+                "concepts": [c.get("display_name", "") for c in (w.get("concepts") or [])[:10]],
             })
     except Exception as e:
         log(f"  [OpenAlex] Error: {e}")
 
     return results
+
+
+def _search_openalex_paper_by_title(title, retries=1):
+    """通过 OpenAlex 精确搜索获取单篇论文完整元数据。"""
+    url = (
+        f"{OPENALEX_BASE}/works?mailto={OPENALEX_MAILTO}"
+        f"&search={urllib.parse.quote(title)}"
+        f"&per_page=1"
+        f"&select=id,title,abstract_inverted_index,cited_by_count,publication_year,"
+        f"concepts,referenced_works,related_works,primary_location,authorships,doi,"
+        f"open_access,biblio,type"
+    )
+    raw = api_get(url, timeout=15, retries=retries)
+    if not raw:
+        return None
+    data = json.loads(raw)
+    results = data.get("results", [])
+    return results[0] if results else None
 
 
 def _cross_validate_scores(model_name):
@@ -681,11 +785,12 @@ def _extract_year(pub_info):
 
 def step2_paper_analysis(papers, max_papers=3):
     log("=" * 60)
-    log("STEP 2: 论文深度分析 — Semantic Scholar")
+    log("STEP 2: 论文深度分析 — OpenAlex (主力) + Semantic Scholar (补充)")
     log("=" * 60)
 
     analyses = []
     analyzed_titles = set()
+    paper_id_map = {}  # title -> {"openalex_id": ..., "ss_paperId": ..., "arxiv_id": ...}
 
     for paper in papers[:max_papers * 2]:
         title = paper.get("title", "")
@@ -699,6 +804,47 @@ def step2_paper_analysis(papers, max_papers=3):
         log(f"  Analyzing: {clean_title[:70]}")
         analyzed_titles.add(title)
 
+        analysis = {}
+
+        # --- Primary: OpenAlex title search ---
+        oa_work = _search_openalex_paper_by_title(clean_title)
+        if oa_work:
+            oa_id = oa_work.get("id", "")
+            analysis["openalex_id"] = oa_id
+            analysis["openalex_abstract"] = _reconstruct_abstract(oa_work.get("abstract_inverted_index"))
+            analysis["openalex_concepts"] = [c.get("display_name", "") for c in (oa_work.get("concepts") or [])[:10]]
+            analysis["citation_count"] = oa_work.get("cited_by_count", 0)
+            analysis["year"] = oa_work.get("publication_year")
+            analysis["doi"] = (oa_work.get("doi") or "").replace("https://doi.org/", "")
+
+            oa_authorships = oa_work.get("authorships") or []
+            analysis["authors"] = [a["author"]["display_name"] for a in oa_authorships[:5] if a.get("author", {}).get("display_name")]
+
+            oa_loc = oa_work.get("primary_location") or {}
+            analysis["venue"] = (oa_loc.get("source") or {}).get("display_name", "")
+
+            oa_oa = oa_work.get("open_access") or {}
+            analysis["open_access_pdf"] = oa_oa.get("oa_url", "")
+
+            # Extract arxiv_id from DOI or biblio
+            arxiv_id = ""
+            doi = oa_work.get("doi", "") or ""
+            biblio = oa_work.get("biblio") or {}
+            if "arxiv" in doi.lower():
+                arxiv_id = doi.split("arxiv.org/abs/")[-1] if "arxiv.org/abs/" in doi else ""
+            analysis["arxiv_id"] = arxiv_id
+
+            # Update paper_id_map
+            paper_id_map[clean_title] = {
+                "openalex_id": oa_id,
+                "arxiv_id": arxiv_id,
+                "doi": analysis["doi"],
+            }
+
+            log(f"    [OpenAlex] Citations: {analysis['citation_count']} | Year: {analysis.get('year', 'N/A')}")
+            time.sleep(1)
+
+        # --- Supplementary: Semantic Scholar for TLDR + influential citations ---
         search_url = (
             f"{SEMANTIC_SCHOLAR_BASE}/paper/search"
             f"?query={urllib.parse.quote(clean_title)}"
@@ -709,75 +855,176 @@ def step2_paper_analysis(papers, max_papers=3):
             search_url += f"&api_key={SEMANTIC_SCHOLAR_API_KEY}"
 
         data = api_get_json(search_url)
-        if not data or not data.get("data"):
+        if data and data.get("data"):
+            ss_paper = data["data"][0]
+            ss_paper_id = ss_paper.get("paperId")
+            analysis["ss_title"] = ss_paper.get("title", "")
+            analysis["tldr"] = ss_paper.get("tldr", {}).get("text", "N/A") if ss_paper.get("tldr") else "N/A"
+            analysis["influential_citations"] = ss_paper.get("influentialCitationCount", 0)
+
+            # Use SS abstract only if OpenAlex didn't provide one
+            if not analysis.get("openalex_abstract"):
+                analysis["abstract"] = (ss_paper.get("abstract") or "")[:500]
+            else:
+                analysis["abstract"] = analysis["openalex_abstract"][:500]
+
+            # Fill missing fields from SS
+            if not analysis.get("citation_count"):
+                analysis["citation_count"] = ss_paper.get("citationCount", 0)
+            if not analysis.get("year"):
+                analysis["year"] = ss_paper.get("year")
+            if not analysis.get("venue"):
+                analysis["venue"] = ss_paper.get("venue", "")
+            if not analysis.get("authors"):
+                analysis["authors"] = [a.get("name", "") for a in ss_paper.get("authors", [])[:5]]
+            if not analysis.get("arxiv_id"):
+                analysis["arxiv_id"] = ss_paper.get("externalIds", {}).get("ArXiv", "")
+            if not analysis.get("doi"):
+                analysis["doi"] = ss_paper.get("externalIds", {}).get("DOI", "")
+            if not analysis.get("open_access_pdf"):
+                analysis["open_access_pdf"] = ss_paper.get("openAccessPdf", {}).get("url", "")
+
+            # Update paper_id_map with SS paperId
+            if clean_title not in paper_id_map:
+                paper_id_map[clean_title] = {}
+            paper_id_map[clean_title]["ss_paperId"] = ss_paper_id
+
+            # Get references from SS
+            if ss_paper_id:
+                ref_url = (
+                    f"{SEMANTIC_SCHOLAR_BASE}/paper/{ss_paper_id}/references"
+                    f"?fields=title,year,citationCount,externalIds"
+                    f"&limit=10"
+                )
+                if SEMANTIC_SCHOLAR_API_KEY:
+                    ref_url += f"&api_key={SEMANTIC_SCHOLAR_API_KEY}"
+                ref_data = api_get_json(ref_url)
+                if ref_data:
+                    refs = []
+                    for r in ref_data.get("data", [])[:10]:
+                        cited = r.get("citedPaper", {})
+                        refs.append({
+                            "title": cited.get("title", ""),
+                            "year": cited.get("year"),
+                            "citations": cited.get("citationCount", 0),
+                            "arxiv": (cited.get("externalIds") or {}).get("ArXiv", ""),
+                        })
+                    analysis["references"] = refs
+
+            log(f"    [SS] TLDR available | Influential: {analysis.get('influential_citations', 0)}")
+            time.sleep(3)
+        else:
             log(f"    Not found on Semantic Scholar")
-            analyses.append({**paper, "ss_analysis": None})
-            time.sleep(3)
-            continue
-
-        ss_paper = data["data"][0]
-        paper_id = ss_paper.get("paperId")
-
-        analysis = {
-            "ss_title": ss_paper.get("title", ""),
-            "year": ss_paper.get("year"),
-            "venue": ss_paper.get("venue", ""),
-            "citation_count": ss_paper.get("citationCount", 0),
-            "influential_citations": ss_paper.get("influentialCitationCount", 0),
-            "tldr": ss_paper.get("tldr", {}).get("text", "N/A") if ss_paper.get("tldr") else "N/A",
-            "abstract": (ss_paper.get("abstract") or "")[:500],
-            "authors": [a.get("name", "") for a in ss_paper.get("authors", [])[:5]],
-            "open_access_pdf": ss_paper.get("openAccessPdf", {}).get("url", ""),
-            "arxiv_id": ss_paper.get("externalIds", {}).get("ArXiv", ""),
-            "doi": ss_paper.get("externalIds", {}).get("DOI", ""),
-        }
-
-        time.sleep(3)
-
-        if paper_id:
-            ref_url = (
-                f"{SEMANTIC_SCHOLAR_BASE}/paper/{paper_id}/references"
-                f"?fields=title,year,citationCount,externalIds"
-                f"&limit=10"
-            )
-            if SEMANTIC_SCHOLAR_API_KEY:
-                ref_url += f"&api_key={SEMANTIC_SCHOLAR_API_KEY}"
-            ref_data = api_get_json(ref_url)
-            if ref_data:
-                refs = []
-                for r in ref_data.get("data", [])[:10]:
-                    cited = r.get("citedPaper", {})
-                    refs.append({
-                        "title": cited.get("title", ""),
-                        "year": cited.get("year"),
-                        "citations": cited.get("citationCount", 0),
-                        "arxiv": (cited.get("externalIds") or {}).get("ArXiv", ""),
-                    })
-                analysis["references"] = refs
+            analysis["ss_title"] = clean_title
+            analysis["tldr"] = "N/A"
+            analysis["influential_citations"] = 0
+            if not analysis.get("abstract"):
+                analysis["abstract"] = ""
             time.sleep(3)
 
+        analysis["ss_analysis"] = analysis
         analyses.append({**paper, "ss_analysis": analysis})
-        log(f"    Citations: {analysis['citation_count']} | "
-            f"Influential: {analysis['influential_citations']}")
 
         if len(analyses) >= max_papers:
             break
 
     log(f"  [Step 2] Analyzed {len(analyses)} papers\n")
-    return analyses
+    return analyses, paper_id_map
+
+
+def _traverse_openalex_citations(openalex_id, max_results=15):
+    """通过 OpenAlex 双向引用遍历获取同族工作。"""
+    results = []
+    seen_ids = set()
+    seen_ids.add(openalex_id)
+    
+    # 反向引用（谁引用了这篇论文）
+    try:
+        url = (
+            f"{OPENALEX_BASE}/works?mailto={OPENALEX_MAILTO}"
+            f"&filter=cites:{openalex_id}"
+            f"&sort=cited_by_count:desc"
+            f"&per_page=20"
+            f"&select=id,title,cited_by_count,publication_year,primary_location,doi,authorships"
+        )
+        raw = api_get(url, timeout=15, retries=1)
+        if raw:
+            data = json.loads(raw)
+            for w in data.get("results", []):
+                wid = w.get("id", "")
+                title = w.get("title", "")
+                if wid and wid not in seen_ids and title:
+                    seen_ids.add(wid)
+                    doi = w.get("doi", "") or ""
+                    authorships = w.get("authorships") or []
+                    authors = [a["author"]["display_name"] for a in authorships[:3] if a.get("author", {}).get("display_name")]
+                    venue = (w.get("primary_location") or {}).get("source", {}).get("display_name", "")
+                    results.append({
+                        "source": "OpenAlex Cited By",
+                        "title": title,
+                        "url": f"https://doi.org/{doi.replace('https://doi.org/', '')}" if doi else f"https://openalex.org/works/{wid.split('/')[-1]}",
+                        "cited_by": w.get("cited_by_count", 0),
+                        "year": w.get("publication_year"),
+                        "authors": ", ".join(authors) + (" et al." if len(authors) >= 3 else ""),
+                        "venue": venue,
+                    })
+    except Exception as e:
+        log(f"  [OpenAlex] Citation traversal error: {e}")
+    
+    # 正向引用（这篇论文引用了哪些）
+    try:
+        fwd_url = (
+            f"{OPENALEX_BASE}/works/{openalex_id.split('/')[-1]}"
+            f"?select=referenced_works"
+        )
+        raw = api_get(fwd_url, timeout=10, retries=1)
+        if raw:
+            work = json.loads(raw)
+            ref_ids = work.get("referenced_works", [])[:25]
+            if ref_ids:
+                # 批量查询 (OpenAlex filter | up to 50)
+                filter_ids = "|".join(ref_ids[:50])
+                batch_url = (
+                    f"{OPENALEX_BASE}/works?mailto={OPENALEX_MAILTO}"
+                    f"&filter=openalex:{filter_ids}"
+                    f"&per_page=25"
+                    f"&select=id,title,cited_by_count,publication_year,doi"
+                )
+                raw2 = api_get(batch_url, timeout=15, retries=1)
+                if raw2:
+                    data2 = json.loads(raw2)
+                    for w in data2.get("results", []):
+                        wid = w.get("id", "")
+                        title = w.get("title", "")
+                        if wid and wid not in seen_ids and title:
+                            seen_ids.add(wid)
+                            doi = w.get("doi", "") or ""
+                            results.append({
+                                "source": "OpenAlex References",
+                                "title": title,
+                                "url": f"https://doi.org/{doi.replace('https://doi.org/', '')}" if doi else f"https://openalex.org/works/{wid.split('/')[-1]}",
+                                "cited_by": w.get("cited_by_count", 0),
+                                "year": w.get("publication_year"),
+                            })
+    except Exception as e:
+        log(f"  [OpenAlex] Reference traversal error: {e}")
+    
+    return results[:max_results]
 
 
 # =============================================================================
 # Step 3: Related Work Expansion
 # =============================================================================
 
-def step3_related_work(analyses, max_related=10):
+def step3_related_work(analyses, max_related=10, paper_id_map=None):
     log("=" * 60)
-    log("STEP 3: 同族工作扩展 — Google Scholar + Semantic Scholar")
+    log("STEP 3: 同族工作扩展 — OpenAlex 双向引用 (主力) + GS + SS (补充)")
     log("=" * 60)
 
     all_related = []
     seen_titles = set()
+
+    paper_id_map = paper_id_map or {}
 
     for paper in analyses[:2]:
         ss = paper.get("ss_analysis") or {}
@@ -785,6 +1032,35 @@ def step3_related_work(analyses, max_related=10):
         if not title or title.startswith("SOTA:") or title.startswith("Runner-up:"):
             continue
 
+        # Clean title for lookup
+        if title.startswith("SOTA: "):
+            clean_title = title.replace("SOTA: ", "")
+        elif title.startswith("Runner-up: "):
+            clean_title = title.replace("Runner-up: ", "")
+        else:
+            clean_title = title
+
+        # --- Primary: OpenAlex bidirectional citation traversal ---
+        oa_id = None
+        if paper_id_map:
+            for k, v in paper_id_map.items():
+                if k.lower() == clean_title.lower() or k.lower() == title.lower():
+                    oa_id = v.get("openalex_id")
+                    break
+
+        if oa_id:
+            log(f"  [OpenAlex] Citation traversal for: {clean_title[:60]}")
+            oa_related = _traverse_openalex_citations(oa_id, max_results=max_related)
+            for r in oa_related:
+                t = r.get("title", "")
+                if t and t not in seen_titles:
+                    seen_titles.add(t)
+                    r["seed_paper"] = title[:50]
+                    all_related.append(r)
+            log(f"    [OpenAlex] Found {len(oa_related)} related works via citations")
+            time.sleep(1)
+
+        # --- Supplementary: Google Scholar related ---
         log(f"  [Google Scholar] Related to: {title[:60]}")
         related_url = (
             f"{SERPAPI_BASE}?engine=google_scholar"
@@ -809,50 +1085,45 @@ def step3_related_work(analyses, max_related=10):
                         "snippet": r.get("snippet", ""),
                         "seed_paper": title[:50],
                     })
-            log(f"    Found {len(related_data['organic_results'])} related papers")
+            log(f"    Found {len(related_data['organic_results'])} related papers from GS")
 
         time.sleep(2)
 
-        ss_title = ss.get("ss_title") or paper.get("title", "")
-        search_url = (
-            f"{SEMANTIC_SCHOLAR_BASE}/paper/search"
-            f"?query={urllib.parse.quote(ss_title)}"
-            f"&limit=1"
-            f"&fields=paperId"
-        )
-        if SEMANTIC_SCHOLAR_API_KEY:
-            search_url += f"&api_key={SEMANTIC_SCHOLAR_API_KEY}"
-        search_data = api_get_json(search_url)
+        # --- Supplementary: Semantic Scholar recommendations (only if no paper_id_map) ---
+        ss_paper_id = None
+        if paper_id_map:
+            for k, v in paper_id_map.items():
+                if k.lower() == clean_title.lower() or k.lower() == title.lower():
+                    ss_paper_id = v.get("ss_paperId")
+                    break
 
-        if search_data and search_data.get("data"):
-            paper_id = search_data["data"][0].get("paperId")
-            if paper_id:
-                rec_url = (
-                    f"{SEMANTIC_SCHOLAR_BASE}/paper/{paper_id}/recommendations"
-                    f"?fields=title,year,citationCount,externalIds,venue"
-                    f"&limit=5"
-                )
-                if SEMANTIC_SCHOLAR_API_KEY:
-                    rec_url += f"&api_key={SEMANTIC_SCHOLAR_API_KEY}"
-                rec_data = api_get_json(rec_url)
+        if ss_paper_id:
+            rec_url = (
+                f"{SEMANTIC_SCHOLAR_BASE}/paper/{ss_paper_id}/recommendations"
+                f"?fields=title,year,citationCount,externalIds,venue"
+                f"&limit=5"
+            )
+            if SEMANTIC_SCHOLAR_API_KEY:
+                rec_url += f"&api_key={SEMANTIC_SCHOLAR_API_KEY}"
+            rec_data = api_get_json(rec_url)
 
-                if rec_data and rec_data.get("data"):
-                    for r in rec_data["data"]:
-                        t = r.get("title", "")
-                        if t and t not in seen_titles:
-                            seen_titles.add(t)
-                            all_related.append({
-                                "source": "Semantic Scholar Recommendations",
-                                "title": t,
-                                "year": r.get("year"),
-                                "citations": r.get("citationCount", 0),
-                                "venue": r.get("venue", ""),
-                                "arxiv": (r.get("externalIds") or {}).get("ArXiv", ""),
-                                "seed_paper": title[:50],
-                            })
-                    log(f"    [Semantic Scholar] +{len(rec_data['data'])} recommendations")
+            if rec_data and rec_data.get("data"):
+                for r in rec_data["data"]:
+                    t = r.get("title", "")
+                    if t and t not in seen_titles:
+                        seen_titles.add(t)
+                        all_related.append({
+                            "source": "Semantic Scholar Recommendations",
+                            "title": t,
+                            "year": r.get("year"),
+                            "citations": r.get("citationCount", 0),
+                            "venue": r.get("venue", ""),
+                            "arxiv": (r.get("externalIds") or {}).get("ArXiv", ""),
+                            "seed_paper": title[:50],
+                        })
+                log(f"    [Semantic Scholar] +{len(rec_data['data'])} recommendations")
 
-                time.sleep(1)
+            time.sleep(1)
 
     all_related.sort(key=lambda x: x.get("cited_by", 0) or x.get("citations", 0), reverse=True)
 
@@ -916,6 +1187,18 @@ def _search_github(search_queries, max_per_query=5, max_total=10):
 
     repos.sort(key=lambda x: x.get("score", 0), reverse=True)
     return repos[:max_total]
+
+
+def _fetch_hf_readme(model_id):
+    """获取 Hugging Face 模型 README 内容。"""
+    try:
+        readme_url = f"{HF_BASE}/raw/{model_id}/README.md"
+        raw = api_get(readme_url, timeout=10, retries=0)
+        if raw:
+            return raw[:3000]  # Limit to first 3000 chars
+    except Exception:
+        pass
+    return ""
 
 
 def _search_huggingface(search_queries, max_per_query=5, max_total=8):
@@ -982,6 +1265,7 @@ def _search_huggingface(search_queries, max_per_query=5, max_total=8):
                         "score": score,
                         "pipeline": pipeline,
                         "downloads": downloads,
+                        "hf_tags": tags,
                     })
             log(f"    Found {len(hf_data)} models")
 
@@ -1133,7 +1417,7 @@ def _search_gitee(search_queries, max_per_query=5, max_total=5):
     """Gitee (码云) 仓库搜索 - 中文开源社区补充。
     需要配置 gitee_token (api_config.json 或 GITEE_TOKEN 环境变量)。"""
     results = []
-    gitee_token = os.environ.get("GITEE_TOKEN", _CFG.get("gitee_token", ""))
+    gitee_token = GITEE_TOKEN
     if not gitee_token:
         log("  [Gitee] Skipped (no gitee_token configured)")
         return results
@@ -1328,27 +1612,75 @@ def _score_and_rank_implementations(implementations, query):
         tasks = impl.get("topics", [])
         task_str = " ".join(str(t) for t in tasks).lower()
 
-        if pipeline and pipeline not in ("N/A", ""): scores["pipeline"] = 5
-        elif any(kw in task_str for kw in query_words): scores["pipeline"] = 4
-        else: scores["pipeline"] = 1
+        # Engineering Readiness (expanded from 10 to 25 points)
+        # Sub-dimension 1: Pipeline/Task match (3 pts)
+        readiness_pipeline = 3 if pipeline and pipeline not in ("N/A", "") else 0
 
-        params = impl.get("params", 0)
-        if params > 0: scores["params"] = 5
-        elif len(impl.get("topics", [])) >= 3: scores["params"] = 4
-        else: scores["params"] = 2
+        # Sub-dimension 2: Model efficiency (5 pts)
+        tags = impl.get("hf_tags", []) or impl.get("topics", [])
+        readme_snippet = impl.get("hf_readme", "") or ""
+        has_flops_info = any(kw in readme_snippet.lower() for kw in ["flops", "params", "gflops", "parameters"])
+        has_fps_info = any(kw in readme_snippet.lower() for kw in ["fps", "frames per second", "inference speed", "latency"])
+        if has_flops_info and has_fps_info:
+            efficiency_score = 5
+        elif has_flops_info or has_fps_info:
+            efficiency_score = 3
+        else:
+            efficiency_score = 1
 
-        readiness = scores["pipeline"] + scores["params"]
+        # Sub-dimension 3: Pretrained weights availability (5 pts)
+        has_pytorch = any(t in tags for t in ["pytorch", "safetensors"])
+        has_coco = any(kw in readme_snippet.lower() for kw in ["coco", "voc", "imagenet", "pretrained", "pre-trained"])
+        if has_pytorch and has_coco:
+            weights_score = 5
+        elif has_pytorch or has_coco:
+            weights_score = 3
+        else:
+            weights_score = 1
+
+        # Sub-dimension 4: Fine-tuning support (4 pts)
+        has_finetune = any(kw in readme_snippet.lower() for kw in ["finetune", "fine-tune", "fine_tune", "training script", "train.py", "custom dataset"])
+        has_config = any(kw in readme_snippet.lower() for kw in ["config.yaml", "config.yml", "hyperparameters", "hyp.scratch"])
+        if has_finetune and has_config:
+            finetune_score = 4
+        elif has_finetune or has_config:
+            finetune_score = 2
+        else:
+            finetune_score = 0
+
+        # Sub-dimension 5: Deployment support (4 pts)
+        deploy_tags = {"onnx", "tensorrt", "ncnn", "openvino", "tflite", "coreml", "rknn"}
+        deploy_count = sum(1 for t in tags if any(dt in str(t).lower() for dt in deploy_tags))
+        if deploy_count >= 2:
+            deploy_score = 4
+        elif deploy_count == 1:
+            deploy_score = 2
+        else:
+            has_deploy_readme = any(kw in readme_snippet.lower() for kw in ["onnx", "tensorrt", "ncnn", "deployment", "export"])
+            deploy_score = 1 if has_deploy_readme else 0
+
+        # Sub-dimension 6: Environment setup (4 pts)
+        has_docker = any(kw in readme_snippet.lower() for kw in ["docker", "dockerfile", "docker-compose"])
+        has_requirements = any(kw in readme_snippet.lower() for kw in ["requirements.txt", "pip install", "setup.py", "environment.yml", "conda"])
+        if has_docker and has_requirements:
+            env_score = 4
+        elif has_docker or has_requirements:
+            env_score = 2
+        else:
+            env_score = 0
+
+        readiness = readiness_pipeline + efficiency_score + weights_score + finetune_score + deploy_score + env_score
 
         total_score = community + quality + maintenance + relevance + readiness
 
         impl["sota_scores"] = scores
         impl["sota_total"] = total_score
         impl["sota_breakdown"] = {
-            "community_activity": (community, 30),
-            "code_quality": (quality, 25),
-            "maintenance": (maintenance, 20),
+            "community_activity": (community, 25),
+            "code_quality": (quality, 20),
+            "maintenance": (maintenance, 15),
             "relevance": (relevance, 15),
-            "engineering_readiness": (readiness, 10),
+            "engineering_readiness": (readiness, 25),
         }
 
         if total_score >= 80: impl["sota_level"] = "A+"
@@ -1373,11 +1705,11 @@ def _score_and_rank_implementations(implementations, query):
     for i, s in enumerate(scored[:5], 1):
         log(f"  #{i} [{s['sota_level']}] {s.get('name', 'N/A')[:40]} "
             f"| 总分:{s['sota_total']} "
-            f"| 社区:{s['sota_breakdown']['community_activity'][0]}/30 "
-            f"| 质量:{s['sota_breakdown']['code_quality'][0]}/25 "
-            f"| 维护:{s['sota_breakdown']['maintenance'][0]}/20 "
+            f"| 社区:{s['sota_breakdown']['community_activity'][0]}/25 "
+            f"| 质量:{s['sota_breakdown']['code_quality'][0]}/20 "
+            f"| 维护:{s['sota_breakdown']['maintenance'][0]}/15 "
             f"| 相关:{s['sota_breakdown']['relevance'][0]}/15 "
-            f"| 就绪:{s['sota_breakdown']['engineering_readiness'][0]}/10")
+            f"| 就绪:{s['sota_breakdown']['engineering_readiness'][0]}/25")
 
     return scored
 
@@ -1414,6 +1746,16 @@ def step4_code_search(papers, analyses, related, query="", max_repos=10, max_mod
     gitlab_projects = _search_gitlab(search_queries, max_total=5)
 
     all_results = github_repos + hf_models + hf_arxiv_models + ms_models + gitee_repos + gitlab_projects
+
+    # Fetch README for top HF candidates (for engineering readiness scoring)
+    for impl in all_results[:5]:
+        if impl.get("platform", "").startswith("Hugging Face") and impl.get("url"):
+            model_id = impl.get("name", "")
+            if model_id:
+                readme = _fetch_hf_readme(model_id)
+                if readme:
+                    impl["hf_readme"] = readme
+
     all_results = _score_and_rank_implementations(all_results, query)
 
     total_github = sum(1 for r in all_results if r.get("platform") == "GitHub")
@@ -1430,6 +1772,40 @@ def step4_code_search(papers, analyses, related, query="", max_repos=10, max_mod
 # =============================================================================
 # Step 5: Latest Preprints Tracking
 # =============================================================================
+
+def _fetch_hf_daily_papers(query=None, days=7, max_papers=10):
+    """从 Hugging Face Daily Papers 获取前沿论文。"""
+    results = []
+    try:
+        url = f"{HF_PAPERS_BASE}?limit={max_papers}"
+        raw = api_get(url, timeout=15, retries=1)
+        if not raw:
+            return results
+        data = json.loads(raw)
+        for paper in data if isinstance(data, list) else data.get("papers", data.get("data", [])):
+            title = paper.get("title", "")
+            arxiv_id = paper.get("arxiv_id", "") or paper.get("id", "")
+            if not title:
+                continue
+            if query:
+                q_lower = query.lower()
+                title_lower = title.lower()
+                if q_lower not in title_lower:
+                    continue
+            results.append({
+                "source": "HF Daily Papers",
+                "title": title,
+                "url": f"https://huggingface.co/papers/{arxiv_id}" if arxiv_id else paper.get("url", ""),
+                "arxiv_id": arxiv_id,
+                "upvotes": paper.get("upvotes", 0),
+                "comments": paper.get("comments", 0),
+                "published_at": paper.get("published_at", paper.get("date", "")),
+                "summary": (paper.get("summary", "") or "")[:300],
+            })
+    except Exception as e:
+        log(f"  [HF Papers] Error: {e}")
+    return results
+
 
 def step5_arxiv_preprints(query, arxiv_cat=None, months=3, max_papers=10):
     log("=" * 60)
@@ -1540,6 +1916,35 @@ def step5_arxiv_preprints(query, arxiv_cat=None, months=3, max_papers=10):
             log(f"  [arXiv + OpenAlex] Cross-validation error: {e}")
 
     log(f"  [Step 5] Found {len(preprints)} recent preprints\n")
+
+    # --- 5c: HF Daily Papers ---
+    hf_papers = _fetch_hf_daily_papers(query=query, max_papers=max_papers)
+    if hf_papers:
+        log(f"  [HF Daily Papers] Found {len(hf_papers)} papers")
+        seen_arxiv_ids = set()
+        for p in preprints:
+            aid = p.get("arxiv_id", "")
+            if aid:
+                seen_arxiv_ids.add(aid.lower())
+        for hf in hf_papers:
+            aid = hf.get("arxiv_id", "")
+            if aid and aid.lower() in seen_arxiv_ids:
+                continue
+            preprints.append({
+                "title": hf.get("title", ""),
+                "abstract": hf.get("summary", ""),
+                "published": (hf.get("published_at", "") or "")[:10],
+                "authors": [],
+                "categories": [],
+                "arxiv_id": aid,
+                "pdf_url": "",
+                "url": hf.get("url", ""),
+                "source": "HF Daily Papers",
+                "upvotes": hf.get("upvotes", 0),
+            })
+            seen_arxiv_ids.add(aid.lower())
+
+    log(f"  [Step 5] Total: {len(preprints)} preprints (including HF Daily Papers)\n")
     return preprints
 
 
@@ -1553,21 +1958,23 @@ def generate_report(query, papers, analyses, related, repos, preprints, output_p
     lines.append(f"# Research Workflow Report")
     lines.append(f"\n**Query:** `{query}`  ")
     lines.append(f"**Generated:** {now}  ")
-    lines.append(f"**Workflow:** SOTA Discovery → Paper Analysis → Related Work → Code Search + Scoring → Preprint Tracking")
+    lines.append(f"**Workflow:** SOTA Discovery → Paper Analysis → Related Work → Code Search + Scoring → Preprint Tracking + HF Papers")
     lines.append("\n---\n")
 
     # Step 1
     lines.append("## Step 1: SOTA 发现\n")
     if papers:
-        lines.append("| # | Title | Source | Cited | Link |")
-        lines.append("|---|-------|--------|-------|------|")
+        lines.append("| # | Title | Source | Cited | Link | Benchmark |")
+        lines.append("|---|-------|--------|-------|------|-----------|")
         for i, p in enumerate(papers, 1):
             title = p.get("title", "N/A")[:70]
             url = p.get("url", "")
             cited = p.get("cited_by", p.get("score", ""))
             source = p.get("source", "N/A")
             link = f"[Link]({url})" if url else "N/A"
-            lines.append(f"| {i} | {title} | {source} | {cited} | {link} |")
+            benchmark_url = p.get("benchmark_url", "")
+            benchmark = f"[Benchmark]({benchmark_url})" if benchmark_url else ""
+            lines.append(f"| {i} | {title} | {source} | {cited} | {link} | {benchmark} |")
     else:
         lines.append("No SOTA results found.")
     lines.append("")
@@ -1636,17 +2043,17 @@ def generate_report(query, papers, analyses, related, repos, preprints, output_p
             level = r.get("sota_level", "N/A")
             total = r.get("sota_total", 0)
             bd = r.get("sota_breakdown", {})
-            c = f"{bd.get('community_activity', (0,30))[0]}/{bd.get('community_activity', (0,30))[1]}"
-            q = f"{bd.get('code_quality', (0,25))[0]}/{bd.get('code_quality', (0,25))[1]}"
-            m = f"{bd.get('maintenance', (0,20))[0]}/{bd.get('maintenance', (0,20))[1]}"
+            c = f"{bd.get('community_activity', (0,25))[0]}/{bd.get('community_activity', (0,25))[1]}"
+            q = f"{bd.get('code_quality', (0,20))[0]}/{bd.get('code_quality', (0,20))[1]}"
+            m = f"{bd.get('maintenance', (0,15))[0]}/{bd.get('maintenance', (0,15))[1]}"
             rel = f"{bd.get('relevance', (0,15))[0]}/{bd.get('relevance', (0,15))[1]}"
-            eng = f"{bd.get('engineering_readiness', (0,10))[0]}/{bd.get('engineering_readiness', (0,10))[1]}"
+            eng = f"{bd.get('engineering_readiness', (0,25))[0]}/{bd.get('engineering_readiness', (0,25))[1]}"
             link = f"[{name[:45]}]({url})" if url else name[:45]
             lines.append(f"| {i} | **{level}** | {link} | {plat} | **{total}** | {c} | {q} | {m} | {rel} | {eng} |")
         lines.append("")
 
         lines.append("**评级标准：** A+ (>=80) | A (>=65) | B+ (>=50) | B (>=35) | C (>=20) | D (<20)  ")
-        lines.append("**评分维度：** 社区活跃度 (30) + 代码质量 (25) + 维护状态 (20) + 相关性 (15) + 工程就绪度 (10) = 满分 100  ")
+        lines.append("**评分维度：** 社区活跃度 (25) + 代码质量 (20) + 维护状态 (15) + 相关性 (15) + 工程就绪度 (25) = 满分 100  ")
         lines.append("")
 
         a_plus = [r for r in repos if r.get("sota_level") in ("A+", "A")]
@@ -1738,9 +2145,13 @@ def generate_report(query, papers, analyses, related, repos, preprints, output_p
     # Step 5
     lines.append("## Step 5: 最新预印本追踪\n")
     if preprints:
+        # Separate HF Daily Papers from arXiv preprints
+        arxiv_preprints = [p for p in preprints if p.get("source") != "HF Daily Papers"]
+        hf_preprints = [p for p in preprints if p.get("source") == "HF Daily Papers"]
+
         lines.append("| # | Title | Date | Authors | Categories |")
         lines.append("|---|-------|------|---------|------------|")
-        for i, p in enumerate(preprints, 1):
+        for i, p in enumerate(arxiv_preprints, 1):
             title = p.get("title", "N/A")[:60]
             url = p.get("url", "")
             date = p.get("published", "")[:10]
@@ -1750,12 +2161,26 @@ def generate_report(query, papers, analyses, related, repos, preprints, output_p
             if url:
                 title = f"[{title}]({url})"
             lines.append(f"| {i} | {title} | {date} | {author_str} | {cats} |")
+
+        if hf_preprints:
+            lines.append("")
+            lines.append("### Hugging Face Daily Papers\n")
+            lines.append("| # | Title | Upvotes | Date |")
+            lines.append("|---|-------|---------|------|")
+            for i, p in enumerate(hf_preprints, 1):
+                title = p.get("title", "N/A")[:60]
+                url = p.get("url", "")
+                upvotes = p.get("upvotes", 0)
+                date = p.get("published", "")[:10]
+                if url:
+                    title = f"[{title}]({url})"
+                lines.append(f"| {i} | {title} | {upvotes} | {date} |")
     else:
         lines.append("No recent preprints found.")
     lines.append("")
 
     lines.append("---\n")
-    lines.append(f"*Report generated by Research Workflow v1.5.1 | {now}*")
+    lines.append(f"*Report generated by Research Workflow v1.6.0 | {now}*")
     lines.append(f"*APIs used: CodeSOTA, SerpApi (Google Scholar), OpenAlex, Semantic Scholar, GitHub, Hugging Face, ModelScope, Gitee, GitLab, arXiv*")
 
     report = "\n".join(lines)
@@ -1775,7 +2200,7 @@ def run_workflow(query, max_papers=3, arxiv_cat=None, months=3, output=None, cod
 
     print()
     print("╔══════════════════════════════════════════════════════════════╗")
-    print("║          Research Workflow v1.5.1 — 学术论文与代码复现          ║")
+    print("║          Research Workflow v1.6.0 — 学术论文与代码复现          ║")
     print("║  发现论文 → 理解方法 → 扩展同族 → 获取代码 → 追踪预印本       ║")
     print("╚══════════════════════════════════════════════════════════════╝")
     print(f"\n  Query: {query}")
@@ -1788,8 +2213,8 @@ def run_workflow(query, max_papers=3, arxiv_cat=None, months=3, output=None, cod
     start = time.time()
 
     papers, related_searches = step1_sota_discovery(query, max_papers=max_papers, codesota_task=codesota_task)
-    analyses = step2_paper_analysis(papers, max_papers=max_papers)
-    related = step3_related_work(analyses, max_related=max_papers * 3)
+    analyses, paper_id_map = step2_paper_analysis(papers, max_papers=max_papers)
+    related = step3_related_work(analyses, max_related=max_papers * 3, paper_id_map=paper_id_map)
     repos = step4_code_search(papers, analyses, related, query=query,
                               max_repos=max_papers * 3,
                               max_models=max_papers * 3)
@@ -1820,7 +2245,7 @@ def run_workflow(query, max_papers=3, arxiv_cat=None, months=3, output=None, cod
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Research Workflow v1.5.1: 引导式收敛学术论文与代码复现工作流",
+        description="Research Workflow v1.6.0: 引导式收敛学术论文与代码复现工作流",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
