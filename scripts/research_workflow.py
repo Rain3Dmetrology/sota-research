@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Research Workflow v1.5: 引导式收敛学术论文与代码复现工作流
+Research Workflow v1.5.1: 引导式收敛学术论文与代码复现工作流
 五步链路 + 发现模式(Discover Mode) + 中英文兼容 + 模糊/关联搜索 + OpenAlex 兜底
 
 APIs:
@@ -64,18 +64,19 @@ GITEE_TOKEN = os.environ.get("GITEE_TOKEN", _CFG.get("gitee_token", ""))
 HF_MIRROR = os.environ.get("HF_MIRROR", _CFG.get("hf_mirror", "https://hf-mirror.com"))
 
 SEMANTIC_SCHOLAR_BASE = "https://api.semanticscholar.org/graph/v1"
-ARXIV_BASE = "http://export.arxiv.org/api/query"
+ARXIV_BASE = "https://export.arxiv.org/api/query"
 GITHUB_BASE = "https://api.github.com"
 SERPAPI_BASE = "https://serpapi.com/search"
 CODESOTA_BASE = "https://www.codesota.com/api/sota"
 HF_BASE = "https://huggingface.co"
 MODELSCOPE_BASE = "https://modelscope.cn/openapi/v1"
 OPENALEX_BASE = "https://api.openalex.org"
+OPENALEX_MAILTO = "sota-research-skill@example.com"
 GITEE_BASE = "https://gitee.com/api/v5"
 GITLAB_BASE = "https://gitlab.com/api/v4"
 
 HEADERS = {
-    "User-Agent": "ResearchWorkflow/1.5 (Academic Research Tool)",
+    "User-Agent": "ResearchWorkflow/1.5.1 (Academic Research Tool)",
 }
 if GITHUB_TOKEN:
     HEADERS["Authorization"] = f"token {GITHUB_TOKEN}"
@@ -568,7 +569,7 @@ def _search_openalex(query, max_papers=5):
     try:
         # 先按相关性排序取 top 结果
         url = (
-            f"{OPENALEX_BASE}/works"
+            f"{OPENALEX_BASE}/works?mailto={OPENALEX_MAILTO}"
             f"?search={urllib.parse.quote(query)}"
             f"&per_page={max_papers}"
             f"&sort=relevance_score:desc"
@@ -633,7 +634,7 @@ def _cross_validate_scores(model_name):
     搜索同名论文，获取被引数、年份等元数据，供人工判断数据新鲜度。"""
     try:
         url = (
-            f"{OPENALEX_BASE}/works"
+            f"{OPENALEX_BASE}/works?mailto={OPENALEX_MAILTO}"
             f"?search={urllib.parse.quote(model_name)}"
             f"&per_page=3"
             f"&sort=cited_by_count:desc"
@@ -1079,49 +1080,46 @@ def _search_modelscope(search_queries, max_total=5):
             log(f"  [ModelScope] Error fetching: {e}")
             continue
 
-            if data and data.get("success"):
-                model_list = data.get("data", {}).get("models", [])
-                total = data.get("data", {}).get("total_count", 0)
-                log(f"    Found {len(model_list)} models (total match: {total})")
+        if data and data.get("success"):
+            model_list = data.get("data", {}).get("models", [])
+            total = data.get("data", {}).get("total_count", 0)
+            log(f"    Found {len(model_list)} models (total match: {total})")
 
-                for m in model_list:
-                    model_id = m.get("id", "")
-                    if model_id and model_id not in seen:
-                        seen.add(model_id)
-                        downloads = m.get("downloads", 0)
-                        likes = m.get("likes", 0)
-                        tasks = m.get("tasks", [])
-                        tags = m.get("tags", [])
-                        license_str = m.get("license", "") or next(
-                            (t.replace("license:", "") for t in tags if t.startswith("license:")), "N/A"
-                        )
-                        libs = [t.replace("library:", "") for t in tags if t.startswith("library:")]
-                        score = downloads + likes * 100
+            for m in model_list:
+                model_id = m.get("id", "")
+                if model_id and model_id not in seen:
+                    seen.add(model_id)
+                    downloads = m.get("downloads", 0)
+                    likes = m.get("likes", 0)
+                    tasks = m.get("tasks", [])
+                    tags = m.get("tags", [])
+                    license_str = m.get("license", "") or next(
+                        (t.replace("license:", "") for t in tags if t.startswith("license:")), "N/A"
+                    )
+                    libs = [t.replace("library:", "") for t in tags if t.startswith("library:")]
+                    score = downloads + likes * 100
 
-                        models.append({
-                            "platform": "ModelScope",
-                            "name": model_id,
-                            "display_name": m.get("display_name", ""),
-                            "description": (m.get("description") or "")[:200],
-                            "stars": likes,
-                            "forks": downloads,
-                            "language": ", ".join(libs) if libs else "N/A",
-                            "license": license_str,
-                            "last_update_days": _parse_ms_date(m.get("last_modified", "")),
-                            "open_issues": 0,
-                            "url": f"https://modelscope.cn/models/{model_id}",
-                            "topics": tasks + [t.replace("custom_tag:", "") for t in tags if t.startswith("custom_tag:")][:3],
-                            "score": score,
-                            "pipeline": ", ".join(tasks) if tasks else "N/A",
-                            "downloads": downloads,
-                            "params": m.get("params", 0),
-                        })
+                    models.append({
+                        "platform": "ModelScope",
+                        "name": model_id,
+                        "display_name": m.get("display_name", ""),
+                        "description": (m.get("description") or "")[:200],
+                        "stars": likes,
+                        "forks": downloads,
+                        "language": ", ".join(libs) if libs else "N/A",
+                        "license": license_str,
+                        "last_update_days": _parse_ms_date(m.get("last_modified", "")),
+                        "open_issues": 0,
+                        "url": f"https://modelscope.cn/models/{model_id}",
+                        "topics": tasks + [t.replace("custom_tag:", "") for t in tags if t.startswith("custom_tag:")][:3],
+                        "score": score,
+                        "pipeline": ", ".join(tasks) if tasks else "N/A",
+                        "downloads": downloads,
+                        "params": m.get("params", 0),
+                    })
 
-                        if len(models) >= max_total:
-                            break
-
-        except Exception as e:
-            log(f"    ModelScope error: {e}")
+                    if len(models) >= max_total:
+                        break
 
         time.sleep(2)
         if len(models) >= max_total:
@@ -1481,9 +1479,12 @@ def step5_arxiv_preprints(query, arxiv_cat=None, months=3, max_papers=10):
         pdf_url = ""
         for l in entry.findall("atom:link", ns):
             href = l.get("href", "")
+            if "/abs/" in href:
+                arxiv_id = href.split("/abs/")[-1]
             if "/pdf/" in href:
                 pdf_url = href
-                break
+                if not arxiv_id:
+                    arxiv_id = pdf_url.split("/pdf/")[-1]
 
         authors = []
         for author in entry.findall("atom:author", ns):
@@ -1513,10 +1514,10 @@ def step5_arxiv_preprints(query, arxiv_cat=None, months=3, max_papers=10):
         log(f"  [arXiv + OpenAlex] Cross-validating {len(preprints)} preprints...")
         oa_titles = set()
         try:
+            date_threshold = datetime.now() - timedelta(days=months * 30)
             oa_url = (
-                f"{OPENALEX_BASE}/works"
+                f"{OPENALEX_BASE}/works?mailto={OPENALEX_MAILTO}"
                 f"?search={urllib.parse.quote(query)}"
-                date_threshold = datetime.now() - timedelta(days=months * 30)
                 f"&filter=from_publication_date:{date_threshold.strftime('%Y-%m-%d')},type:preprint"
                 f"&per_page={max_papers}"
                 f"&sort=relevance_score:desc"
@@ -1754,7 +1755,7 @@ def generate_report(query, papers, analyses, related, repos, preprints, output_p
     lines.append("")
 
     lines.append("---\n")
-    lines.append(f"*Report generated by Research Workflow v1.5 | {now}*")
+    lines.append(f"*Report generated by Research Workflow v1.5.1 | {now}*")
     lines.append(f"*APIs used: CodeSOTA, SerpApi (Google Scholar), OpenAlex, Semantic Scholar, GitHub, Hugging Face, ModelScope, Gitee, GitLab, arXiv*")
 
     report = "\n".join(lines)
@@ -1774,7 +1775,7 @@ def run_workflow(query, max_papers=3, arxiv_cat=None, months=3, output=None, cod
 
     print()
     print("╔══════════════════════════════════════════════════════════════╗")
-    print("║          Research Workflow v1.5 — 学术论文与代码复现          ║")
+    print("║          Research Workflow v1.5.1 — 学术论文与代码复现          ║")
     print("║  发现论文 → 理解方法 → 扩展同族 → 获取代码 → 追踪预印本       ║")
     print("╚══════════════════════════════════════════════════════════════╝")
     print(f"\n  Query: {query}")
@@ -1819,7 +1820,7 @@ def run_workflow(query, max_papers=3, arxiv_cat=None, months=3, output=None, cod
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Research Workflow v1.5: 引导式收敛学术论文与代码复现工作流",
+        description="Research Workflow v1.5.1: 引导式收敛学术论文与代码复现工作流",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
