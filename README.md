@@ -1,181 +1,129 @@
-# SOTA Research Workflow Skill
+# Deep Market Research — 深度市场调研 Skill
 
-> AI/CV 学术论文与代码复现全链路自动化工具包
+> 跨平台 AI Agent 调研工作流：源分级 + ≥2 源交叉验证 + 去重/去旧/去假/去矛盾 + 吸收真实用户热评，输出质量稳定、可复现、带置信度标签的调研报告。
 
-## 项目简介
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+遵循 [Agent Skills 开放标准](https://agentskills.io/)（Anthropic 发起，Claude Code / OpenAI Codex / TRAE / Qodo / WorkBuddy 等 50+ 平台原生支持）。
 
-本 Skill 技能包实现了一个 5 步自动化科研工作流，覆盖从论文发现到代码复现的完整链路：
+---
 
-1. **SOTA 发现** — CodeSOTA API + SerpApi Google Scholar + OpenAlex（三层降级）
-2. **论文深度分析** — Semantic Scholar API（TLDR、被引、参考文献）+ OpenAlex 交叉验证
-3. **同族工作扩展** — Google Scholar Related + Semantic Scholar Recommendations
-4. **多平台实现检索 + SOTA 评分** — GitHub + Hugging Face (+Mirror) + ModelScope + Gitee + GitLab
-5. **最新预印本追踪** — arXiv API + OpenAlex 预印本交叉验证
+## ✨ 特性（v1.5.0）
 
-## 安装
+- **确定性流水线**：每次调研走固定 Step 0–8，跨次可复现、可对比。
+- **源分级（NATO Admiralty 适配）**：T1 一手官方 / T2 专家 / T3 二手记录 / T4 社媒 UGC，每条结论带置信标签。
+- **≥2 源交叉验证 + 去假去矛盾**：事实单元拆解，冲突显式标注，绝不强行共识。
+- **三方三角验证**：大众情绪 × 专家源 × 实时联网查证，差异即认知套利点。
+- **三套输出模板**：通用调研 / 行业赛道五大板块（麦肯锡风）/ 公司竞品四维分析（SWOT + 情景推演）。
+- **吸收真实用户热评**：经社媒/UGC 拉取真实反馈，与官方 PR 分离，仅作信号。
+- **增量知识沉淀（Karpathy 模式）**：重跑同主题自动 Lint 历史结论（矛盾/过时/孤儿），标注更新/推翻/维持。
+- **分析透镜库（可选）**：波特五力 / PESTEL / BCG / 3C / TAM-SOM 等，按意图触发，不堆砌。
+- **开箱即用**：纯方法论 Skill，调用 Agent 内置联网/文档工具，无需额外 Python 依赖。
 
-### 方式一：Claude Code / Codex CLI
+---
 
-```bash
-# 克隆仓库（目录名即为 sota-research，无需重命名）
-git clone https://github.com/Rain3Dmetrology/sota-research.git sota-research
+## 🌐 支持的平台
 
-# 复制到个人 skills 目录（全局可用）
-cp -r sota-research/ ~/.claude/skills/
+本仓库遵循 [Agent Skills 开放标准](https://agentskills.io/)，以下平台原生支持，**直接安装即可被自动发现并触发**：
 
-# 或复制到项目 skills 目录（仅当前项目）
-cp -r sota-research/ .claude/skills/
-```
+| 平台 | Skills 目录 | 触发方式 |
+|------|------------|---------|
+| **Claude Code / Claude** | `~/.claude/skills/` | 自动发现 + `/deep-market-research` |
+| **OpenAI Codex** | `~/.codex/skills/` | 自动发现 |
+| **TRAE** | `~/.trae/skills/` | 自动发现 |
+| **Qodo (Qoder)** | `~/.qodo/skills/` | 自动发现 |
+| **WorkBuddy / CodeBuddy** | `~/.workbuddy/skills/` | 自动发现 |
+| 其他 agentskills 兼容平台 | 对应 `skills/` 目录 | 自动发现 |
 
-> 如果已经克隆了仓库，也可以手动重命名后再复制：
-> ```bash
-> cp -r sota-research-skill/ ~/.claude/skills/sota-research/
-> ```
+> 完整的兼容平台列表见 [agentskills.io/clients](https://agentskills.io/clients)。
 
-### 方式二：其他 Agent（Cursor、Windsurf、Gemini CLI）
+---
 
-将 `sota-research/` 目录放到对应 Agent 的 skills 目录下。本 Skill 遵循
-[Agent Skills 开放标准](https://agentskills.io/)，跨平台兼容。
+## 📦 安装
 
-```bash
-git clone https://github.com/Rain3Dmetrology/sota-research.git
-cp -r sota-research/ <your-agent-skills-directory>/
-```
+### 方式一：一键安装脚本（推荐）
 
-```bash
-git clone https://github.com/Rain3Dmetrology/sota-research-skill.git sota-research
-cd sota-research/
-python3 scripts/research_workflow.py "vision transformer"
-```
-
-## 配置 API Keys
-
-### 方式一：配置文件
+克隆后运行安装脚本，会自动检测本机已安装的 Agent 平台并复制到对应 `skills/` 目录：
 
 ```bash
-cp config/api_config.example.json config/api_config.json
-# 编辑 config/api_config.json 填入你的 API keys
+# Unix / macOS / Git Bash
+git clone https://github.com/Rain3Dmetrology/deep-market-research.git
+cd deep-market-research
+./install.sh
+
+# Windows (PowerShell)
+git clone https://github.com/Rain3Dmetrology/deep-market-research.git
+cd deep-market-research
+powershell -ExecutionPolicy Bypass -File install.ps1
 ```
 
-### 方式二：环境变量
+脚本会检测 `~/.claude`、`~/.codex`、`~/.trae`、`~/.qodo`、`~/.workbuddy` 中**已存在**的目录并安装，未安装的自动跳过。
+
+### 方式二：手动安装
+
+将整个 `deep-market-research/` 文件夹复制到目标平台的 skills 目录：
 
 ```bash
-export SERPAPI_KEY="your_key"
-export GITHUB_TOKEN="your_token"
-export MODELSCOPE_TOKEN="your_token"
-export SEMANTIC_SCHOLAR_API_KEY="your_key"  # 可选
-export CONNECTED_PAPERS_API_KEY="your_token"  # 可选
+git clone https://github.com/Rain3Dmetrology/deep-market-research.git
+# Claude Code / Codex / Cursor / Windsurf / Gemini CLI 等
+cp -r deep-market-research ~/.claude/skills/
+# WorkBuddy
+cp -r deep-market-research ~/.workbuddy/skills/
+# TRAE
+cp -r deep-market-research ~/.trae/skills/
+# Qodo
+cp -r deep-market-research ~/.qodo/skills/
 ```
 
-### 各 API Key 获取方式
+安装后**重启 Agent**（或执行 skill 刷新指令）即可加载。
 
-| API | 注册地址 | 免费额度 | 说明 |
-|-----|---------|---------|------|
-| **SerpApi** | [serpapi.com](https://serpapi.com) | 100 次/月 | Google Scholar 搜索 |
-| **GitHub Token** | [github.com/settings/tokens](https://github.com/settings/tokens) | 5000 次/小时 | 选 Personal Access Token, 勾选 `repo` |
-| **Semantic Scholar** | [semanticscholar.org/product/api](https://www.semanticscholar.org/product/api) | 100 次/分钟 | 建议申请，可避免 429 限流 |
-| **ModelScope** | [modelscope.cn](https://modelscope.cn) | 免费 | 我的账号 → Access Token → 创建只读 Token |
-| **Connected Papers** | 邮件 hello@connectedpapers.com | 500 次 | 申请 early-access token |
-| **Hugging Face** | 无需 | 无限制 | 公开 API，无需认证 |
-| **Gitee** | [gitee.com/personal-access-tokens](https://gitee.com/personal-access-tokens) | 限制 | 可选，国内代码仓库搜索 |
-| **arXiv** | 无需 | 无限制 | 公开 API，3 秒间隔 |
-| **OpenAlex** | 无需 | 无限制 | 公开 API，论文交叉验证 |
-| **CodeSOTA** | 无需 | 无限制 | 公开 API |
+---
 
-## 使用方式
+## 🚀 使用
 
-### 命令行
+直接对 Agent 说（自动匹配 `SKILL.md` 的 `description` 触发）：
 
-```bash
-# 基本用法
-python3 scripts/research_workflow.py "vision transformer"
+- 「调研一下工业 AI 3D 视觉测量的竞争格局」
+- 「竞品分析：海康机器人 vs 深视智能 vs 天准科技」
+- 「行业趋势：中国机器视觉产业链投资机会」
+- 「扒一下 Keyence 中国的底」
 
-# 完整参数
-python3 scripts/research_workflow.py "image segmentation" \
-  --max-papers 5 \
-  --arxiv-cat cs.CV \
-  --months 6 \
-  --output my_report.md
+Agent 会按 SKILL.md 的固定流程执行：范围收敛 → 多源采集 → 去重去旧 → 源分级 → 交叉验证去假 → 矛盾消解 → 吸收热评 → 100 分评分 → 结构化输出。
+
+---
+
+## 📂 目录结构
+
+```
+deep-market-research/
+├── SKILL.md          # 核心：元数据 + 完整工作流指令（Step 0–8 + 三套模板 + 分析透镜 + 质量规则）
+├── README.md         # 本文件
+├── LICENSE           # MIT
+├── CONTRIBUTING.md   # 贡献指南
+├── install.sh        # Unix 安装脚本
+├── install.ps1       # Windows 安装脚本
+└── .gitignore
 ```
 
-### 在 Agent 中调用
+> Skill 为**自包含**：所有工作流、模板、规则都内嵌在 `SKILL.md` 中，无需额外脚本或配置文件。
 
-直接对 Agent 说：
-- "帮我研究 vision transformer 的最新进展"
-- "搜索 image segmentation 的 SOTA 方法和代码实现"
-- "追踪 arXiv 上最近三个月的 object detection 预印本"
+---
 
-Agent 会自动加载此 Skill 并执行工作流。
+## ⚙️ 可选数据源（增强深度）
 
-### 参数说明
+Skill 本身调用 Agent 内置联网工具即可工作。若你的 Agent 已连接以下 MCP/数据源，会自动获得更强深度：
 
-| 参数 | 默认值 | 说明 |
+| 维度 | 数据源 | 用途 |
 |------|--------|------|
-| `query` | (必填) | 研究主题或论文关键词 |
-| `--max-papers` | 3 | 每步最大论文数量 |
-| `--arxiv-cat` | None | arXiv 分类过滤（如 cs.CV, cs.CL, cs.AI） |
-| `--months` | 3 | 预印本回溯月数 |
-| `--output` | 自动生成 | 输出 Markdown 文件路径 |
+| 专利 | 智慧芽 / PatSnap | 技术壁垒分析 |
+| 财经 | 腾讯自选股 / westock / Tavily | 上市公司基本面 |
+| 法律 | 威科先行 / 元典 | 诉讼/资质核查 |
+| 代码 | GitHub | 开源实现/技术栈 |
+| 知识库 | ima / Obsidian | 用户自有资料 |
 
-## SOTA 评分系统
+无这些连接时，Skill 会优雅降级，用通用联网搜索完成调研并在报告中注明未覆盖维度。
 
-Step 4 对所有实现方案（GitHub 仓库、Hugging Face 模型、ModelScope 模型）进行
-统一的 100 分制评分：
+---
 
-| 维度 | 分值 | 评估指标 |
-|------|:---:|---------|
-| 社区活跃度 | 30 | stars/likes、forks、downloads |
-| 代码质量 | 25 | 开源协议、编程语言、文档完整度 |
-| 维护状态 | 20 | 最近更新时间、issue 活跃度 |
-| 相关性 | 15 | 名称/描述/标签与查询关键词匹配度 |
-| 工程就绪度 | 10 | pipeline/task 标签、参数信息 |
+## 📜 许可证
 
-**评级标准：** A+ (>=80) | A (>=65) | B+ (>=50) | B (>=35) | C (>=20) | D (<20)
-
-## 输出报告结构
-
-生成的 Markdown 报告包含：
-
-1. **Step 1: SOTA 发现** — 目标论文列表
-2. **Step 2: 论文深度分析** — TLDR、被引、参考文献
-3. **Step 3: 同族工作扩展** — 相关论文列表
-4. **Step 4: 代码与模型实现检索**
-   - SOTA 评分比较总表（所有方案按总分排序）
-   - A 级推荐方案详解
-   - GitHub 仓库列表（带评级）
-   - Hugging Face 模型列表（带评级）
-   - ModelScope 模型列表（带评级）
-5. **Step 5: 最新预印本追踪** — arXiv 最新论文
-
-## 迁移说明
-
-### Papers With Code → CodeSOTA
-
-Papers With Code 已于 2025 年 7 月被 Meta 关闭。本工作流使用 CodeSOTA API
-作为替代方案：
-
-- **CodeSOTA API**: `https://www.codesota.com/api/sota`
-- **替代历史数据**: [GitHub Archive](https://github.com/paperswithcode/paperswithcode-data)
-- **热门论文补充**: [Hugging Face Papers](https://huggingface.co/papers)
-
-详见 `docs/migration_notes.md`。
-
-## 依赖
-
-- Python 3.8+
-- 标准库（无需安装额外依赖）：
-  - `urllib`, `json`, `xml.etree.ElementTree`, `argparse`, `pathlib`
-
-## 版本历史
-
-| 版本 | 日期 | 更新内容 |
-|------|------|---------|
-| 1.5.0 | 2026-07-09 | 规范合规修复、代码质量改进、安装验证脚本、仓库名规范统一 |
-| 1.4.0 | 2026-07-09 | HF mirror fallback、Gitee/GitLab 搜索、CodeSOTA 交叉验证、arXiv+OpenAlex 验证 |
-| 1.3.0 | 2026-07-09 | OpenAlex 三层降级源 |
-| 1.1.0 | 2026-07-09 | 新增 SOTA 评分系统、ModelScope 支持、Hugging Face 支持 |
-| 1.0.0 | 2026-07-09 | 初始版本，5 步工作流 |
-
-## 许可证
-
-MIT License
+[MIT License](LICENSE)

@@ -1,34 +1,26 @@
-# Contributing to SOTA Research Workflow
+# Contributing to Deep Market Research Skill
 
-Thank you for your interest in contributing!
+感谢你考虑贡献！本仓库遵循 [Agent Skills 开放标准](https://agentskills.io/)，保持 Skill 自包含、跨平台。
 
-## How to Contribute
+## 开发约定
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+1. **单一 `SKILL.md` 入口**：所有工作流、模板、规则都写在 `SKILL.md` 内，不依赖外部脚本或配置文件。
+2. **frontmatter 兼容**：`SKILL.md` 顶部 YAML 至少包含 `name` 和 `description`（`description` 用于 Agent 判断何时触发，请写清触发场景与关键词）。
+3. **质量优先**：任何方法论改动都需保持「源分级 + ≥2 源交叉验证 + 矛盾显式标注」的硬规则。
+4. **防过度约束**：新增分析透镜/数据源必须可选、按意图触发，不引入数量 KPI（如“≥N 轮检索”“≥N 图”）。
+5. **版本号**：改动后递增 `metadata.version`（语义化），并在 commit 说明中记录变更。
 
-## Development Guidelines
+## 提交流程
 
-- Follow PEP 8 style guide for Python code
-- Add docstrings for all new functions
-- Test with both Chinese and English queries
-- Ensure no hardcoded API keys/tokens in source code
-- Update SKILL.md version number for any API changes
+1. Fork 本仓库
+2. 创建特性分支 (`git checkout -b feat/your-change`)
+3. 提交改动 (`git commit -m "feat: ..."`)
+4. 推送并创建 Pull Request
 
-## Adding New CodeSOTA Task Mappings
+## 兼容性
 
-Edit `config/codesota_tasks.json` to add:
-- New Chinese-to-English task mappings
-- New keyword associations
-- New task IDs
+改动需确保 Skill 仍能被 Claude Code / OpenAI Codex / TRAE / Qodo / WorkBuddy 等 agentskills 兼容平台正常加载。
 
-## Reporting Issues
+## 许可证
 
-Please include:
-- Your query (Chinese or English)
-- Expected vs actual behavior
-- API error messages (if any)
-- Python version and OS
+贡献即表示你同意以 [MIT License](LICENSE) 发布你的贡献。

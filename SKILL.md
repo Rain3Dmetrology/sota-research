@@ -1,485 +1,450 @@
 ---
-name: sota-research
+name: deep-market-research
 description: >
-  AI/CV SOTA research workflow: discover papers, analyze methods, expand related work,
-  find code implementations across GitHub/HuggingFace/ModelScope/Gitee/GitLab, score & rank them,
-  and track latest arXiv preprints. Use when user asks to research a topic, find SOTA
-  models, compare implementations, do literature review, track preprints, or mentions
-  keywords: research, SOTA, find papers, compare implementations, literature review,
-  arxiv, huggingface search, modelscope search, code reproduction, 论文检索, SOTA排行,
-  代码复现, 预印本追踪, 学术工作流, discover, 搜索论文代码.
+  Deep market / competitive / technology research workflow with guaranteed output
+  quality: NATO-adapted 4-tier source grading, mandatory >=2-source cross-validation,
+  dedup + staleness filtering, fake/contradiction resolution, and absorption of
+  high-signal real user comments from the web. Produces stable, reproducible,
+  confidence-labeled research reports. Use when the user asks for market research,
+  competitive analysis, industry landscape, tech-trend deep-dive, competitor profiling,
+  company due diligence, multi-company benchmarking, or a due-diligence brief — e.g. 市场调研,
+  竞品分析, 行业格局, 技术趋势, 深度调研, 竞争格局, 用户反馈分析, SOTA 商业落地, 行业趋势,
+  赛道分析, 产业链研究, 投资机会, 公司调研, 竞品对位, 尽调, 帮我扒一下, 挖一下, 和 A/B/C 怎么对标.
 license: MIT
-compatibility: Python 3.8+, internet access required for API calls. Optional: SerpApi, GitHub Token, Semantic Scholar, ModelScope, Gitee tokens for enhanced results.
+compatibility: >
+  WorkBuddy/CodeBuddy with web-access, agent-reach, markitdown skills available.
+  Optional: Tavily API key (best search entry). Connected MCPs add depth:
+  patsnap-search (patents), westock-mcp (finance), wk-workbuddy/yuandian-mcp (legal),
+  github (code/projects), ima-mcp (knowledge base). All steps degrade gracefully when
+  a tool/key is absent.
 metadata:
   version: "1.5.0"
-  author: "Research Workflow Team"
+  author: "Rain / WorkBuddy"
+  adapted_from: "sota-research (Rain3Dmetrology) + RSSnewsnowTrendRadar (Rain3Dmetrology) 三方三角验证与联网查证注入机制 + 行业趋势深度调研五大板块模板 + 公司竞品深度调研四维框架/7字段证据清单/SWOT/情景推演 + market-researcher 的 TAM/SAM/SOM 市场测算/竞品4类法/2D定位图(作可选透镜) + material-organizer 的去重阈值与逐字引用铁律 + llm-wiki 的 Karpathy 增量沉淀/Lint 操作 + 黄益贺精英级分析咨询系统(Coze) 的 OPTIONAL 分析透镜库(波特五力/PESTEL/3C/BCG/价值链) + aihot/news-summary 注册为可选数据源 + NATO Admiralty source code + Cat-Research self-validation loop"
 ---
 
-# SOTA Research Workflow Skill — 完整工作流
+# Deep Market Research Workflow — 深度市场调研工作流
 
-> 版本: 1.5.0 | 更新日期: 2026-07-09 | 许可证: MIT
-
----
-
-## 一、工作流全景图
-
-```
-输入: 研究任务/关键词 (如 "image segmentation" / "图像分割")
-         │
-         ▼
-┌──────────────────────────────────────────────────────────┐
-│ Step 0: 引导式领域收敛 (Discover Mode)  v1.2 NEW          │
-│  ├─ 0a. 中文关键词 → 英文任务 ID 映射 (84+ 条)             │
-│  ├─ 0b. 关键词关联搜索 (16 个语义群组)                      │
-│  ├─ 0c. 模糊匹配 (单词相似度 >=0.3)                        │
-│  └─ 0d. 唯一精确命中时自动收敛，多候选时列出供选择          │
-│  输出: 精确 CodeSOTA task_id (如 "image-segmentation")      │
-│  特性: 中英文兼容 · 模糊搜索 · 关联搜索 · 自动/手动收敛     │
-└──────────────────────────────────────────────────────────┘
-         │
-         ▼
-┌──────────────────────────────────────────────────────────┐
-│ Step 1: SOTA 发现 (三层降级)                                │
-│  ├─ 1a. CodeSOTA API [首选]                                │
-│  │     └─ 查该任务的当前 SOTA 模型 + 论文 (pick + runners_up) │
-│  ├─ 1b. SerpApi (Google Scholar) [主力补充]                │
-│  │     └─ 按关键词搜索学术论文，获取 title/cited_by/snippet  │
-│  └─ 1c. OpenAlex API [兜底]  v1.3 NEW                     │
-│        └─ 当 GS 无结果或结果不足时自动触发                   │
-│        └─ 2.7亿+ 作品，按相关性排序，提取 DOI/OA/被引数       │
-│  降级链: CodeSOTA → Google Scholar → OpenAlex               │
-│  去重:   三源结果自动按标题去重合并                         │
-│  交叉验证: CodeSOTA 结果通过 OpenAlex 被引数验证 (v1.4)     │
-│  输出: 目标论文列表 (title, source, cited_by, url, doi)     │
-│  API:   CodeSOTA (免费) + SerpApi (100次/月)                │
-│         + OpenAlex (免费/无限, polite pool)                  │
-└──────────────────────────────────────────────────────────┘
-         │
-         ▼
-┌──────────────────────────────────────────────────────────┐
-│ Step 2: 论文深度分析                                      │
-│  └─ Semantic Scholar API                                  │
-│     ├─ 搜索论文 → 获取 paperId                             │
-│     ├─ 论文元数据 (title/authors/year/venue/DOI)           │
-│     ├─ TLDR 自动摘要                                      │
-│     ├─ citationCount + influentialCitationCount             │
-│     ├─ abstract (前500字)                                 │
-│     ├─ openAccessPdf (免费PDF链接)                         │
-│     └─ references (该论文引用了哪些文献, Top 10)           │
-│  输出: 论文分析卡片 (元数据+TLDR+引用+参考文献)             │
-│  API:   Semantic Scholar (无Key: 100req/5min, 有Key: 100/min)│
-│  降级: 429 限流时跳过该论文，继续下一篇                       │
-└──────────────────────────────────────────────────────────┘
-         │
-         ▼
-┌──────────────────────────────────────────────────────────┐
-│ Step 3: 同族工作扩展                                      │
-│  ├─ 3a. SerpApi (Google Scholar Related) [主力]           │
-│  │     └─ q=related:PaperTitle → 相关论文列表              │
-│  └─ 3b. Semantic Scholar Recommendations API [补充]        │
-│        └─ paperId/recommendations → 推荐论文列表             │
-│  输出: 相关论文 Top-N (按被引次数排序, 去重)                │
-│  API:   SerpApi (共享Step1 Key) + Semantic Scholar (共享)  │
-│  备注: Connected Papers API 已申请但尚未拿到 token          │
-│        拿到后将加入: paper → 图谱(nodes+edges) 扩展          │
-└──────────────────────────────────────────────────────────┘
-         │
-         ▼
-┌──────────────────────────────────────────────────────────┐
-│ Step 4: 多平台代码与模型实现检索 + SOTA 评分               │
-│  ├─ 4a. GitHub REST API                                  │
-│  │     ├─ 按论文标题/关键词搜索 repositories               │
-│  │     ├─ 筛选条件: language:python + stars排序             │
-│  │     └─ 提取: stars, forks, language, license,          │
-│  │         last_update, open_issues, topics                │
-│  ├─ 4b. Hugging Face Hub API                              │
-│  │     ├─ /api/models?search=关键词&sort=downloads         │
-│  │     └─ /api/arxiv/{arxiv_id}/repos (论文关联模型)       │
-│  │     提取: downloads, likes, pipeline_tag, library,      │
-│  │           license, tags                                 │
-│  ├─ 4c. ModelScope (魔搭) OpenAPI                         │
-│  │     └─ /models?search=关键词&limit=10                  │
-│  │     提取: downloads, likes, tasks, tags, license,        │
-│  │           params, last_modified                         │
-│  └─ 4d. SOTA 评分系统 (100分制)                            │
-│        ├─ 社区活跃度 (30分): stars/likes, forks, downloads │
-│        ├─ 代码质量   (25分): license, language, description │
-│        ├─ 维护状态   (20分): last_update, open_issues       │
-│        ├─ 相关性     (15分): 关键词匹配(name/desc/tags)      │
-│        └─ 工程就绪度 (10分): pipeline/task, params          │
-│        评级: A+(>=80) | A(>=65) | B+(>=50) | B(>=35)       │
-│              | C(>=20) | D(<20)                             │
-│  ├─ 4d. Gitee API v5 [v1.4 NEW]                            │
-│  │     └─ /search/repositories?access_token=TOKEN          │
-│  │     提取: stars, forks, language, description, updated_at  │
-│  ├─ 4e. GitLab API v4 [v1.4 NEW]                          │
-│  │     └─ /projects?search=关键词&per_page=5               │
-│  │     提取: stars, forks_count, open_issues, last_activity  │
-│  ├─ 4f. HF_MIRROR Fallback [v1.4 NEW]                     │
-│  │     └─ huggingface.co SSL 失败时自动切换 hf-mirror.com    │
-│  └─ 4g. SOTA 评分系统 (100分制)                            │
-│        ├─ 社区活跃度 (30分): stars/likes, forks, downloads │
-│        ├─ 代码质量   (25分): license, language, description │
-│        ├─ 维护状态   (20分): last_update, open_issues       │
-│        ├─ 相关性     (15分): 关键词匹配(name/desc/tags)      │
-│        └─ 工程就绪度 (10分): pipeline/task, params          │
-│        评级: A+(>=80) | A(>=65) | B+(>=50) | B(>=35)       │
-│              | C(>=20) | D(<20)                             │
-│  输出: SOTA评分比较总表 + A级推荐详解                       │
-│        + GitHub/HF/ModelScope/Gitee/GitLab 分平台列表      │
-│  API:   GitHub (无Token:60/hr, Token:5000/hr)            │
-│         Hugging Face (免费/无限, HF_MIRROR自动降级)       │
-│         ModelScope (Bearer Token, 免费注册)                │
-│         Gitee (需要 access_token)                         │
-│         GitLab (免费/无限, 无需认证)                       │
-└──────────────────────────────────────────────────────────┘
-         │
-         ▼
-┌──────────────────────────────────────────────────────────┐
-│ Step 5: 最新预印本追踪 + OpenAlex 交叉验证 (v1.4)       │
-│  ├─ 5a. arXiv API                                         │
-│  │     ├─ 搜索: all:关键词 + cat:cs.CV (可指定分类)          │
-│  │     ├─ 排序: submittedDate descending                    │
-│  │     ├─ 时间范围: 最近 3-6 个月 (可配置 --months 参数)   │
-│  │     └─ 提取: title, abstract, authors, categories,     │
-│  │            published, arxiv_id, pdf_url                 │
-│  └─ 5b. OpenAlex 交叉验证 [v1.4 NEW]                      │
-│        └─ 预印本论文通过 OpenAlex 验证被引数和发表信息       │
-│  输出: 最新预印本列表 (按日期降序排列, 含交叉验证数据)      │
-│  API:   arXiv (免费/无限, 建议3秒请求间隔)                  │
-│         OpenAlex (免费/无限, 用于交叉验证)                   │
-└──────────────────────────────────────────────────────────┘
-         │
-         ▼
-┌──────────────────────────────────────────────────────────┐
-│ 汇总输出: Markdown 研究报告 (自动生成)                      │
-│  ├─ 1. SOTA 发现结果表格                                   │
-│  ├─ 2. 目标论文深度分析卡片                                │
-│  │     (TLDR、被引、参考文献、DOI、arXiv链接)               │
-│  ├─ 3. 同族工作扩展表格                                    │
-│  ├─ 4. SOTA 评分比较总表 (所有方案, 按总分排序)             │
-│  ├─ 5. A 级推荐方案详解 (推荐理由、描述、标签)              │
-│  ├─ 6. GitHub 仓库列表 (带评级标签)                        │
-│  ├─ 7. Hugging Face 模型列表 (带评级标签)                  │
-│  ├─ 8. ModelScope 模型列表 (带评级标签)                    │
-│  ├─ 9. Gitee 仓库列表 (带评级标签)  [v1.4 NEW]            │
-│  ├─ 10. GitLab 项目列表 (带评级标签) [v1.4 NEW]           │
-│  └─ 11. 最新 arXiv 预印本表格 (+ OpenAlex 交叉验证)       │
-└──────────────────────────────────────────────────────────┘
-```
+> 版本: 1.5.0 | 许可证: MIT
+> 设计目标：**输出质量稳定、可复现、去重去旧去假去矛盾、并吸收真实用户热评**。对行业/赛道/产业链类查询，额外输出麦肯锡白皮书风格的五大板块结构；对公司/竞品尽调类查询，额外输出四维分析、7字段证据清单、SWOT 与情景推演。
 
 ---
 
-## 二、API 清单与认证信息
+## 〇、为什么是这套流程（质量稳定的根基）
 
-| # | API | 用途 | 认证方式 | 免费额度 | 获取地址 |
-|---|-----|------|---------|---------|---------|
-| 1 | CodeSOTA API | Step 1: SOTA模型查询 | 无需认证 | 无限 | https://www.codesota.com/api/sota |
-| 2 | SerpApi | Step 1/3: Google Scholar搜索 | API Key (query参数) | 100次/月 | https://serpapi.com |
-| 3 | OpenAlex API | Step 1: 论文兜底检索 (v1.3) | 无需认证 (polite pool) | 无限 (建议<10req/s) | https://openalex.org |
-| 4 | Semantic Scholar | Step 2/3: 论文分析+推荐 | 可选 (header: x-api-key) | 无Key: 100req/5min | https://semanticscholar.org/product/api |
-| 5 | GitHub REST API | Step 4: 仓库搜索 | 可选 (header: Authorization) | 无Token: 60/hr | https://github.com/settings/tokens |
-| 6 | Hugging Face Hub | Step 4: 模型搜索+论文关联 | 无需认证 | 无限 | https://huggingface.co/api |
-| 7 | ModelScope OpenAPI | Step 4: 魔搭模型搜索 | Bearer Token | 免费注册 | https://modelscope.cn → Access Token |
-| 8 | arXiv API | Step 5: 预印本搜索 | 无需认证 | 无限 (3s间隔) | http://export.arxiv.org/api |
-| 9 | Connected Papers | Step 3: 论文关系图谱 (待启用) | Early-access token | 500次 | 邮件 hello@connectedpapers.com |
-| 10 | Gitee API v5 | Step 4: Gitee 仓库搜索 (v1.4) | access_token (query参数) | 无硬性限制 | https://gitee.com/api/v5 |
-| 11 | GitLab API v4 | Step 4: GitLab 项目搜索 (v1.4) | 无需认证 | 免费无限 | https://gitlab.com/api/v4 |
-| 12 | HF Mirror | Step 4: Hugging Face 国内降级 (v1.4) | 无需认证 | 无限 (镜像站) | https://hf-mirror.com |
+质量不稳定来自三件事：**源不分级、无交叉验证、临场发挥**。本工作流用三条硬规则消除它们：
 
-### 认证配置方式
+1. **确定性流水线**：每次都走 Step 0→8 同一套阶段，不跳步、不临场发明结构 → 可复现。
+2. **生成/验证分离**：综合（写）与核查（验）分阶段进行；关键事实单元必须 ≥2 个独立源确认才标 `Confirmed`。
+3. **源分级 + 置信标签**：每条结论都带「源层级 + 置信度」，读者一眼知道能信到什么程度。
 
-**方式一：配置文件** `config/api_config.json`
-```json
-{
-  "serpapi_key": "你的SerpApi Key",
-  "github_token": "ghp_你的GitHub Token",
-  "semantic_scholar_key": "你的SS Key (可选,留空则走限速模式)",
-  "modelscope_token": "ms-你的ModelScope Token",
-  "connected_papers_token": "你的CP Token (可选,申请中)",
-  "gitee_token": "你的Gitee Access Token (可选,用于搜索)",
-  "hf_mirror": "https://hf-mirror.com (可选,HF降级镜像站)"
-}
+本流程吸收自以下已验证方法（含可卸载 skill 的择优吸收，详见 P0 吸收审计）：
+- `sota-research` 的工程化（三层降级链、按标题去重、被引数交叉验证、100分评分 A+~D）
+- `RSSnewsnowTrendRadar` 的**三方三角验证 + 联网查证注入**（热榜/大众情绪 × RSS/专家 × 实时搜索三方差异=认知套利点；验证查询库优先级化+成本封顶+优雅降级）
+- **行业趋势深度调研**的五大板块模板与三段递进检索（行业定义与市场大局 → 产业链图谱与核心玩家 → 驱动力与痛点 → 1-2年趋势与红利 → 商业化建议与避坑；每板块至少一个非散文元素）
+- **公司竞品深度调研**的四维证据框架、7字段证据清单、SWOT、五类情景推演与真实负面深度挖掘（知乎/小红书/黑猫投诉/脉脉/Glassdoor/Reddit/裁判文书；单一匿名不升置信度）
+- **market-researcher**（P0 卸载项，择优吸收为可选透镜）：TAM/SAM/SOM 市场测算（top-down × bottom-up 交叉，差异>3x 重审）、竞品 4 类法（直接/间接/替代/潜在）、2D 定位图 —— 仅作分析透镜，不吸其一手调研方法（问卷/Van Westendorp 定价）
+- **material-organizer**（P0 卸载项，择优吸收）：去重操作阈值（相似度>70% 或同源 或标题编辑距<3 合并；对立观点双方案保留）、逐字引用铁律（关键摘录原文 `>` 引用块，数字日期与源一致，缺口标"信息不足"不猜）
+- **llm-wiki**（P0 卸载项，强吸收）：Karpathy 三层知识结构（raw 源页 / wiki 合成页 / schema）+ Lint 操作（重跑同主题扫描矛盾/过时/孤儿页）—— 填补"跨次矛盾/过时无人管"缺口，与用户第二大脑知识系对齐
+- **aihot**（P0 卸载项，弱吸收）+ **news-summary**（P0 卸载项，弱吸收）：注册为可选数据源（aihot 免 key 中文 AI 资讯；BBC/Reuters/Al Jazeera 国际一手新闻；引用二手摘要须回溯源 URL）
+- 黄益贺精英级分析咨询系统(Coze) 的 OPTIONAL 分析透镜库（波特五力/PESTEL/3C/BCG/价值链，仅作可选透镜）
+- NATO Admiralty 信源评估码（A–F 可靠性 + 1–6 确认度）→ 适配为 4 级源分级
+- Cat-Research / OpenClaw 自验证闭环（事实单元拆解 + 多源交叉验证 + 矛盾消解不强行共识）
+
+> **模式选择**（第四节提供三套模板）：
+> - **通用深度调研模板**：通用主题、企业/产品/技术概览。
+> - **行业赛道模式**：当用户查询含"行业/赛道/产业链/投资机会/趋势预测/商业化落地/市场规模"时，默认采用模板 B，强制利润穿透、反方观点、1–2 年趋势、每板块至少一个非散文元素。
+> - **公司/竞品模式**：当用户查询含"公司/竞品/尽调/扒一下/挖一下/对位/对标/我们和 A/B/C"时，默认采用模板 C，强制四维分析（商业模式与基本盘、核心产品与卖点、营销与流量、真实负面与风险）、7 字段证据清单、SWOT、五类情景推演、真实负面多渠道交叉验证。
+
+### 分析透镜库（可选，按查询意图触发，非强制全套）
+
+经典咨询框架是**分析透镜**而非研究管线。它们帮 AI 在「已验证的数据」上做更深入的结构化思考，但**不替代**本流程的采集/分级/交叉验证/去伪。仅当查询意图匹配时才调用，**禁止每篇报告硬塞 12 个框架**。
+
+| 透镜 | 类型 | 触发场景 | 映射到模式 | 用途 |
+|------|------|----------|-----------|------|
+| **波特五力** | 行业结构 | 行业/赛道竞争强度分析 | 模板 B §3.2 | 供应商/买方议价、新进入者/替代品/同行竞争强度 |
+| **PESTEL** | 宏观环境 | 行业大势、政策/技术驱动 | 模板 B §3.1/§3.3 | 政治/经济/社会/技术/环境/法律六维扫描 |
+| **价值链 (Value Chain)** | 利润结构 | 利润穿透、成本卡点 | 模板 B §3.2（利润穿透底座） | 研发→生产→营销→售后各环节价值/成本归属 |
+| **BCG 矩阵** | 产品组合 | 多产品线公司评估 | 模板 C §3.1 | 明星/金牛/问号/瘦狗，资源配置判断 |
+| **3C 战略三角** | 竞争定位 | 竞品对位、差异化 | 模板 C §3.2/§6 | Company/Customer/Competitor 三角均衡 |
+| **STP / 4P / AARRR** | 增长/营销 | 研究目标含"上市/增长/GTM" | 模板 C §3.3（可选） | 细分定位 / 营销组合 / 用户生命周期增长 |
+| **MECE / 金字塔原理** | 思维原则 | 已内嵌 | 全模板 | 拆解无遗漏(MECE)、结论先行(金字塔)——无需显式调用 |
+| **TAM/SAM/SOM** | 市场测算 | 市场规模/总量评估 | 模板 B §3.1 | top-down × bottom-up 交叉验证，差异>3x 重审（源自 market-researcher） |
+| **竞品 4 类法** | 竞争分类 | 竞品格局梳理 | 模板 B §3.2 / 模板 C §6 | 直接/间接/替代/潜在竞争者分类（源自 market-researcher） |
+| **2D 定位图** | 战略定位 | 差异化定位可视化 | 模板 C §6 | 二维矩阵呈现公司/竞品生态位（源自 market-researcher） |
+
+> 规则：透镜是「分析深度」的加分项，不是「研究质量」的必需项。本流程的质量由源分级+交叉验证保证，透镜只在用户要"战略/竞争/增长/市场测算"视角时附加。market-researcher 的一手调研方法（问卷/Van Westendorp 定价）**不吸收**——本流程定位二手案头研究。
+
+---
+
+## 一、源分级体系（NATO Admiralty 适配）
+
+每条采集到的信息都先评**源层级**与**确认度**，再决定决策权重。
+
+| 层级 | 类型 | 典型来源 | 决策权重 | 用法 |
+|------|------|----------|----------|------|
+| **Tier 1** | 一手/官方 | 官方公告、财报、招股书、专利原文、政府/监管备案、企业官网产品页 | 决策级（可被直接引用定结论） | 终裁事实、关键数字 |
+| **Tier 2** | 专家/HUMINT | 行业专家访谈、前员工/竞品客户、KOL 深度长文、G2/Capterra **已验证**评价 | 高（需三角验证） | 上下文、口碑、未公开历史 |
+| **Tier 3** | 二手/官方记录 | 权威媒体（Reuters/彭博/36氪等）、行业研报、法院/工商记录、学术文献 | 事实地基 | 所有权、财务、诉讼、监管状态 |
+| **Tier 4** | OSINT/社媒 UGC | 小红书/微博/Reddit/知乎/B站/YouTube 评论、匿名帖、第三方估算（如 Sensor Tower DAU） | 仅作线索 | 发现微弱信号、用户真实情绪；**不可单独定结论** |
+
+**确认度（Confirmation）**：`1 已确认 / 2 很可能 / 3 可能 / 4 存疑 / 5 不太可能 / 6 无法判断`。
+例：`B-2` = 通常可靠源 + 很可能为真；`E-5` = 不可靠源 + 不太可能。
+
+> 规则：**Tier 4 单独支撑的结论，最多标 `Single-source / Unverified`，绝不标 `Confirmed`。** 只有 ≥2 个 **独立 Tier 1–3** 源一致，才标 `Confirmed`。
+
+---
+
+## 二、置信度标签（贯穿全文）
+
+每条发现/结论必须带一个标签：
+
+- ✅ **Confirmed** — ≥2 个独立 Tier 1–3 源一致确认
+- 🟢 **Corroborated** — 1 个 Tier 1–3 源 + ≥1 个 Tier 4 源旁证，或 2 个 Tier 4 源高度一致
+- 🟡 **Single-source** — 仅 1 个 Tier 1–3 源，无旁证（注明"待更多源确认"）
+- 🔴 **Unverified / Conflicting** — 无可靠源，或源间矛盾且无法裁决（**显式标注，不强行共识**）
+
+---
+
+## 三、工作流全景图
+
 ```
-
-**方式二：环境变量**
-```bash
-export SERPAPI_KEY="..."
-export GITHUB_TOKEN="..."
-export SEMANTIC_SCHOLAR_API_KEY="..."  # 可选
-export MODELSCOPE_TOKEN="..."
-export CONNECTED_PAPERS_API_KEY="..."  # 可选
-export GITEE_TOKEN="..."  # 可选 (Gitee 搜索)
+输入: 调研问题 / 主题 / 竞品名 (如 "工业 AI 3D 视觉测量 竞争格局")
+         │
+         ▼
+┌──────────────────────────────────────────────────────────┐
+│ Step 0: 范围收敛 (引导式)                                  │
+│  澄清: 决策用途? 竞品集(T1/T2/T3)? 地理/时间范围? 输出形态? │
+│  中英文关键词映射 + 歧义消解 → 精确研究边界                │
+└──────────────────────────────────────────────────────────┘
+         │
+         ▼
+┌──────────────────────────────────────────────────────────┐
+│ Step 1: 多源采集 (分层降级链 + 三段递进搜索)                │
+│  搜索策略: 第一段宏观锚定(市场规模/CAGR/政策)            │
+│           第二段产业链解剖(上下游利润分配/玩家格局/卡脖子) │
+│           第三段趋势预测与避坑(红利/颠覆技术/失败案例/反向)│
+│  搜索入口: Tavily(优先) → web-access/agent-reach(兜底)     │
+│  深度源:   智慧芽(专利) 自选股(财报) 威科/元典(法律)        │
+│            GitHub(代码/项目) ima(知识库)                    │
+│  文档:     markitdown 处理 PDF/财报/Word → Markdown         │
+│  可选源:   aihot(免key中文AI资讯) BBC/Reuters/Al Jazeera     │
+│           (国际一手新闻; 引用二手摘要须回溯源URL)            │
+│  降级:     主源失败自动切次源；每源记 (url, 日期, 层级)     │
+│  查证库:   维护优先级验证查询库(政策>人才>SOTA>社区反馈)，  │
+│           ≤18查×≤3结果控成本；无搜索key则优雅跳过不阻断    │
+└──────────────────────────────────────────────────────────┘
+         │
+         ▼
+┌──────────────────────────────────────────────────────────┐
+│ Step 2: 去重 + 去旧 + 信号门 + URL 验活                    │
+│  去重: 归一化标题/正文 → 内容哈希 → 同一信息只留最完整版   │
+│        阈值: 相似度>70% 或 同源 或 标题编辑距<3 → 合并;    │
+│        对立观点双方案保留(不强行合一, 见 Step 5)            │
+│  去旧: 市场/趋势类主张优先近 3–6 月；                      │
+│        早于去年的数据强制标注 `outdated`（可作历史参考）  │
+│        常青事实(官方文档/基本面)保留但标"evergreen"        │
+│  信号门: 超新鲜窗口(默认>7天且非evergreen)丢弃；          │
+│          低信号(<阈值)噪声项降级或剔除                     │
+│  假源过滤: 清 SEO 站/内容农场/机器 spun 文(低信号高广告)   │
+│  URL 验活: 输出前批量验证引用链接可访问，死链/失效源剔除   │
+└──────────────────────────────────────────────────────────┘
+         │
+         ▼
+┌──────────────────────────────────────────────────────────┐
+│ Step 3: 源分级 (逐条贴 Tier + 确认度)                     │
+│  每条原始信息 → (Tier, Confirmation) → 进证据池           │
+└──────────────────────────────────────────────────────────┘
+         │
+         ▼
+┌──────────────────────────────────────────────────────────┐
+│ Step 4: 交叉验证 + 去假 + 强制反方观点 (生成/验证分离)     │
+│  事实单元拆解: 把结论拆成不可再分的事实点(数字/事件/关系) │
+│  三角验证: 大众情绪场(热榜) × 专家源(RSS/论文/官方) ×    │
+│          实时联网查证 三方差异=认知套利点，冲突处重点标   │
+│  强制反方: 行业赛道类问题必须主动检索反向观点/失败案例/   │
+│          看空报告/踩坑经验，至少 1 个 contrarian 视角     │
+│  每点需 ≥2 独立源确认才标 Confirmed；                    │
+│  单源→Single-source；无源/矛盾→Unverified                 │
+│  去假: 与 ≥2 权威源冲突的"事实"→标记为疑似虚假并剔除结论 │
+└──────────────────────────────────────────────────────────┘
+         │
+         ▼
+┌──────────────────────────────────────────────────────────┐
+│ Step 5: 矛盾消解 (不强行共识)                              │
+│  源冲突时: 按 源层级↑ > 时效↑ > 证据详实度↑ 裁决          │
+│  仍无法定 → 标 Conflicting，双方案并列 + 各自信源         │
+│  严禁: 随机选一个 / 多数暴力表决掩盖分歧                  │
+└──────────────────────────────────────────────────────────┘
+         │
+         ▼
+┌──────────────────────────────────────────────────────────┐
+│ Step 6: 吸收真实用户热评 + 真实负面风险信号 (UGC 信号提取) │
+│  通用社媒: 经 agent-reach/web-access 拉 小红书/知乎/Reddit/B站/YouTube│
+│  公司/竞品专用负面渠道: 黑猫投诉(消费者投诉)、脉脉(员工匿名)、│
+│                         Glassdoor(海外员工)、裁判文书(法律风险)    │
+│  规则: 单一匿名爆料不升置信度；必须 ≥2 独立来源互证才进入报告主体    │
+│  负面信息原文保留、不得软化；必须标注"匿名"风险与 Tier 4 定位      │
+│  信号过滤: 高赞/高互动 + 实质性(具体经历/数据) 非情绪党同             │
+│  重点挖: 真实落地口碑/踩坑/采用温差(Reddit/SO/知乎/CSDN/            │
+│          Medium)，专盯"官方PR vs 用户实测"的 Gap                     │
+│  分离: 用户真实反馈 vs 官方PR/水军；标注 平台+互动量                  │
+│  定位: 作为"用户情绪/痛点信号"(Tier 4)，不混入硬事实                 │
+└──────────────────────────────────────────────────────────┘
+         │
+         ▼
+┌──────────────────────────────────────────────────────────┐
+│ Step 7: 综合 + 100分评分 (质量环 ratchet)                 │
+│  评分维度(例: 竞品/技术): 市场存在感30 + 技术成熟度25      │
+│           + 势头/动量20 + 用户口碑15 + 风险10 → A+~D       │
+│  质量环: ≥2 轮(最多5)，Critic 多维打分，ratchet 保最优版  │
+│  加权质量分 = 源25% + 事实35% + 结论40%                    │
+└──────────────────────────────────────────────────────────┘
+         │
+         ▼
+┌──────────────────────────────────────────────────────────┐
+│ Step 8: 结构化输出 (见第四节模板)                         │
+│  含: 执行摘要 / 源分级表 / 带置信度发现 / 矛盾台账        │
+│       / 用户热评洞察 / 评分 / 开放问题 / 方法论与免责     │
+└──────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 三、Agent 执行指令
+## 四、输出模板（每次调研都套用，保证稳定）
 
-### 快速启动
+> **模板选择**：
+> - 通用主题（企业/产品/技术概览）→ 用「通用深度调研模板」。
+> - 行业/赛道/产业链/趋势预测/投资机会 → 用「行业赛道五大板块模板」，强制利润穿透、反方观点、1-2年趋势、每板块至少一个非散文元素。
+> - 公司/竞品/尽调/对位分析 → 用「公司/竞品深度调研模板」，强制四维分析、7字段证据、SWOT、情景推演、真实负面多渠道验证。
+>
 
-当用户提供研究主题时，Agent 应执行以下流程：
-
-**1. 检查配置**
-```
-读取 config/api_config.json (或环境变量)
-→ 若不存在，从 config/api_config.example.json 创建模板
-→ 提示用户填写 API keys (至少需要 serpapi_key)
-```
-
-**2. 选择执行模式**
-
-*模式 A — Discover 模式（推荐首次使用）*
-```bash
-# 查看候选任务，手动收敛到精确领域
-python3 scripts/research_workflow.py "图像分割" --discover
-python3 scripts/research_workflow.py "vision transformer" --discover
-```
-
-*模式 B — 直接执行完整工作流（已明确任务时）*
-```bash
-python3 scripts/research_workflow.py "<用户输入的关键词>" \
-  --max-papers 3 \
-  --arxiv-cat <可选分类> \
-  --output research_report_<timestamp>.md
-
-# 跳过自动收敛，直接指定 CodeSOTA 任务
-python3 scripts/research_workflow.py "segmentation" --codesota-task semantic-segmentation
-```
-
-常用 arXiv 分类：
-| 分类 | 领域 |
-|------|------|
-| cs.CV | 计算机视觉 |
-| cs.AI | 人工智能 |
-| cs.CL | 计算语言学/自然语言处理 |
-| cs.LG | 机器学习 |
-| cs.RO | 机器人学 |
-| cs.SD | 声音处理 |
-| eess.IV | 图像/视频处理 |
-
-**3. 呈现结果摘要**
-- Top 3 目标论文（标题 + 被引次数）
-- 最佳实现方案（A级推荐 + 总分）
-- 最近 3 篇预印本
-
-**4. 深入分析（按需）**
-用户可要求：
-- `--max-papers 5` 增加检索深度
-- 切换 `--arxiv-cat` 调整分类
-- 指定 `--output` 自定义输出路径
-
-### 手动降级方案
-
-若 Python 脚本不可用，Agent 可按以下 curl 命令逐步执行（详见 `docs/api_reference.md`）：
-
-```bash
-# Step 1: SOTA 发现
-curl "https://www.codesota.com/api/sota/{task}?tier=sota"
-curl "https://serpapi.com/search?engine=google_scholar&q={query}&api_key={KEY}"
-curl "https://api.openalex.org/works?search={query}&per_page=5&sort=relevance_score:desc&select=id,title,cited_by_count,publication_year,doi,open_access"
-
-# Step 2: 论文分析
-curl "https://api.semanticscholar.org/graph/v1/paper/search?query={title}&limit=1&fields=title,year,citationCount,tldr,abstract,references"
-
-# Step 3: 相关工作
-curl "https://serpapi.com/search?engine=google_scholar&q=related:{title}&api_key={KEY}"
-
-# Step 4: 代码检索
-curl -H "Authorization: token {GH_TOKEN}" "https://api.github.com/search/repositories?q={query}+language:python&sort=stars"
-curl "https://huggingface.co/api/models?search={query}&sort=downloads&direction=-1&limit=5"
-# HF_MIRROR fallback (国内网络)
-curl "https://hf-mirror.com/api/models?search={query}&sort=downloads&direction=-1&limit=5"
-curl -H "Authorization: Bearer {MS_TOKEN}" "https://modelscope.cn/openapi/v1/models?search={query}&limit=10"
-# Gitee (需要 access_token)
-curl "https://gitee.com/api/v5/search/repositories?q={query}&access_token={GITEE_TOKEN}"
-# GitLab
-curl "https://gitlab.com/api/v4/projects?search={query}&per_page=5"
-
-# Step 5: 预印本 + 交叉验证
-curl "http://export.arxiv.org/api/query?search_query=all:{query}&max_results=10&sortBy=submittedDate&sortOrder=descending"
-# OpenAlex 交叉验证预印本被引数
-curl "https://api.openalex.org/works?search={title}&per_page=3&sort=cited_by_count:desc&select=id,title,cited_by_count,publication_year,doi"
-```
-
----
-
-## 四、SOTA 评分体系详解 (Step 4b)
-
-所有实现方案（GitHub 仓库 / Hugging Face 模型 / ModelScope 模型）统一评分：
-
-### 评分维度
-
-| 维度 | 满分 | 指标 | 评分规则 |
-|------|:---:|------|---------|
-| **社区活跃度** | 30 | stars/likes | 50k+:12, 10k+:10, 1k+:8, 100+:5, 10+:3, else:1 |
-| | | downloads | 1M+:10, 100k+:8, 10k+:6, 1k+:4, 100+:2, else:1 |
-| | | forks (仅GitHub) | 10k+:8, 1k+:6, 100+:4, 10+:2, else:1 |
-| **代码质量** | 25 | license | 有开源协议:10, Other:3, 无:0 |
-| | | language | Python/PyTorch/JAX:8, 其他:5, N/A:2 |
-| | | description | >=100字:7, >=50字:5, >=20字:3, else:1 |
-| **维护状态** | 20 | last update | <=7天:10, <=30天:8, <=90天:6, <=180天:4, <=365天:2, else:1 |
-| | | open issues | >=50:10, >=10:7, >=1:4, else:2 |
-| **相关性** | 15 | 名称匹配 | >=2词命中:8, 1词:5, 0词:1 |
-| | | 描述/标签匹配 | >=3词:7, 2词:5, 1词:3, 0词:1 |
-| **工程就绪度** | 10 | pipeline/task | 有pipeline标签:5, 有任务标签:4, else:1 |
-| | | params/tags | 有参数信息:5, >=3个tags:4, else:2 |
-
-### 评级标准
-
-| 等级 | 分数区间 | 推荐程度 |
-|:---:|:---:|---------|
-| **A+** | >= 80 | 强烈推荐，可直接用于生产/二次开发 |
-| **A** | >= 65 | 推荐，代码质量和社区活跃度高 |
-| **B+** | >= 50 | 可用，需要额外评估和适配 |
-| **B** | >= 35 | 备选，存在某些不足 |
-| **C** | >= 20 | 不推荐，需要大量改进 |
-| **D** | < 20 | 不推荐使用 |
-
----
-
-## 五、输出报告模板
+### 模板 A：通用深度调研模板
 
 ```markdown
-# Research Workflow Report
+# 深度调研报告：<主题>
 
-**Query:** `image segmentation`
-**Generated:** 2026-07-09 14:00
-**Workflow:** SOTA Discovery → Paper Analysis → Related Work → Code Search + Scoring → Preprint Tracking
+> 生成时间: <ISO> ｜ 调研范围: <地理/时间/竞品集> ｜ 质量分: <0–100>
+> 方法论: deep-market-research v1.5.0（源分级 + 三方三角验证 + ≥2源交叉验证 + 矛盾显式标注 + 增量Lint）
 
----
+## 1. 执行摘要
+- 三句话结论 + 最高置信度的 3 个关键发现 + 最大不确定性。
 
-## Step 1: SOTA 发现
+## 2. 信源分级一览
+| 源 | 层级 | 确认度 | 日期 | 用途 |
+|----|------|--------|------|------|
+| ... | T1/T2/T3/T4 | A-1.. | | |
 
-| # | Title | Source | Cited | Link |
-|---|-------|--------|-------|------|
-| 1 | Paper Title | Google Scholar | 500 | [Link](url) |
+## 3. 核心发现（带置信度）
+### 3.1 <子主题>
+- **发现**：... ［Confirmed/Corroborated/Single-source/Unverified］
+  - 证据：源A(T1, 日期) + 源B(T3, 日期)
 
-## Step 2: 论文深度分析
+## 4. 矛盾台账（显式，不掩盖）
+| 争议点 | 说法A(源/层级) | 说法B(源/层级) | 裁决 | 置信 |
+|--------|---------------|---------------|------|------|
+| ... | | | 采纳A(层级更高/更新) / 并存待核 | |
 
-### 1. Paper Title
-- **Year/Venue:** 2026 / CVPR
-- **Citations:** 1234 (Influential: 56)
-- **TLDR:** Auto-generated summary...
-- **arXiv:** [2601.00001](https://arxiv.org/abs/2601.00001)
-- **Key References:** 10 papers listed
+## 5. 真实用户热评洞察（Tier 4 信号）
+- **痛点**：<高赞具体反馈，平台+互动量> — 作为情绪信号，非硬事实
+- **好评**：...
+- **水军/PR 识别**：已剔除的疑似营销内容说明
 
-## Step 3: 同族工作扩展
+## 6. 评分卡（竞品/技术）
+| 对象 | 市场存在感 | 技术成熟度 | 势头 | 用户口碑 | 风险 | 总分 | 评级 |
+|------|-----------|-----------|------|---------|------|------|------|
+| ... | /30 | /25 | /20 | /15 | /10 | /100 | A+.. |
 
-| # | Title | Source | Cited | Seed Paper |
-|---|-------|--------|-------|-----------|
-| 1 | Related Paper | GS Related | 200 | Seed Title |
+## 7. 开放问题（未能验证，需人工/后续）
+- ...
 
-## Step 4: 代码与模型实现检索
+## 8. 方法论与合规声明
+- 源分级与交叉验证规则简述；Tier 4 内容仅作信号。
+- 合规：商业版默认不启用 cookie 爬取；本报告含社媒内容仅作个人研究参考。
+```
 
-### SOTA 评分比较总表
-| 排名 | 评级 | 名称 | 平台 | 总分 | 社区 | 质量 | 维护 | 相关 | 就绪 |
-|:---:|:---:|------|------|:---:|:---:|:---:|:---:|:---:|:---:|
-| 1 | A+ | repo/name | GitHub | 85 | 25/30 | 25/25 | 20/20 | 10/15 | 5/10 |
+### 模板 B：行业赛道五大板块模板（麦肯锡白皮书风格）
 
-### A 级推荐方案详解
-#### [A+] repo/name (GitHub) — 总分 85
-- **推荐理由:** 综合评分优秀；社区高度活跃
-- **描述:** ...
-- **Tags:** computer-vision, pytorch
+```markdown
+# 行业趋势深度调研：<赛道/行业>
 
-### GitHub / Hugging Face / ModelScope 分平台列表
-(各平台独立表格，每行带评级标签)
+> 生成时间: <ISO> ｜ 调研范围: <地理/时间> ｜ 质量分: <0–100>
+> 方法论: deep-market-research v1.5.0 行业赛道模式
 
-## Step 5: 最新预印本追踪
-| # | Title | Date | Authors | Categories |
-|---|-------|------|---------|------------|
-| 1 | Preprint Title | 2026-07-08 | Authors | cs.CV |
+## 1. 执行摘要
+- 三句话结论 + 3 个最高置信度发现 + 最大不确定性。
+
+## 2. 信源分级一览
+
+## 3. 核心发现：五大板块
+### 3.1 行业定义与当年市场大局观
+- 定义、市场规模（多源对比表）、CAGR、区域分布、当年关键事件。
+- 每个数字带 [Confirmed/Corroborated/Single-source] 标签。
+
+### 3.2 产业链图谱与核心玩家格局
+- 产业链 Mermaid 图（上游零部件 → 中游设备 → 下游应用）。
+- 利润分配：钱/利润卡在哪一层？卡脖子环节在哪？
+- 核心玩家表格（梯队、定位、关键数据）。
+
+### 3.3 核心驱动力与行业发展痛点
+- 驱动力（≥3 条，带置信度）。
+- 痛点（≥3 条，优先真实用户反馈）。
+
+### 3.4 1–2 年趋势预测与红利爆发点
+- 只覆盖 1–2 年，拒绝 5 年+ 大饼。
+- 趋势表：趋势 / 置信度 / 红利爆发点 / 时间窗口。
+- 每趋势至少一个非散文元素（趋势表/预测图/象限图）。
+
+### 3.5 商业化落地建议与避坑指南
+- 针对不同决策角色（创业者/投资者/企业战略）给出分层建议。
+- 决策树或风险矩阵（非散文元素）。
+- 避坑：失败案例、反向观点、常见误区。
+
+## 4. 矛盾台账（显式，不掩盖）
+
+## 5. 真实用户热评洞察（Tier 4 信号）
+- 重点挖"官方 PR vs 用户实测" Gap。
+
+## 6. 评分卡（核心玩家/技术路线）
+
+## 7. 开放问题
+
+## 8. 方法论与合规声明
+```
+
+### 模板 C：公司/竞品深度调研模板
+
+```markdown
+# 公司/竞品深度调研：<目标公司> [vs <竞品 A/B/C>]
+
+> 生成时间: <ISO> ｜ 调研范围: <地理/时间> ｜ 质量分: <0–100>
+> 方法论: deep-market-research v1.5.0 公司/竞品模式
+
+## 0. 决策卡片（一页纸给决策者）
+- **一句话定位**: <公司在产业链中的核心位置>
+- **关键数字**: 营收/估值/市占率/员工数（带源和置信度）
+- **最大优势**: <经 ≥2 源确认>
+- **最大风险**: <经 ≥2 源确认，或来自 Tier 1 单一源>
+- **3 个可执行建议**: 1) ... 2) ... 3) ...
+
+## 1. Executive Summary
+- 三句话结论 + 3 个最高置信度发现 + 最大不确定性。
+
+## 2. 7 字段结构化证据清单
+| 证据 ID | 事实陈述 | 来源 URL | 原文摘录 | 层级 | 确认度 | 置信度 | 日期 |
+|---------|---------|----------|----------|------|--------|--------|------|
+| F001 | ... | | | T1/T2/T3/T4 | A-1.. | Confirmed/... | |
+
+> 规则：每条进入主体报告的结论必须先在证据清单中找到支撑；冲突证据双条保留并标注矛盾性质。
+
+## 3. 四维度分析
+
+### 3.1 商业模式与基本盘
+- 盈利模式、收入结构、核心客户、成本结构、护城河。
+- 关键数据：营收、毛利率、融资/市值、员工规模、核心股东。
+
+### 3.2 核心产品与杀手级卖点
+- 产品线、核心技术/专利、差异化卖点、定价区间。
+- 与竞品的功能/性能/价格对标表（至少 1 张表）。
+
+### 3.3 营销与流量操盘策略
+- 获客渠道、品牌定位、内容/活动/投放策略、渠道策略。
+- 流量/口碑数据来源（如 SimilarWeb、App 排名、社媒互动量）。
+
+### 3.4 真实负面与风险事件（必须多渠道交叉）
+- 消费者端：黑猫投诉、小红书/微博吐槽、知乎差评。
+- 员工端：脉脉、Glassdoor（海外）。
+- 法律/监管：裁判文书、行政处罚、威科/元典法律检索。
+- 媒体/做空：看空报告、 investigative 报道、失败案例。
+- 规则：单一匿名爆料不升置信度；≥2 独立来源互证才写入主体；负面原文保留、不软化。
+
+## 4. SWOT 分析（事实 / 解读 / 推断 三层分离）
+| 维度 | 事实（带证据 ID） | 解读（基于事实的合理推论） | 推断（需额外假设，标 LOW 置信） |
+|------|------------------|---------------------------|-------------------------------|
+| 优势(S) | | | |
+| 劣势(W) | | | |
+| 机会(O) | | | |
+| 威胁(T) | | | |
+
+> 规则：禁止把推断当事实陈述；事实层必须绑定 7 字段证据 ID。
+
+## 5. 情景推演（覆盖五类场景，每类给出触发条件与可执行预案）
+| 场景 | 触发条件（可观察） | 影响评估 | 可执行预案 |
+|------|-------------------|----------|-----------|
+| 价格竞争 | 竞品降价 X% / 发布低价版 | | |
+| 产品突袭 | 竞品发布突破性产品/技术 | | |
+| 资本动作 | 融资/并购/IPO/撤资 | | |
+| 市场扩张 | 进入新区域/新行业 | | |
+| 风险事件 | 监管处罚/重大舆情/核心人员变动 | | |
+
+## 6. 横向对比矩阵（多家报告必含）
+| 维度 | 本公司 | 竞品 A | 竞品 B | 竞品 C |
+|------|--------|--------|--------|--------|
+| 定位 | | | | |
+| 核心产品 | | | | |
+| 定价区间 | | | | |
+| 优势 | | | | |
+| 风险 | | | | |
+| 综合评级 | | | | |
+
+## 7. 评分卡（100分制）
+| 对象 | 商业模式清晰度 | 产品力 | 市场/品牌 | 财务健康 | 风险/负面 | 总分 | 评级 |
+|------|--------------|--------|----------|----------|-----------|------|------|
+| ... | /20 | /25 | /20 | /20 | /15 | /100 | A+.. |
+
+## 8. 开放问题（未能验证，需人工/后续）
+- ...
+
+## 9. 方法论与合规声明
+- 源分级、≥2源交叉验证、真实负面多渠道验证规则简述。
+- 合规：Tier 4 匿名内容仅作信号；商业使用需确认各数据源 ToS。
 ```
 
 ---
 
-## 六、文件结构
+## 五、工具映射（在 WorkBuddy 上怎么调）
 
-```
-sota-research-skill/
-├── SKILL.md                          # 本文件 (入口, 含YAML元数据)
-├── README.md                         # 完整使用文档 (中文)
-├── scripts/
-│   └── research_workflow.py          # 自动化脚本 v1.4 (85KB, 含 Discover + OpenAlex + Gitee/GitLab + HF Mirror)
-├── config/
-│   ├── api_config.example.json       # API配置模板 (含端点和限速说明)
-│   └── api_config.json               # 用户实际配置 (gitignored, 不入包)
-├── templates/
-│   └── report_template.md            # 报告输出模板
-└── docs/
-    ├── api_reference.md              # 8个API的完整端点文档 (含curl示例)
-    └── migration_notes.md            # Papers With Code → CodeSOTA 迁移说明
-```
+| 步骤 | 用到的能力 | 备注 |
+|------|-----------|------|
+| 搜索入口 | `web-access` 或 `agent-reach`（web/search）；有 Tavily key 则优先 Tavily | Tavily 更稳、ToS 干净 |
+| 社媒/热评 | `agent-reach`（小红书/知乎/Reddit/B站/YouTube）+ `web-access` | 复用登录态、抓评论 |
+| 专利 | `patsnap-search` MCP（已连） | 技术壁垒分析 |
+| 财经/财报 | `westock-mcp` MCP（已连） + `markitdown` 读 PDF | 上市公司基本面 |
+| 企业工商/风险 | `tyc-mcp`（天眼查）/`qcc-company`（企查查）MCP，按需连接 | 股权、诉讼、经营异常、行政处罚 |
+| 法律/合规 | `wk-workbuddy` / `yuandian-mcp` MCP（已连） | 诉讼/资质核查 |
+| 代码/项目 | `github` MCP（已连） | 开源实现/技术栈 |
+| 知识库 | `ima-mcp` MCP（已连） | 用户自有资料 |
+| 文档净化 | `markitdown` | PDF/Word→Markdown，喂给 LLM |
+| 交叉验证 | 本工作流内 LLM 比对（把同一事实的多源描述喂给模型问"是否矛盾"） | 生成/验证分离 |
+| URL 验活 | `web-access`/`mcp__fetch` 批量 HEAD 请求，或 WebSearch 重新索引 | 输出前剔除死链/失效源 |
+| 长报告分块 | 当输出 >4k tokens 时，按板块分块生成后由 LLM 拼接；避免截断 | 保证完整性与结构 |
 
----
-
-## 七、使用示例
-
-```bash
-# 1. Discover 模式 — 引导收敛（推荐首次使用）
-python3 scripts/research_workflow.py "图像分割" --discover
-python3 scripts/research_workflow.py "vision transformer" --discover
-python3 scripts/research_workflow.py "语音识别" --discover
-
-# 2. 直接运行完整工作流（中文查询自动收敛）
-python3 scripts/research_workflow.py "图像分割" --max-papers 3 --arxiv-cat cs.CV
-
-# 3. 英文查询 + 增加深度
-python3 scripts/research_workflow.py "image segmentation" \
-  --max-papers 5 --arxiv-cat cs.CV
-
-# 4. 跳过自动收敛，直接指定 CodeSOTA 任务
-python3 scripts/research_workflow.py "segmentation" \
-  --codesota-task semantic-segmentation
-
-# 5. NLP 领域
-python3 scripts/research_workflow.py "large language model" \
-  --arxiv-cat cs.CL
-
-# 6. 自定义输出路径
-python3 scripts/research_workflow.py "object detection" \
-  --output my_report.md
-
-# 7. 追踪更长时间的预印本
-python3 scripts/research_workflow.py "diffusion model" \
-  --arxiv-cat cs.CV --months 6 --max-papers 3
-```
+> 降级原则（沿用 sota-research）：主搜索源失败 → 切 web-access/agent-reach；某 MCP 未连 → 跳过并在报告注明"未覆盖该维度"。
+> 专业数据源联动：宏观经济(GDP/CPI/利率)、企业工商、股票行情、法律法规等可按需在 Step 1 接入对应 MCP。
 
 ---
 
-## 八、已知限制与注意事项
+## 六、质量规则（Anti-patterns，必须避免）
 
-1. **Papers With Code 已关闭** (2025.07)。CodeSOTA 是替代方案，但覆盖的任务尚不完整，
-   不存在的任务返回 404，自动降级到 Google Scholar。
-2. **Discover Mode 中文映射** 基于内置 84+ 条映射 + JSON 配置扩展，非 exhaustive。
-   如遇未覆盖的中文术语，会降级到模糊匹配和 Google Scholar。
-3. **模糊匹配阈值** 默认为单词相似度 >=0.3，可能产生少量不相关候选。
-   多候选场景建议用户手动确认（`--discover` 模式）。
-4. **Hugging Face API** 在部分网络环境（如 TRAE 远程沙箱）存在 SSL 限制，
-   本地运行不受影响。
-5. **Semantic Scholar 无 API Key 时限流严格**（429 错误，约 100 req/5min）。
-   建议申请免费 Key 以提升到 100 req/min。
-6. **Connected Papers API token** 需邮件申请 hello@connectedpapers.com，
-   审批时间不确定。当前使用 SerpApi Google Scholar related 作为降级方案。
-7. **SerpApi 免费版限制 100 次/月**，高频使用需升级付费版。
-8. **arXiv API 无硬性限速**，但官方建议 3 秒请求间隔，脚本已内置。
-9. **Gitee API 搜索需要 access_token**，需在 Gitee 个人设置中生成私人令牌。
-   未配置时自动跳过 Gitee 搜索，不影响其他平台。
-10. **HF Mirror (hf-mirror.com)** 在中国大陆网络环境下可用，用于解决
-    huggingface.co 的 SSL 限制。自动降级：HF 官方失败 → HF_MIRROR 重试。
+1. ❌ 单源定结论 → 必须 ≥2 独立 Tier1–3 才 `Confirmed`。
+2. ❌ 矛盾时随机选一个或多数暴力 → 按层级/时效/详实度裁决，否则并存标注。
+3. ❌ 把用户热评当硬事实 → Tier 4 永远标"信号"，与 Tier1–3 事实分开。
+4. ❌ 把推断当事实 → 严格区分 **事实/解读/推断**；推断必须标 LOW 置信并说明依赖假设。
+5. ❌ 不标日期 → 每条源必须带采集/发布日期，趋势类优先近 3–6 月。
+6. ❌ 重复信息堆叠 → Step 2 去重，同一信息只留最完整一版。
+7. ❌ SEO/内容农场当信源 → 低信号高广告站点在 Step 2 过滤。
+8. ❌ 临场换结构 → 永远套用第四节模板，保证跨次可对比、可复现。
+9. ❌ 掩盖不确定性 → 无法验证的写进"开放问题"，绝不编造填坑。
+10. ❌ 透镜堆砌 → 波特五力/PESTEL/BCG/TAM-SOM 等经典框架是**可选分析透镜**，按查询意图触发，绝不每篇报告强制全套；它们不替代源分级与交叉验证（见「分析透镜库」）。
+11. ❌ 间接引用/数字失真 → **逐字引用铁律**（源自 material-organizer）：关键结论的摘录必须原文 `>` 引用块呈现，数字/日期/百分比与源完全一致；缺口标"信息不足"绝不猜测填充。
+12. ❌ 范围蔓延 → 本流程只做**二手案头研究**；不吸一手调研方法（问卷/Van Westendorp 定价/用户访谈），超范围能力不并入（market-researcher 一手部分已明确排除）。
 
 ---
 
-## 九、跨平台兼容性
+## 七、触发与执行约定
 
-遵循 [Agent Skills 开放标准](https://agentskills.io/)，兼容以下平台：
-
-| 平台 | 安装路径 | 触发方式 |
-|------|---------|---------|
-| Claude Code | `~/.claude/skills/sota-research/` | 自动发现 + `/sota-research` |
-| Codex CLI | 同上 | 自动发现 |
-| Cursor | 同上 | 自动发现 |
-| Windsurf | 同上 | 自动发现 |
-| Gemini CLI | 同上 | 自动发现 |
-| 独立使用 | 任意目录 | `python3 scripts/research_workflow.py` |
+- 用户说"调研/分析/竞品/格局/趋势/深度调研/公司尽调/扒一下/挖一下/对位/对标"等即触发本流程。
+- **行业赛道模式**：当查询含"行业趋势/赛道/产业链/投资机会/商业化落地/市场规模"时，默认采用模板 B（五大板块），并强制：利润穿透、至少 1 个反方观点、1–2 年趋势窗口、每板块 1 个非散文元素。
+- **公司/竞品模式**：当查询含"公司/竞品/尽调/扒一下/挖一下/对位/对标/我们和 A/B/C"时，默认采用模板 C，并强制：四维分析、7 字段证据清单、真实负面多渠道验证、SWOT、五类情景推演。多家对位时必含横向对比矩阵。
+- 默认跑完整 Step 0–8；若用户要"快版"，至少保留 Step1(采集) + Step4(交叉验证) + Step8(模板)，但必须在报告注明"快版，未全覆盖质量环"。
+- **增量知识沉淀（Karpathy 模式，源自 llm-wiki）**：每次完成后，把「评分卡 + 开放问题 + 核心证据」回写 ima 知识库，采用三层结构——① raw 源页（不可变，存原始 URL/摘录）② wiki 合成页（本次结论，绑定证据 ID）③ schema（统一字段：主题/玩家/评级/日期）。重跑同主题时先读历史 wiki 页，执行 **Lint 操作**扫描：矛盾论断（与旧页冲突）、过时论断（早于去年且未标 outdated）、孤儿页（源失效无新支撑）→ 在报告中显式标注"更新/推翻/维持"。避免重复采集、跨次矛盾无人管。
