@@ -72,14 +72,14 @@ compatibility: >
   HONESTY RULE: only list skills/connectors actually available in the environment.
   Firecrawl (and any other absent service) is NOT bundled and must never be claimed as integrated.
 metadata:
-  version: "2.2.3"
+  version: "2.2.4"
   author: "Rain / WorkBuddy"
   adapted_from: "sota-research (Rain3Dmetrology) + RSSnewsnowTrendRadar (Rain3Dmetrology) 三方三角验证与联网查证注入机制 + 行业趋势深度调研五大板块模板 + 公司竞品深度调研四维框架/7字段证据清单/SWOT/情景推演 + market-researcher 的 TAM/SAM/SOM 市场测算/竞品4类法/2D定位图(作可选透镜) + material-organizer 的去重阈值与逐字引用铁律 + llm-wiki 的 Karpathy 增量沉淀/Lint 操作 + 黄益贺精英级分析咨询系统(Coze) 的 OPTIONAL 分析透镜库(波特五力/PESTEL/3C/BCG/价值链) + aihot/news-summary 注册为可选数据源 + NATO Admiralty source code + Cat-Research self-validation loop"
 ---
 
 # Deep Market Research Workflow — 深度市场调研工作流
 
-> 版本: 2.2.3 | 许可证: MIT
+> 版本: 2.2.4 | 许可证: MIT
 > 设计目标：**输出质量稳定、可复现、去重去旧去假去矛盾、并吸收真实用户热评**。对行业/赛道/产业链类查询，额外输出麦肯锡白皮书风格的五大板块结构；对公司/竞品尽调类查询，额外输出四维分析、7字段证据清单、SWOT 与情景推演。
 
 ---
@@ -104,16 +104,8 @@ metadata:
 - 黄益贺精英级分析咨询系统(Coze) 的 OPTIONAL 分析透镜库（波特五力/PESTEL/3C/BCG/价值链，仅作可选透镜）
 - NATO Admiralty 信源评估码（A–F 可靠性 + 1–6 确认度）→ 适配为 4 级源分级
 - Cat-Research / OpenClaw 自验证闭环（事实单元拆解 + 多源交叉验证 + 矛盾消解不强行共识）
-- **v2.1.0 互补 Skill 吸收审计**：对 9 个已安装研究类 skill（intel-osint-daily / macro-monitor / news-summary / deep-research / agent-reach / wechat-article-search / perplexity / academic-research-hub / literature-search）做了"吸收/淘汰"审计，择优吸收其方法论（见下方「互补 Skill 方法论吸收 (v2.1.0)」小节），并明确拒绝各自的过度约束项——本流程的确定性 Step 0→8 管线与三套主模板始终为质量根基，新方法均为叠加。
-- **v2.2.0 学术与开放科研数据源大扩充（去粗取精、优先免费 API）**：把学术检索从"5 源抓取"升级为「🆓 免费 API 直调优先」的分层源库——论文/元数据（OpenAlex/Semantic Scholar/arXiv/PubMed/bioRxiv/EMBL-EBI）、引文溯源（Crossref/OpenCitations）、科研数据仓库（Zenodo/Figshare/哈佛 Dataverse/NASA）、专利（PatSnap 已连/Google Patents）、代码与模型（GitHub Trending/Hugging Face/魔塔）、工程化讨论（Stack Overflow/Hacker News/Reddit/知乎 MCP/CSDN/Product Hunt/TechCrunch/Bluesky/X）。核心是**区分「免费 API 直调（稳、可复现）」与「网页抓取（兜底）」两档**，并对学术三件套做优胜劣汰：留 `literature-search`、`academic-research-hub` 降为可选、`google-scholar-search` 列卸载候选。  详见「新增模块 1」。
-- **v2.2.1 技能去粗取精执行（优胜劣汰落地）**：GitHub MCP 已真实连接（mcp__github__* 工具齐全，
-  可作搜索/代码/Issue/PR/Release 等）；将重复冗余且已被吸收的 6 个 skill 全部永久删除（不可逆）——
-  `google-scholar-search`(实为 Semantic Scholar 封装)、`academic-research-hub`(Proprietary+OpenClawCLI)、
-  `deep-research`(工作流已吸收)、`news-summary`(RSS 已吸收)、`perplexity`/`tavily`(与 WebSearch 重复的
-  AI 搜索)。保留 `literature-search`(最优方法论) 与 `agent-reach`/`wechat-article-search`/
-  `intel-osint-daily`/`macro-monitor`(独特能力/独立调度角色)。详见「互补 Skill 方法论吸收」表与「技能取舍」段。
-- **v2.2.2 文档准确性修正**：v2.2.1 已将 6 个冗余 absorbed skill **永久删除（不可逆）**，原措辞误作"归档(可恢复)"，此处更正；GitHub MCP 已连状态及源库扩充均不变。
-- **v2.2.3 文档一致性修正**：修正 SKILL.md 兼容性块第 62 行英文 stale 措辞 `(archived, recoverable)` → `(permanently removed, irreversible)`，消除与 v2.2.2 主题的残留矛盾；本地 skill / 仓库 / 发布包三端统一为 v2.2.3，无隐私泄露。
+- **版本演进（摘要）**：v2.0.0 竞争对位实测 → v2.1.0 吸收 9 个互补研究类 skill 的方法论（去其过度约束项）→ v2.2.0 大幅扩充学术与开放科研数据源（优先 🆓 免费 API 直调）→ v2.2.1 去粗取精执行（永久删除 6 个冗余 absorbed skill，GitHub MCP 已连）→ v2.2.2 / v2.2.3 文档准确性与一致性修正 → **v2.2.4 规范性增强（新增 FAQ / 完整示例 / 本附录，并补充"环境受限≠能力不足"质量规则）**。**完整更新史与每项细节见文末「附录 A」。**
+
 
 > **模式选择**（第四节提供三套模板）：
 > - **通用深度调研模板**：通用主题、企业/产品/技术概览。
@@ -666,6 +658,7 @@ metadata:
 12. ❌ 范围蔓延 → 本流程只做**二手案头研究**；不吸一手调研方法（问卷/Van Westendorp 定价/用户访谈），超范围能力不并入（market-researcher 一手部分已明确排除）。
 13. ❌ 强制新模块 → v2.1.0 的 intel-brief 输出风格、学术数据源模块、宏观监测、微信文章检索、Perplexity、模板 D，以及 v2.2.0 扩充的学术/开放科研数据源、引文溯源、科研数据仓库、工程化讨论源，均为**可选叠加**，仅在查询意图匹配时启用；绝不每篇报告硬塞全部数据源/学术引文/宏观解读/intel-brief 三元。它们不替代 Step 0→8 主管线与模板 A/B/C 的质量根基，且与各来源 Skill 的过度约束项（硬格式/专属变量/外部 CLI 依赖）保持隔离。
 14. ❌ 优先抓 HTML 而非用免费 API → v2.2.0 去粗取精原则：凡有免费公开 REST API 的学术/数据源（OpenAlex/Semantic Scholar/Crossref/arXiv/PubMed/bioRxiv/OpenCitations/EMBL-EBI/Zenodo/Figshare/Dataverse/NASA/Hugging Face/Stack Exchange/HN），一律**优先经 WebFetch/curl 直调 API**（稳、可复现、可溯源），仅在无 API 或受限时才退回网页抓取/用户导出（Google Scholar/CNKI/Nature 全文）。绝不硬依赖 Proprietary 或需外部 CLI 的 skill。
+15. ❌ 把「环境受限」误判为「能力不足」 → 当核心数据源（OpenAlex / Semantic Scholar / 知乎 MCP / 学术论文 🆓 API 等）因网络/区域不可达而失败时，必须**显式标注该维度"因环境受限未覆盖"**，并在「开放问题」中单列，绝不将其降格为低置信结论或编造填充；换用兜底源（web 抓取 / 其他 API / 已连 MCP）时须注明降级路径。严格区分"Skill 能力边界"与"运行环境限制"——这是输出准确性的前提，也是避免被误判为结论质量缺陷的关键。
 
 ---
 
@@ -676,3 +669,94 @@ metadata:
 - **公司/竞品模式**：当查询含"公司/竞品/尽调/扒一下/挖一下/对位/对标/我们和 A/B/C"时，默认采用模板 C，并强制：四维分析、7 字段证据清单、真实负面多渠道验证、SWOT、五类情景推演。多家对位时必含横向对比矩阵。
 - 默认跑完整 Step 0–8；若用户要"快版"，至少保留 Step1(采集) + Step4(交叉验证) + Step8(模板)，但必须在报告注明"快版，未全覆盖质量环"。
 - **增量知识沉淀（Karpathy 模式，源自 llm-wiki）**：每次完成后，把「评分卡 + 开放问题 + 核心证据」回写 ima 知识库，采用三层结构——① raw 源页（不可变，存原始 URL/摘录）② wiki 合成页（本次结论，绑定证据 ID）③ schema（统一字段：主题/玩家/评级/日期）。重跑同主题时先读历史 wiki 页，执行 **Lint 操作**扫描：矛盾论断（与旧页冲突）、过时论断（早于去年且未标 outdated）、孤儿页（源失效无新支撑）→ 在报告中显式标注"更新/推翻/维持"。避免重复采集、跨次矛盾无人管。
+
+## 八、常见问题（FAQ）
+
+**Q1：这个 skill 和普通的 WebSearch / WebFetch 有什么区别？**
+A：WebSearch / WebFetch 是"检索工具"，本 skill 是"调研工作流"——在检索之上叠加源分级（T1–T4）、≥2 源交叉验证、去重去旧去假去矛盾、置信标签、模板化输出与增量沉淀。单条 WebSearch 不会自动产出带置信度的可复现报告。
+
+**Q2：核心数据源（OpenAlex / 知乎 MCP / 学术 API）连不上怎么办？**
+A：按质量规则 15 处理——显式标注"该维度因环境受限未覆盖"，列入「开放问题」，绝不降级为低置信结论或编造；并换用兜底源（web 抓取 / 其他 API / 已连 MCP），注明降级路径。环境限制 ≠ 能力不足。
+
+**Q3：什么时候用模板 B / C / D？**
+A：查询含"行业 / 赛道 / 产业链 / 趋势 / 市场规模"→ 模板 B（五大板块）；含"公司 / 竞品 / 尽调 / 对位 / 对标"→ 模板 C（四维 + SWOT + 情景）；含"论文 / SOTA / 文献综述 / 技术选型"→ 模板 D（学术引文）。纯概览用模板 A。模式可叠加。
+
+**Q4：需要付费 API key 吗？**
+A：不需要。v2.2.0 起优先 🆓 免费公开 REST API 直调（OpenAlex / Semantic Scholar / Crossref / arXiv / PubMed 等无需 key 或 DEMO_KEY）。Tavily / Perplexity 等若环境有 key 才可选；其对应 skill 已在 v2.2.1 永久删除，需要时直接调 API 或重装。
+
+**Q5：源之间矛盾怎么办？**
+A：不随机选、不多数暴力。按源层级（T1>T2>T3>T4）、时效（近 3–6 月优先）、详实度裁决；无法裁决则多方案并存并标注矛盾。绝不强行共识（Cat-Research 自验证闭环）。
+
+**Q6：报告会不会太长？**
+A：默认跑完整 Step 0–8；用户要"快版"时至少保留 Step1 + Step4 + Step8，并在报告注明"快版，未全覆盖质量环"。模板 B / C 强制非散文元素（矩阵 / 图表 / 清单），避免纯散文堆字。
+
+**Q7：增量知识沉淀一定要用 ima 吗？**
+A：ima-mcp 是首选（已连），但 Obsidian / 本地 wiki / 任意知识库均可；关键是三层结构（raw / wiki / schema）+ 重跑 Lint。不强制。
+
+---
+
+## 九、完整示例（端到端：从用户提问到报告）
+
+以下以一个真实查询演示 Step 0→8 如何落地。**加粗 = Agent 动作**，**引用块 = 产出物**。
+
+**用户**：「帮我调研一下中国工业机器人赛道，重点看减速器国产化机会，以及和埃斯顿、汇川怎么对标。」
+
+**Step 0 — 意图解析与模式选择**
+
+> 模式：行业赛道（模板 B）+ 公司 / 竞品（模板 C 叠加）。
+> 关键实体：工业机器人、减速器（RV / 谐波）、埃斯顿、汇川技术。
+> 输出要求：五大板块 + 四维对位矩阵 + SWOT + 情景推演。
+
+**Step 1 — 采集（多源并行）**
+
+- 🆓 API 直调：OpenAlex（`industrial robot China`）、Semantic Scholar（RV reducer）、Crossref（国产替代文献）。
+- 🌐 联网：WebSearch「工业机器人 减速器 国产化 2025」、WebFetch 埃斯顿 / 汇川年报摘要。
+- 已连 MCP：zhihu（「国产 RV 减速器 体验」）、wechat-article-search（行业深度文）、patsnap-search（减速器专利）。
+- 兜底：agent-reach（小红书 / 脉脉 工程师口碑）。
+
+**Step 2 — 去重 / 去旧 / 过滤**
+
+> 合并 3 篇重复的「谐波减速器市场」报道，仅留最完整版；剔除 2021 年前且无更新的旧文；过滤 2 个广告型内容农场。
+
+**Step 3 — 事实单元拆解**
+
+> 单元样例：「2024 中国工业机器人密度 470 台 / 万人（IFR）」「RV 减速器国产化率 < 30%（纳博特斯克垄断）」「埃斯顿 2024 营收 ≈ 45 亿（年报）」。
+
+**Step 4 — ≥2 源交叉验证**
+
+> 「RV 国产化率 < 30%」：Crossref 论文 + 年报 + 行业研报 三源 → `Confirmed`。
+> 「谐波减速器价格年降 8%」：仅 1 源 → 标 `Unconfirmed`，列入开放问题。
+
+**Step 5 — 矛盾消解**
+
+> 两家机构对「2025 市场增速」给出 12% vs 18%：按时效（近 6 月研报优先）+ 方法论标注并存，不强行平均。
+
+**Step 6 — 分级与置信标注**
+
+> 每条结论带 `Tier + 置信`：如「减速器是国产替代核心卡点」T2 `Confirmed`；「某创业公司份额跃升」T4 信号（小红书口碑），与事实分离。
+
+**Step 7 — 模板渲染（B + C 叠加）**
+
+> 五大板块：① 赛道定义与市场规模（470 台 / 万人密度 + TAM 测算）② 产业链图谱（上游 RV / 谐波 → 中游本体 → 下游集成）③ 驱动力与痛点（国产化政策 + 卡脖子）④ 1–2 年趋势（人形机器人拉动谐波需求）⑤ 商业化建议（避开纳博正面战，切谐波 / 售后）。
+> 对位矩阵：埃斯顿 vs 汇川（营收 / 产品 / 渠道 / SWOT）。
+> 情景推演：乐观（政策加码）/ 基准 / 悲观（需求疲软）/ 技术突变 / 监管。
+
+**Step 8 — 评分卡 + 开放问题 + 沉淀**
+
+> 评分卡：证据强度 A-，覆盖度 B+，矛盾 1 处已标注。
+> 开放问题：谐波价格年降幅度待第二源；RV 国产化率最新季度数据受限（环境受限未覆盖，已注明降级路径）。
+> 沉淀：回写 ima 知识库三层结构，Lint 标记本次为「基线版」。
+
+**最终交付**：带置信标签、含对位矩阵与情景推演的 Markdown 报告 + 评分卡。
+
+---
+
+## 附录 A：完整更新史（v2.0.0 → v2.2.4）
+
+- **v2.0.0**：竞争对位实测，验证 Step 0–8 主管线与源分级框架；确立 NATO Admiralty 4 级源分级与 ≥2 源交叉验证硬规则。
+- **v2.1.0**：吸收 9 个互补研究类 skill 的方法论（去其过度约束项，叠加不替换）；新增 intel-brief 输出风格（事实→影响→原因 + [矛盾] / [待核实] / [已证伪]）、宏观监测源、微信公众号文章检索、Perplexity AI 搜索、第 4 套学术 / 基准 / 技术选型 / 尽调模板 D。
+- **v2.2.0**：去粗取精、优先免费 API。大幅扩充学术与开放科研数据源（OpenAlex / Semantic Scholar / Crossref / arXiv / PubMed / bioRxiv / OpenCitations / EMBL-EBI / Zenodo / Figshare / Harvard Dataverse / NASA），工程化讨论源（Stack Overflow / HN / Reddit / 知乎 / CSDN / Product Hunt / TechCrunch / Bluesky / X），代码与模型平台（GitHub Trending / Hugging Face / 魔塔 ModelScope）；区分「🆓 免费 API 直调」与「🌐 通用联网可达」。
+- **v2.2.1**：技能去粗取精执行。GitHub MCP 确认真实连接（mcp__github__* 齐全）；永久删除 6 个重复冗余且已被吸收的 skill（google-scholar-search / academic-research-hub / deep-research / news-summary / perplexity / tavily，不可逆），其方法论并入主管线。
+- **v2.2.2**：文档准确性修正——将 6 个 skill 由「归档(可恢复)」更正为「永久删除(不可逆)」，消除与 v2.2.1 主题的残留矛盾。
+- **v2.2.3**：文档一致性修正——消除 SKILL.md 兼容性块英文 stale 措辞 `(archived, recoverable)` → `(permanently removed, irreversible)`；本地 skill / 仓库 / 发布包三端统一为 v2.2.3，无隐私泄露。
+- **v2.2.4**：规范性增强（回应 SkillHub TRACE 测评 Convention 4.3 短板）。新增**常见问题 FAQ**、**完整端到端示例（Step 0→8 落地）**、**本附录 A（完整更新史）**；补充质量规则 15「环境受限≠能力不足」（核心源不可达时显式标注未覆盖，不降级为低置信结论）；并将 〇 节的冗长更新史压缩为摘要 + 附录指针，降低文档密度。本地 / 仓库 / 发布包三端统一为 v2.2.4。
