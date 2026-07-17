@@ -18,6 +18,13 @@ compatibility: >
   tdx-connector / 通达信 (A-share financials F10 — used in the v2.0.0 competitive test),
   patsnap-search (patents), westock-mcp (finance), wk-workbuddy/yuandian-mcp (legal),
   github (code/projects), ima-mcp (knowledge base).
+  On-demand MCPs (need user enable/connect): tyc-mcp / qcc-company (enterprise registry/risk),
+  sec-edgar (US SEC filings).
+  General web reachable (no dedicated skill/connector; treat as T3–T4 depending on source):
+  Google Scholar / arXiv / CNKI for papers; Google Patents / USPTO / EPO for patents;
+  Hugging Face / ModelScope for AI models/code/docs/datasets; Wikipedia / Baidu Baike for background;
+  Reddit / Hacker News / Stack Overflow / Product Hunt / TechCrunch / 36Kr / Bluesky / X /
+  Zhihu / CSDN / 博客园 / Xiaohongshu / Bilibili / YouTube for UGC signals.
   HONESTY RULE: only list skills/connectors actually available in the environment.
   Firecrawl (and any other absent service) is NOT bundled and must never be claimed as integrated.
 metadata:
@@ -128,10 +135,17 @@ metadata:
 │           第二段产业链解剖(上下游利润分配/玩家格局/卡脖子) │
 │           第三段趋势预测与避坑(红利/颠覆技术/失败案例/反向)│
 │  搜索入口: Tavily(优先) → web-access/agent-reach(兜底)     │
-│  深度源:   智慧芽(专利) 自选股(财报) 威科/元典(法律)        │
-│            GitHub(代码/项目) ima(知识库)                    │
+│  专业数据库: 通达信(A股F10) 智慧芽(专利) 自选股/westock(财报) │
+│             威科/元典(法律) 天眼查/企查查(工商风险)        │
+│             GitHub(代码/项目) ima(知识库)                  │
+│  社媒/UGC: 知乎/小红书/CSDN/Reddit/HN/SO/Bluesky/X(仅作信号) │
+│  学术/代码: Google Scholar/arXiv/知网(论文)                 │
+│             Google Patents/USPTO/EPO(专利)                 │
+│             Hugging Face/魔塔ModelScope(模型/代码/数据集)    │
+│  百科/背景: Wikipedia/百度百科                             │
+│  产品/创投: Product Hunt/TechCrunch/36氪/虎嗅              │
 │  文档:     markitdown 处理 PDF/财报/Word → Markdown         │
-│  可选源:   aihot(免key中文AI资讯) BBC/Reuters/Al Jazeera     │
+│  可选资讯: aihot(免key中文AI资讯) BBC/Reuters/Al Jazeera     │
 │           (国际一手新闻; 引用二手摘要须回溯源URL)            │
 │  降级:     主源失败自动切次源；每源记 (url, 日期, 层级)     │
 │  查证库:   维护优先级验证查询库(政策>人才>SOTA>社区反馈)，  │
@@ -410,13 +424,18 @@ metadata:
 | 步骤 | 用到的能力 | 备注 |
 |------|-----------|------|
 | 搜索入口 | `web-access` 或 `agent-reach`（web/search）；有 Tavily key 则优先 Tavily | Tavily 更稳、ToS 干净 |
-| 社媒/热评 | `agent-reach`（小红书/知乎/Reddit/B站/YouTube）+ `web-access` | 复用登录态、抓评论 |
-| 专利 | `patsnap-search` MCP（已连） | 技术壁垒分析 |
-| 财经/财报 | `westock-mcp` MCP（已连） + `markitdown` 读 PDF | 上市公司基本面 |
-| 企业工商/风险 | `tyc-mcp`（天眼查）/`qcc-company`（企查查）MCP，按需连接 | 股权、诉讼、经营异常、行政处罚 |
+| 社媒/热评 | `agent-reach` / `agent-browser`（小红书/知乎/Reddit/Bluesky/X/B站/YouTube）+ `web-access` | 复用登录态、抓评论；UGC 仅作 T4 信号 |
+| 专利 | `patsnap-search` MCP（已连）；公开库通过 WebSearch/WebFetch | 技术壁垒分析 |
+| 财经/财报 | `westock-mcp` / 通达信 `tdx-connector` MCP（已连） + `markitdown` 读 PDF | A 股/港股/美股基本面 |
+| 企业工商/风险 | `tyc-mcp`（天眼查）/`qcc-company`（企查查）MCP，按需连接 | 股权、司法、经营异常、行政处罚 |
+| 美股 / SEC | `sec-edgar` MCP，按需连接 | 10-K/10-Q/附注 |
 | 法律/合规 | `wk-workbuddy` / `yuandian-mcp` MCP（已连） | 诉讼/资质核查 |
 | 代码/项目 | `github` MCP（已连） | 开源实现/技术栈 |
-| 知识库 | `ima-mcp` MCP（已连） | 用户自有资料 |
+| 学术/论文 | WebSearch/WebFetch（Google Scholar / arXiv / 知网） | 论文、引用网络 |
+| AI 模型/代码/数据集 | WebSearch/WebFetch（Hugging Face / 魔塔 ModelScope）；如有 ModelScope API key 可直接调用 | 开源模型、应用文档 |
+| 开放百科 | WebSearch/WebFetch（Wikipedia / 百度百科） | 概念科普、背景知识 |
+| 产品/创投/开发者社区 | WebSearch/WebFetch + `agent-reach`（Product Hunt / TechCrunch / 36氪 / HN / SO / Reddit） | 市场热度、真实反馈 |
+| 知识库 | `ima-mcp` MCP（已连） / Obsidian / 本地 wiki | 用户自有资料 |
 | 文档净化 | `markitdown` | PDF/Word→Markdown，喂给 LLM |
 | 交叉验证 | 本工作流内 LLM 比对（把同一事实的多源描述喂给模型问"是否矛盾"） | 生成/验证分离 |
 | URL 验活 | `web-access`/`mcp__fetch` 批量 HEAD 请求，或 WebSearch 重新索引 | 输出前剔除死链/失效源 |
