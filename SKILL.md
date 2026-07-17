@@ -10,32 +10,49 @@ description: >
   company due diligence, multi-company benchmarking, or a due-diligence brief — e.g. 市场调研,
   竞品分析, 行业格局, 技术趋势, 深度调研, 竞争格局, 用户反馈分析, SOTA 商业落地, 行业趋势,
   赛道分析, 产业链研究, 投资机会, 公司调研, 竞品对位, 尽调, 帮我扒一下, 挖一下, 和 A/B/C 怎么对标.
+  v2.1.0 新增（均叠加、不替代主流程）：可选学术数据源模块（arXiv/PubMed/Semantic Scholar/Google Scholar + 引文处理）、
+  intel-brief 输出风格（事实→影响→原因 + [矛盾]/[待核实]/[已证伪] 标记）、宏观监测源、
+  微信公众号文章检索、Perplexity AI 搜索、以及第 4 套学术/基准/技术选型/尽调模板。
 license: MIT
 compatibility: >
-  WorkBuddy/CodeBuddy with web-access, agent-browser, agent-reach, markitdown skills available.
-  Search entry: built-in WebSearch/WebFetch; Tavily API key (best search entry) if present.
+  WorkBuddy/CodeBuddy with web-access, agent-browser, agent-reach, markitdown, perplexity,
+  wechat-article-search, news-summary, deep-research, intel-osint-daily, macro-monitor,
+  academic-research-hub, literature-search skills available (the latter several are complementary
+  research skills whose methodologies dmr v2.1.0 selectively absorbs — see 〇 and the
+  "互补 Skill 方法论吸收 (v2.1.0)" section; they remain independently installable).
+  Search entry: built-in WebSearch/WebFetch; Tavily API key (best search entry) if present;
+  Perplexity API (PERPLEXITY_API_KEY) as optional AI-search source if present.
   Connected MCPs add depth (all optional, degrade gracefully):
   tdx-connector / 通达信 (A-share financials F10 — used in the v2.0.0 competitive test),
   patsnap-search (patents), westock-mcp (finance), wk-workbuddy/yuandian-mcp (legal),
   github (code/projects), ima-mcp (knowledge base).
   On-demand MCPs (need user enable/connect): tyc-mcp / qcc-company (enterprise registry/risk),
   sec-edgar (US SEC filings).
+  Macro data (general web reachable): Trading Economics, FRED, 国家统计局, 央行/证监会官网,
+  财联社, 华尔街见闻 — register as optional "macro monitoring" sources.
+  WeChat public-account article search (wechat-article-search skill) — high-value Chinese
+  AI/tech signal source; fills the article-level gap left by UGC-comment-only coverage.
+  Scholarly sources (general web reachable; academic-research-hub / literature-search provide
+  multi-index retrieval + citation handling, license of the former is Proprietary — confirm
+  redistribution rights before embedding its scripts): arXiv, PubMed, Semantic Scholar,
+  Google Scholar, CNKI — treat as T3; honor access-ethics (no scraping of disallowed/auth sites).
   General web reachable (no dedicated skill/connector; treat as T3–T4 depending on source):
-  Google Scholar / arXiv / CNKI for papers; Google Patents / USPTO / EPO for patents;
+  Google Patents / USPTO / EPO for patents;
   Hugging Face / ModelScope for AI models/code/docs/datasets; Wikipedia / Baidu Baike for background;
   Reddit / Hacker News / Stack Overflow / Product Hunt / TechCrunch / 36Kr / Bluesky / X /
-  Zhihu / CSDN / 博客园 / Xiaohongshu / Bilibili / YouTube for UGC signals.
+  Zhihu / CSDN / 博客园 / V2EX / Xiaohongshu / Bilibili / YouTube / LinkedIn / Instagram /
+  抖音 / 微博 for UGC signals (agent-reach covers 14 platforms incl. diagnostics).
   HONESTY RULE: only list skills/connectors actually available in the environment.
   Firecrawl (and any other absent service) is NOT bundled and must never be claimed as integrated.
 metadata:
-  version: "2.0.0"
+  version: "2.1.0"
   author: "Rain / WorkBuddy"
   adapted_from: "sota-research (Rain3Dmetrology) + RSSnewsnowTrendRadar (Rain3Dmetrology) 三方三角验证与联网查证注入机制 + 行业趋势深度调研五大板块模板 + 公司竞品深度调研四维框架/7字段证据清单/SWOT/情景推演 + market-researcher 的 TAM/SAM/SOM 市场测算/竞品4类法/2D定位图(作可选透镜) + material-organizer 的去重阈值与逐字引用铁律 + llm-wiki 的 Karpathy 增量沉淀/Lint 操作 + 黄益贺精英级分析咨询系统(Coze) 的 OPTIONAL 分析透镜库(波特五力/PESTEL/3C/BCG/价值链) + aihot/news-summary 注册为可选数据源 + NATO Admiralty source code + Cat-Research self-validation loop"
 ---
 
 # Deep Market Research Workflow — 深度市场调研工作流
 
-> 版本: 2.0.0 | 许可证: MIT
+> 版本: 2.1.0 | 许可证: MIT
 > 设计目标：**输出质量稳定、可复现、去重去旧去假去矛盾、并吸收真实用户热评**。对行业/赛道/产业链类查询，额外输出麦肯锡白皮书风格的五大板块结构；对公司/竞品尽调类查询，额外输出四维分析、7字段证据清单、SWOT 与情景推演。
 
 ---
@@ -60,11 +77,64 @@ metadata:
 - 黄益贺精英级分析咨询系统(Coze) 的 OPTIONAL 分析透镜库（波特五力/PESTEL/3C/BCG/价值链，仅作可选透镜）
 - NATO Admiralty 信源评估码（A–F 可靠性 + 1–6 确认度）→ 适配为 4 级源分级
 - Cat-Research / OpenClaw 自验证闭环（事实单元拆解 + 多源交叉验证 + 矛盾消解不强行共识）
+- **v2.1.0 互补 Skill 吸收审计**：对 9 个已安装研究类 skill（intel-osint-daily / macro-monitor / news-summary / deep-research / agent-reach / wechat-article-search / perplexity / academic-research-hub / literature-search）做了"吸收/淘汰"审计，择优吸收其方法论（见下方「互补 Skill 方法论吸收 (v2.1.0)」小节），并明确拒绝各自的过度约束项——本流程的确定性 Step 0→8 管线与三套主模板始终为质量根基，新方法均为叠加。
 
 > **模式选择**（第四节提供三套模板）：
 > - **通用深度调研模板**：通用主题、企业/产品/技术概览。
 > - **行业赛道模式**：当用户查询含"行业/赛道/产业链/投资机会/趋势预测/商业化落地/市场规模"时，默认采用模板 B，强制利润穿透、反方观点、1–2 年趋势、每板块至少一个非散文元素。
 > - **公司/竞品模式**：当用户查询含"公司/竞品/尽调/扒一下/挖一下/对位/对标/我们和 A/B/C"时，默认采用模板 C，强制四维分析（商业模式与基本盘、核心产品与卖点、营销与流量、真实负面与风险）、7 字段证据清单、SWOT、五类情景推演、真实负面多渠道交叉验证。
+> - **学术/基准/技术选型/尽调模式**：当用户查询含"论文/SOTA/学术/基准/技术选型/文献综述/学术尽调"时，默认采用模板 D（源自 deep-research 吸收），在主管线基础上启用"学术数据源模块"与严格引文格式（`Authors. Title. Venue. Year. DOI/URL`）。
+
+### 互补 Skill 方法论吸收 (v2.1.0)
+
+对 9 个已安装、与本研究域重叠的研究类 skill 做了审计，择优吸收其方法论，**明确拒绝**各自的过度约束项。吸收均为**叠加**，不替换本流程主管线/主模板。
+
+| 来源 Skill | 吸收的方法论 | 明确拒绝（防过度约束） |
+|---|---|---|
+| **intel-osint-daily** | 信息项"事实→影响→原因"三元（可作 intel-brief 输出风格）；"三方交叉验证"命名强化；`[矛盾]/[待核实]/[已证伪]` 标记（对齐本流程去重/去伪规则）；连续监测思路 | 其 `≤1450字 JSON、禁 Markdown/emoji` 硬格式；TrendRadar 专属变量 |
+| **macro-monitor** | 宏观数据源清单（Trading Economics/FRED/国家统计局/央行/证监会/财联社/华尔街见闻）作可选"宏观监测"源；"每指标配白话解读 + 超预期/不及预期 vs 预期/前值"规则 | 其 `browser`/OpenClawCLI 路径在本环境不存在→改走 web-access |
+| **news-summary** | RSS 源（BBC/Reuters/Al Jazeera/NPR）并入可选数据源 | 语音播报（超范围） |
+| **deep-research** | 命令式入口（`/research`→outline→`/research-deep`并行→`/research-report`）；outline + 并行 per-item 搜索模式；学术/基准/技术选型/尽调模式→第 4 模板 | 不替换确定性 Step0→8 + 三级模板 |
+| **agent-reach** | 补齐 UGC 平台覆盖（X/Reddit/YouTube/GitHub/B站/小红书/抖音/微博/公众号/LinkedIn/Instagram/RSS/Exa） | 不引入其安装/代理复杂度；dmr 仅引用 |
+| **wechat-article-search** | 新增"公众号**文章**检索"为具体中文信号源（补 UGC 评论之外的文章级缺口） | 不复制其 node 依赖规则 |
+| **perplexity** | 注册为可选 AI 搜索源（仅当 `PERPLEXITY_API_KEY` 存在） | 不作强制入口，仍以 Tavily/WebSearch 为主 |
+| **academic-research-hub** | 多源学术检索（arXiv/PubMed/Semantic Scholar/Google Scholar）+ 引文处理（BibTeX/RIS/JSON）作学术模块 | 其 OpenClawCLI 硬依赖；**许可 Proprietary**——嵌入脚本前须确认再分发权 |
+| **literature-search** | 范围澄清步骤；学术源访问伦理；按引用数+时效去重；严格 `作者.题名.出处.年.DOI/URL` 引文格式 | 不重复实现去重（本流程已有） |
+
+> 学术三件套 overlap 提示：`academic-research-hub` + `literature-search` + `google-scholar-search`（→审计建议卸载）同覆盖学术细分；吸收前两者后第三者冗余。
+
+#### 新增模块 1：学术数据源模块（源自 academic-research-hub + literature-search）
+
+当用户查询含"论文/SOTA/技术基准/学术/引用/文献"时，可启用学术检索分支：
+
+- **多源并行检索**：arXiv（预印本）、PubMed（生物医学）、Semantic Scholar（引用网络）、Google Scholar（广覆盖）、CNKI（中文）。通过 WebSearch/WebFetch 或已装 `academic-research-hub` / `literature-search` skill 触发。
+- **范围澄清（先问后搜）**：主题、子领域、综述 vs 奠基性、时间范围。
+- **访问伦理**：不抓禁止自动访问或需登录的站点；Google Scholar 仅经用户导出使用。
+- **去重 / 分级**：按引用数 + 时效性去重；论文/综述按 T3 处理（权威预印本可升 T2）。
+- **引文格式（严格）**：`Authors. Title. Venue. Year. DOI/URL`；支持 BibTeX / RIS / JSON 导出。
+- **引文处理**：优先保留原文 DOI/URL，避免二手摘要失真。
+
+#### 新增模块 2：intel-brief 输出风格（源自 intel-osint-daily，可选）
+
+对"每日/每周监测"或"决策快报"类查询，可在模板 A 基础上叠加 intel-brief 风格——每条信息按三元素组织：
+
+- **事实（Fact）**：发生了什么（带源层级 + 日期）。
+- **影响（Impact）**：对决策者意味着什么（业务/投资/技术）。
+- **原因（Cause / Why）**：为何发生（驱动因素/背景）。
+
+并显式标注矛盾/待核实/已证伪：`[矛盾]`（与既有结论冲突）、`[待核实]`（单源待补）、`[已证伪]`（被 ≥2 权威源推翻，已从结论剔除）。本流程原有的"矛盾台账"可继续承载这些标记。
+
+#### 新增模块 3：宏观监测源（源自 macro-monitor，可选）
+
+当用户查询含"宏观/利率/通胀/GDP/政策/大宗"时，可接入宏观数据源（均通用联网可达，T3）：Trading Economics、FRED、国家统计局、央行/证监会官网、财联社、华尔街见闻。每条宏观指标须附**白话解读**与**超预期/不及预期判断**（对比一致预期值与前值）。
+
+#### 新增模块 4：微信公众账号文章检索（源自 wechat-article-search）
+
+中文 AI/科技/商业信号常首发于公众号文章。经 `wechat-article-search` skill 检索公众号文章，作为中文一手深度内容源（T3，视媒体属性）；与既有 UGC 评论（T4）互补，填补"文章级"缺口。
+
+#### 新增模块 5：Perplexity AI 搜索（可选源，源自 perplexity）
+
+当 `PERPLEXITY_API_KEY` 存在时，可将 Perplexity 作为带引用的 AI 搜索入口之一，与 Tavily/WebSearch 并列（不强制、不作唯一入口）。无 key 时优雅跳过。
 
 ### 分析透镜库（可选，按查询意图触发，非强制全套）
 
@@ -134,16 +204,18 @@ metadata:
 │  搜索策略: 第一段宏观锚定(市场规模/CAGR/政策)            │
 │           第二段产业链解剖(上下游利润分配/玩家格局/卡脖子) │
 │           第三段趋势预测与避坑(红利/颠覆技术/失败案例/反向)│
-│  搜索入口: Tavily(优先) → web-access/agent-reach(兜底)     │
+│  搜索入口: Tavily(优先) → Perplexity(可选,需key) → web-access/agent-reach(兜底)     │
 │  专业数据库: 通达信(A股F10) 智慧芽(专利) 自选股/westock(财报) │
 │             威科/元典(法律) 天眼查/企查查(工商风险)        │
 │             GitHub(代码/项目) ima(知识库)                  │
-│  社媒/UGC: 知乎/小红书/CSDN/Reddit/HN/SO/Bluesky/X(仅作信号) │
-│  学术/代码: Google Scholar/arXiv/知网(论文)                 │
+│  社媒/UGC: 知乎/小红书/CSDN/V2EX/Reddit/HN/SO/Bluesky/X/抖音/微博/LinkedIn/Instagram(仅作信号,agent-reach覆盖14平台) │
+│  学术/代码: Google Scholar/arXiv/PubMed/Semantic Scholar/CNKI(论文,学术模块)                 │
 │             Google Patents/USPTO/EPO(专利)                 │
 │             Hugging Face/魔塔ModelScope(模型/代码/数据集)    │
 │  百科/背景: Wikipedia/百度百科                             │
-│  产品/创投: Product Hunt/TechCrunch/36氪/虎嗅              │
+│  产品/创投: Product Hunt/TechCrunch/36氪/虎嗅
+│  宏观监测: Trading Economics/FRED/统计局/央行/证监会/财联社/华尔街见闻 │
+│  公众号文章: 经 wechat-article-search 检索(中文一手深度,补文章级缺口) │              │
 │  文档:     markitdown 处理 PDF/财报/Word → Markdown         │
 │  可选资讯: aihot(免key中文AI资讯) BBC/Reuters/Al Jazeera     │
 │           (国际一手新闻; 引用二手摘要须回溯源URL)            │
@@ -234,6 +306,7 @@ metadata:
 > - 通用主题（企业/产品/技术概览）→ 用「通用深度调研模板」。
 > - 行业/赛道/产业链/趋势预测/投资机会 → 用「行业赛道五大板块模板」，强制利润穿透、反方观点、1-2年趋势、每板块至少一个非散文元素。
 > - 公司/竞品/尽调/对位分析 → 用「公司/竞品深度调研模板」，强制四维分析、7字段证据、SWOT、情景推演、真实负面多渠道验证。
+> - 论文/SOTA/学术/基准/技术选型/文献综述 → 用「模板 D：学术/基准/技术选型/尽调模板」，启用学术数据源模块与严格引文格式。
 >
 
 ### 模板 A：通用深度调研模板
@@ -242,7 +315,7 @@ metadata:
 # 深度调研报告：<主题>
 
 > 生成时间: <ISO> ｜ 调研范围: <地理/时间/竞品集> ｜ 质量分: <0–100>
-> 方法论: deep-market-research v1.5.0（源分级 + 三方三角验证 + ≥2源交叉验证 + 矛盾显式标注 + 增量Lint）
+> 方法论: deep-market-research v2.1.0（源分级 + 三方三角验证 + ≥2源交叉验证 + 矛盾显式标注 + 增量Lint）
 
 ## 1. 执行摘要
 - 三句话结论 + 最高置信度的 3 个关键发现 + 最大不确定性。
@@ -286,7 +359,7 @@ metadata:
 # 行业趋势深度调研：<赛道/行业>
 
 > 生成时间: <ISO> ｜ 调研范围: <地理/时间> ｜ 质量分: <0–100>
-> 方法论: deep-market-research v1.5.0 行业赛道模式
+> 方法论: deep-market-research v2.1.0 行业赛道模式
 
 ## 1. 执行摘要
 - 三句话结论 + 3 个最高置信度发现 + 最大不确定性。
@@ -335,7 +408,7 @@ metadata:
 # 公司/竞品深度调研：<目标公司> [vs <竞品 A/B/C>]
 
 > 生成时间: <ISO> ｜ 调研范围: <地理/时间> ｜ 质量分: <0–100>
-> 方法论: deep-market-research v1.5.0 公司/竞品模式
+> 方法论: deep-market-research v2.1.0 公司/竞品模式
 
 ## 0. 决策卡片（一页纸给决策者）
 - **一句话定位**: <公司在产业链中的核心位置>
@@ -419,6 +492,57 @@ metadata:
 
 ---
 
+### 模板 D：学术 / 基准 / 技术选型 / 尽调模板（源自 deep-research 吸收）
+
+```markdown
+# 学术 / 基准 / 技术选型调研：<主题>
+
+> 生成时间: <ISO> ｜ 调研范围: <地理/时间/文献集> ｜ 质量分: <0–100>
+> 方法论: deep-market-research v2.1.0 学术/基准模式（启用学术数据源模块 + 严格引文格式）
+
+## 1. 执行摘要
+- 三句话结论 + 3 个最高置信度发现 + 最大不确定性。
+
+## 2. 研究范围澄清
+- 主题、子领域、综述 vs 奠基性、时间范围（源自 literature-search 的范围澄清步骤）。
+
+## 3. 文献 / 技术证据清单（带置信度）
+| 证据 ID | 事实陈述 | 来源(arXiv/PubMed/SS/G Scholar/CNKI) | 原文摘录 | 层级 | 确认度 | 置信度 | 日期 | 引用(DOI/URL) |
+|---------|---------|----------|----------|------|--------|--------|------|---------------|
+| F001 | ... | | | T3 | A-1.. | Confirmed/... | | |
+
+> 规则：论文/综述按 T3 处理；权威预印本可升 T2；每条结论须 ≥2 独立源确认才标 Confirmed。
+
+## 4. 核心发现
+### 4.1 <子主题 / 技术路线>
+- **发现**：... ［Confirmed/Corroborated/Single-source/Unverified］
+  - 证据：源A(T3, 日期) + 源B(T3, 日期)
+
+## 5. 矛盾台账（显式，不掩盖）
+| 争议点 | 说法A(源/层级) | 说法B(源/层级) | 裁决 | 置信 |
+|--------|---------------|---------------|------|------|
+
+## 6. 技术 / 基准对比矩阵（技术选型 / 基准类必含）
+| 维度 | 方案/模型 A | 方案/模型 B | 方案/模型 C |
+|------|------------|------------|------------|
+| 定位 | | | |
+| 核心能力 | | | |
+| 局限/风险 | | | |
+| 综合评级 | | | |
+
+## 7. 引用文献（严格格式 + 可导出）
+- `Authors. Title. Venue. Year. DOI/URL`（每条必带原文 DOI/URL，避免二手摘要失真）
+- 支持 BibTeX / RIS / JSON 导出（源自 academic-research-hub / literature-search）
+
+## 8. 开放问题（未能验证，需人工/后续）
+
+## 9. 方法论与合规声明
+- 学术源访问伦理：不抓禁止自动访问或需登录站点；Google Scholar 仅经用户导出。
+- 去重：按引用数 + 时效性去重；本流程已有去重铁律，不重复实现。
+```
+
+---
+
 ## 五、工具映射（在 WorkBuddy 上怎么调）
 
 | 步骤 | 用到的能力 | 备注 |
@@ -431,7 +555,10 @@ metadata:
 | 美股 / SEC | `sec-edgar` MCP，按需连接 | 10-K/10-Q/附注 |
 | 法律/合规 | `wk-workbuddy` / `yuandian-mcp` MCP（已连） | 诉讼/资质核查 |
 | 代码/项目 | `github` MCP（已连） | 开源实现/技术栈 |
-| 学术/论文 | WebSearch/WebFetch（Google Scholar / arXiv / 知网） | 论文、引用网络 |
+| 学术/论文(模块) | `academic-research-hub` / `literature-search`（多源检索+引文处理）+ WebSearch/WebFetch（Google Scholar / arXiv / PubMed / Semantic Scholar / CNKI） | 学术论文、引用网络；BibTeX/RIS/JSON 引文；访问伦理：不抓禁止/需登录站点（源自 v2.1.0 学术模块） |
+| AI 搜索(可选) | `perplexity` skill（需 `PERPLEXITY_API_KEY`） | 带引用 AI 搜索，与 Tavily 并列可选，无 key 跳过（源自 v2.1.0） |
+| 微信公众账号文章 | `wechat-article-search` skill | 中文一手深度内容，补 UGC 评论之外的文章级缺口（源自 v2.1.0） |
+| 宏观经济 | WebSearch/WebFetch（Trading Economics / FRED / 国家统计局 / 央行·证监会 / 财联社 / 华尔街见闻） | 宏观指标 + 超预期/不及预期判断，T3（源自 v2.1.0 宏观监测） |
 | AI 模型/代码/数据集 | WebSearch/WebFetch（Hugging Face / 魔塔 ModelScope）；如有 ModelScope API key 可直接调用 | 开源模型、应用文档 |
 | 开放百科 | WebSearch/WebFetch（Wikipedia / 百度百科） | 概念科普、背景知识 |
 | 产品/创投/开发者社区 | WebSearch/WebFetch + `agent-reach`（Product Hunt / TechCrunch / 36氪 / HN / SO / Reddit） | 市场热度、真实反馈 |
@@ -460,6 +587,7 @@ metadata:
 10. ❌ 透镜堆砌 → 波特五力/PESTEL/BCG/TAM-SOM 等经典框架是**可选分析透镜**，按查询意图触发，绝不每篇报告强制全套；它们不替代源分级与交叉验证（见「分析透镜库」）。
 11. ❌ 间接引用/数字失真 → **逐字引用铁律**（源自 material-organizer）：关键结论的摘录必须原文 `>` 引用块呈现，数字/日期/百分比与源完全一致；缺口标"信息不足"绝不猜测填充。
 12. ❌ 范围蔓延 → 本流程只做**二手案头研究**；不吸一手调研方法（问卷/Van Westendorp 定价/用户访谈），超范围能力不并入（market-researcher 一手部分已明确排除）。
+13. ❌ 强制新模块 → v2.1.0 新增的 intel-brief 输出风格、学术数据源模块、宏观监测、微信文章检索、Perplexity、模板 D 均为**可选叠加**，仅在查询意图匹配时启用；绝不每篇报告硬塞学术引文/宏观解读/intel-brief 三元。它们不替代 Step 0→8 主管线与模板 A/B/C 的质量根基，且与各来源 Skill 的过度约束项（硬格式/专属变量/外部 CLI 依赖）保持隔离。
 
 ---
 
