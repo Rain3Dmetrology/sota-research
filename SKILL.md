@@ -20,7 +20,7 @@ description: >
   代码与模型平台 GitHub Trending/Hugging Face/魔塔 ModelScope。区分「🆓免费 API 直调」与
   「🌐通用联网可达」两档，前者更稳更可复现。
   v2.2.1（技能去粗取精执行）：GitHub MCP 已真实连接（mcp__github__* 工具齐全）；将重复冗余且
-  已被吸收的 6 个 skill 卸载归档——google-scholar-search / academic-research-hub / deep-research /
+  已被吸收的 6 个 skill 永久删除（不可逆）——google-scholar-search / academic-research-hub / deep-research /
   news-summary / perplexity / tavily；保留 literature-search（最优方法论）与 agent-reach /
   wechat-article-search / intel-osint-daily / macro-monitor（独特能力/独立调度）。
 license: MIT
@@ -28,11 +28,11 @@ compatibility: >
   WorkBuddy/CodeBuddy with web-access, agent-browser, agent-reach, markitdown,
   wechat-article-search, intel-osint-daily, macro-monitor, literature-search skills available
   (complementary research skills whose methodologies dmr selectively absorbs — see 〇 and the
-  "互补 Skill 方法论吸收" section). v2.2.1 已卸载重复冗余且已被吸收的 6 个 skill：
+  "互补 Skill 方法论吸收" section). v2.2.1 已永久删除重复冗余且已被吸收的 6 个 skill：
   google-scholar-search / academic-research-hub / deep-research / news-summary / perplexity /
-  tavily（归档于 ~/.workbuddy/_archived_skills_2026-07-17/，可恢复）；其方法论已并入本流程。
+  tavily（永久删除，不可逆）；其方法论已并入本流程。
   Search entry: built-in WebSearch/WebFetch (primary); Tavily/Perplexity API optional if key
-  present (skills uninstalled in v2.2.1 — call their APIs directly or reinstall).
+  present (skills permanently removed in v2.2.1 — call their APIs directly or reinstall).
   Connected MCPs add depth (all optional, degrade gracefully):
   tdx-connector / 通达信 (A-share financials F10 — used in the v2.0.0 competitive test),
   patsnap-search (patents), westock-mcp (finance), wk-workbuddy/yuandian-mcp (legal),
@@ -72,14 +72,14 @@ compatibility: >
   HONESTY RULE: only list skills/connectors actually available in the environment.
   Firecrawl (and any other absent service) is NOT bundled and must never be claimed as integrated.
 metadata:
-  version: "2.2.1"
+  version: "2.2.2"
   author: "Rain / WorkBuddy"
   adapted_from: "sota-research (Rain3Dmetrology) + RSSnewsnowTrendRadar (Rain3Dmetrology) 三方三角验证与联网查证注入机制 + 行业趋势深度调研五大板块模板 + 公司竞品深度调研四维框架/7字段证据清单/SWOT/情景推演 + market-researcher 的 TAM/SAM/SOM 市场测算/竞品4类法/2D定位图(作可选透镜) + material-organizer 的去重阈值与逐字引用铁律 + llm-wiki 的 Karpathy 增量沉淀/Lint 操作 + 黄益贺精英级分析咨询系统(Coze) 的 OPTIONAL 分析透镜库(波特五力/PESTEL/3C/BCG/价值链) + aihot/news-summary 注册为可选数据源 + NATO Admiralty source code + Cat-Research self-validation loop"
 ---
 
 # Deep Market Research Workflow — 深度市场调研工作流
 
-> 版本: 2.2.1 | 许可证: MIT
+> 版本: 2.2.2 | 许可证: MIT
 > 设计目标：**输出质量稳定、可复现、去重去旧去假去矛盾、并吸收真实用户热评**。对行业/赛道/产业链类查询，额外输出麦肯锡白皮书风格的五大板块结构；对公司/竞品尽调类查询，额外输出四维分析、7字段证据清单、SWOT 与情景推演。
 
 ---
@@ -107,11 +107,12 @@ metadata:
 - **v2.1.0 互补 Skill 吸收审计**：对 9 个已安装研究类 skill（intel-osint-daily / macro-monitor / news-summary / deep-research / agent-reach / wechat-article-search / perplexity / academic-research-hub / literature-search）做了"吸收/淘汰"审计，择优吸收其方法论（见下方「互补 Skill 方法论吸收 (v2.1.0)」小节），并明确拒绝各自的过度约束项——本流程的确定性 Step 0→8 管线与三套主模板始终为质量根基，新方法均为叠加。
 - **v2.2.0 学术与开放科研数据源大扩充（去粗取精、优先免费 API）**：把学术检索从"5 源抓取"升级为「🆓 免费 API 直调优先」的分层源库——论文/元数据（OpenAlex/Semantic Scholar/arXiv/PubMed/bioRxiv/EMBL-EBI）、引文溯源（Crossref/OpenCitations）、科研数据仓库（Zenodo/Figshare/哈佛 Dataverse/NASA）、专利（PatSnap 已连/Google Patents）、代码与模型（GitHub Trending/Hugging Face/魔塔）、工程化讨论（Stack Overflow/Hacker News/Reddit/知乎 MCP/CSDN/Product Hunt/TechCrunch/Bluesky/X）。核心是**区分「免费 API 直调（稳、可复现）」与「网页抓取（兜底）」两档**，并对学术三件套做优胜劣汰：留 `literature-search`、`academic-research-hub` 降为可选、`google-scholar-search` 列卸载候选。  详见「新增模块 1」。
 - **v2.2.1 技能去粗取精执行（优胜劣汰落地）**：GitHub MCP 已真实连接（mcp__github__* 工具齐全，
-  可作搜索/代码/Issue/PR/Release 等）；将重复冗余且已被吸收的 6 个 skill 全部卸载归档——
+  可作搜索/代码/Issue/PR/Release 等）；将重复冗余且已被吸收的 6 个 skill 全部永久删除（不可逆）——
   `google-scholar-search`(实为 Semantic Scholar 封装)、`academic-research-hub`(Proprietary+OpenClawCLI)、
   `deep-research`(工作流已吸收)、`news-summary`(RSS 已吸收)、`perplexity`/`tavily`(与 WebSearch 重复的
   AI 搜索)。保留 `literature-search`(最优方法论) 与 `agent-reach`/`wechat-article-search`/
   `intel-osint-daily`/`macro-monitor`(独特能力/独立调度角色)。详见「互补 Skill 方法论吸收」表与「技能取舍」段。
+- **v2.2.2 文档准确性修正**：v2.2.1 已将 6 个冗余 absorbed skill **永久删除（不可逆）**，原措辞误作"归档(可恢复)"，此处更正；GitHub MCP 已连状态及源库扩充均不变。
 
 > **模式选择**（第四节提供三套模板）：
 > - **通用深度调研模板**：通用主题、企业/产品/技术概览。
@@ -127,15 +128,15 @@ metadata:
 |---|---|---|
 | **intel-osint-daily** | 信息项"事实→影响→原因"三元（可作 intel-brief 输出风格）；"三方交叉验证"命名强化；`[矛盾]/[待核实]/[已证伪]` 标记（对齐本流程去重/去伪规则）；连续监测思路 | 其 `≤1450字 JSON、禁 Markdown/emoji` 硬格式；TrendRadar 专属变量 |
 | **macro-monitor** | 宏观数据源清单（Trading Economics/FRED/国家统计局/央行/证监会/财联社/华尔街见闻）作可选"宏观监测"源；"每指标配白话解读 + 超预期/不及预期 vs 预期/前值"规则 | 其 `browser`/OpenClawCLI 路径在本环境不存在→改走 web-access |
-| **news-summary**（v2.2.1 已卸载，方法论已吸收）| RSS 源（BBC/Reuters/Al Jazeera/NPR）并入可选数据源 | 语音播报（超范围） |
-| **deep-research**（v2.2.1 已卸载，方法论已吸收）| 命令式入口（`/research`→outline→`/research-deep`并行→`/research-report`）；outline + 并行 per-item 搜索模式；学术/基准/技术选型/尽调模式→第 4 模板 | 不替换确定性 Step0→8 + 三级模板 |
+| **news-summary**（v2.2.1 已永久删除，方法论已吸收）| RSS 源（BBC/Reuters/Al Jazeera/NPR）并入可选数据源 | 语音播报（超范围） |
+| **deep-research**（v2.2.1 已永久删除，方法论已吸收）| 命令式入口（`/research`→outline→`/research-deep`并行→`/research-report`）；outline + 并行 per-item 搜索模式；学术/基准/技术选型/尽调模式→第 4 模板 | 不替换确定性 Step0→8 + 三级模板 |
 | **agent-reach** | 补齐 UGC 平台覆盖（X/Reddit/YouTube/GitHub/B站/小红书/抖音/微博/公众号/LinkedIn/Instagram/RSS/Exa） | 不引入其安装/代理复杂度；dmr 仅引用 |
 | **wechat-article-search** | 新增"公众号**文章**检索"为具体中文信号源（补 UGC 评论之外的文章级缺口） | 不复制其 node 依赖规则 |
-| **perplexity**（v2.2.1 已卸载，方法论已吸收）| 注册为可选 AI 搜索源（仅当 `PERPLEXITY_API_KEY` 存在） | 不作强制入口，仍以 Tavily/WebSearch 为主 |
-| **academic-research-hub**（v2.2.1 已卸载，方法论已吸收）| 多源学术检索（arXiv/PubMed/Semantic Scholar/Google Scholar）+ 引文处理（BibTeX/RIS/JSON）作学术模块 | 其 OpenClawCLI 硬依赖；**许可 Proprietary**——嵌入脚本前须确认再分发权 |
+| **perplexity**（v2.2.1 已永久删除，方法论已吸收）| 注册为可选 AI 搜索源（仅当 `PERPLEXITY_API_KEY` 存在） | 不作强制入口，仍以 Tavily/WebSearch 为主 |
+| **academic-research-hub**（v2.2.1 已永久删除，方法论已吸收）| 多源学术检索（arXiv/PubMed/Semantic Scholar/Google Scholar）+ 引文处理（BibTeX/RIS/JSON）作学术模块 | 其 OpenClawCLI 硬依赖；**许可 Proprietary**——嵌入脚本前须确认再分发权 |
 | **literature-search** | 范围澄清步骤；学术源访问伦理；按引用数+时效去重；严格 `作者.题名.出处.年.DOI/URL` 引文格式 | 不重复实现去重（本流程已有） |
 
-> 学术三件套 overlap 提示：`academic-research-hub` + `literature-search` + `google-scholar-search` 同覆盖学术细分；吸收前两者后第三者冗余。v2.2.1 已将 `academic-research-hub` 与 `google-scholar-search` 一并卸载，仅留 `literature-search` 作方法论参考。
+> 学术三件套 overlap 提示：`academic-research-hub` + `literature-search` + `google-scholar-search` 同覆盖学术细分；吸收前两者后第三者冗余。v2.2.1 已将 `academic-research-hub` 与 `google-scholar-search` 一并永久删除，仅留 `literature-search` 作方法论参考。
 
 #### 新增模块 1：学术与开放科研数据源模块（v2.2.0 大幅扩充，去粗取精、优先免费 API）
 
@@ -180,7 +181,7 @@ metadata:
 - **访问伦理**：不抓禁止自动访问或需登录的站点；Google Scholar 仅经用户导出；订阅库（Scopus/Web of Science）仅当用户提供 key/账号时启用，否则标"未覆盖"。
 - **去重 / 分级**：按引用数 + 时效性去重，重复时保留期刊/会议正式版优先于预印本；论文/综述按 T3 处理（权威预印本可升 T2）。
 - **引文格式（严格）**：`Authors. Title. Venue. Year. DOI/URL`；支持 BibTeX / RIS / JSON 导出；优先保留原文 DOI/URL，避免二手摘要失真。
-- **技能取舍（优胜劣汰 · v2.2.1 落地）**：`literature-search`（纯方法论、官方 API 优先、无外部 CLI）为最优参考 → **保留**；`academic-research-hub`（Proprietary + 依赖 OpenClawCLI）、`google-scholar-search`（实为 Semantic Scholar 封装、命名误导）、`deep-research`（工作流已被吸收）、`news-summary`（RSS 已被吸收）、`perplexity`/`tavily`（与内置 WebSearch 重复的 AI 搜索）均属重复冗余且已被吸收 → **已于 v2.2.1 全部卸载归档**（~/.workbuddy/_archived_skills_2026-07-17/，可恢复）。`agent-reach`/`wechat-article-search`/`intel-osint-daily`/`macro-monitor` 因独特能力或独立调度角色 → **保留**。
+- **技能取舍（优胜劣汰 · v2.2.1 落地）**：`literature-search`（纯方法论、官方 API 优先、无外部 CLI）为最优参考 → **保留**；`academic-research-hub`（Proprietary + 依赖 OpenClawCLI）、`google-scholar-search`（实为 Semantic Scholar 封装、命名误导）、`deep-research`（工作流已被吸收）、`news-summary`（RSS 已被吸收）、`perplexity`/`tavily`（与内置 WebSearch 重复的 AI 搜索）均属重复冗余且已被吸收 → **已于 v2.2.1 全部永久删除（不可逆）**。`agent-reach`/`wechat-article-search`/`intel-osint-daily`/`macro-monitor` 因独特能力或独立调度角色 → **保留**。
 
 #### 新增模块 2：intel-brief 输出风格（源自 intel-osint-daily，可选）
 
