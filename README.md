@@ -7,9 +7,9 @@
 
 ---
 
-## ✨ 特性（v2.2.2）
+## ✨ 特性（v2.2.3）
 
-- **v2.2.2 文档准确性修正**：v2.2.1 已将 6 个冗余 absorbed skill **永久删除（不可逆）**，此前"归档(可恢复)"措辞已更正；GitHub MCP 已连状态不变。
+- **v2.2.3 文档一致性修正**：修正 SKILL.md 兼容性块英文 stale 措辞 `(archived, recoverable)` → `(permanently removed, irreversible)`，消除与 v2.2.2 主题的残留矛盾；本地 skill / 仓库 / 发布包三端统一为 v2.2.3，无隐私泄露。
 - **确定性流水线**：每次调研走固定 Step 0–8，跨次可复现、可对比。
 - **源分级（NATO Admiralty 适配）**：T1 一手官方 / T2 专家 / T3 二手记录 / T4 社媒 UGC，每条结论带置信标签。
 - **≥2 源交叉验证 + 去假去矛盾**：事实单元拆解，冲突显式标注，绝不强行共识。
@@ -25,7 +25,7 @@
 - **更多信号源（v2.1.0）**：微信公众号文章检索（wechat-article-search）、Perplexity AI 搜索（可选 `PERPLEXITY_API_KEY`）、NPR 等 RSS 源，UGC 平台覆盖扩至 14+（agent-reach）。
 - **互补 Skill 吸收审计（v2.1.0）**：对 9 个与本研究域重叠的已安装研究类 skill 做了「吸收 / 淘汰」审计，择优吸收其方法论并**显式拒绝**过度约束项（完整清单见 SKILL.md「互补 Skill 方法论吸收」小节）。
 - **学术与开放科研数据源大扩充（v2.2.0，去粗取精·优先免费 API）**：把学术检索升级为分层源库并**优先「🆓 免费 API 直调」**（比抓 HTML 更稳、可复现、可溯源）——论文/元数据（OpenAlex / Semantic Scholar / arXiv / PubMed / bioRxiv / EMBL-EBI）、引文溯源（Crossref / OpenCitations）、科研数据仓库（Zenodo / Figshare / 哈佛 Dataverse / NASA）、专利（智慧芽已连 / Google Patents）、代码与模型（GitHub Trending / Hugging Face / 魔塔 ModelScope）、工程化讨论（Stack Overflow / Hacker News / Reddit / 知乎 MCP / CSDN / Product Hunt / TechCrunch / Bluesky / X）。同步对学术三件套做**优胜劣汰**：留 `literature-search`、`academic-research-hub` 降为可选、`google-scholar-search` 列卸载候选。
-- **技能去粗取精执行（v2.2.1，优胜劣汰落地；v2.2.2 准确性修正）**：GitHub MCP **已真实连接**（`mcp__github__*` 工具齐全，可作搜索/代码/Issue/PR/Release）；将重复冗余且已被吸收的 6 个 skill **全部永久删除（不可逆）**——`google-scholar-search`（实为 Semantic Scholar 封装）、`academic-research-hub`（Proprietary + OpenClawCLI）、`deep-research`（工作流已吸收）、`news-summary`（RSS 已吸收）、`perplexity` / `tavily`（与内置 WebSearch 重复的 AI 搜索）。保留 `literature-search`（最优方法论）与 `agent-reach` / `wechat-article-search` / `intel-osint-daily` / `macro-monitor`（独特能力/独立调度角色）。
+- **技能去粗取精执行（v2.2.1 落地；v2.2.2 准确性修正；v2.2.3 一致性修正）**：GitHub MCP **已真实连接**（`mcp__github__*` 工具齐全，可作搜索/代码/Issue/PR/Release）；将重复冗余且已被吸收的 6 个 skill **全部永久删除（不可逆）**——`google-scholar-search`（实为 Semantic Scholar 封装）、`academic-research-hub`（Proprietary + OpenClawCLI）、`deep-research`（工作流已吸收）、`news-summary`（RSS 已吸收）、`perplexity` / `tavily`（与内置 WebSearch 重复的 AI 搜索）。保留 `literature-search`（最优方法论）与 `agent-reach` / `wechat-article-search` / `intel-osint-daily` / `macro-monitor`（独特能力/独立调度角色）。
 
 ---
 

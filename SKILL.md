@@ -59,7 +59,7 @@ compatibility: >
   paywalled (abstracts public) — T1–T2 journals, cite DOI. Google Scholar: no official API,
   user-exports only (access-ethics). literature-search skill = cleanest methodology reference (kept);
   academic-research-hub (Proprietary + OpenClawCLI) and google-scholar-search (misnamed Semantic
-  Scholar wrapper) were redundant → both uninstalled in v2.2.1 (archived, recoverable).
+  Scholar wrapper) were redundant → both uninstalled in v2.2.1 (permanently removed, irreversible).
   Grade papers/preprints as T3 (authoritative preprints may rise to T2).
   Code / AI-model platforms: GitHub search + Trending (gh CLI authenticated + web),
   Hugging Face Hub API (🆓 huggingface.co/api), ModelScope /魔塔 (modelscope.cn — Chinese model
@@ -72,14 +72,14 @@ compatibility: >
   HONESTY RULE: only list skills/connectors actually available in the environment.
   Firecrawl (and any other absent service) is NOT bundled and must never be claimed as integrated.
 metadata:
-  version: "2.2.2"
+  version: "2.2.3"
   author: "Rain / WorkBuddy"
   adapted_from: "sota-research (Rain3Dmetrology) + RSSnewsnowTrendRadar (Rain3Dmetrology) 三方三角验证与联网查证注入机制 + 行业趋势深度调研五大板块模板 + 公司竞品深度调研四维框架/7字段证据清单/SWOT/情景推演 + market-researcher 的 TAM/SAM/SOM 市场测算/竞品4类法/2D定位图(作可选透镜) + material-organizer 的去重阈值与逐字引用铁律 + llm-wiki 的 Karpathy 增量沉淀/Lint 操作 + 黄益贺精英级分析咨询系统(Coze) 的 OPTIONAL 分析透镜库(波特五力/PESTEL/3C/BCG/价值链) + aihot/news-summary 注册为可选数据源 + NATO Admiralty source code + Cat-Research self-validation loop"
 ---
 
 # Deep Market Research Workflow — 深度市场调研工作流
 
-> 版本: 2.2.2 | 许可证: MIT
+> 版本: 2.2.3 | 许可证: MIT
 > 设计目标：**输出质量稳定、可复现、去重去旧去假去矛盾、并吸收真实用户热评**。对行业/赛道/产业链类查询，额外输出麦肯锡白皮书风格的五大板块结构；对公司/竞品尽调类查询，额外输出四维分析、7字段证据清单、SWOT 与情景推演。
 
 ---
@@ -113,6 +113,7 @@ metadata:
   AI 搜索)。保留 `literature-search`(最优方法论) 与 `agent-reach`/`wechat-article-search`/
   `intel-osint-daily`/`macro-monitor`(独特能力/独立调度角色)。详见「互补 Skill 方法论吸收」表与「技能取舍」段。
 - **v2.2.2 文档准确性修正**：v2.2.1 已将 6 个冗余 absorbed skill **永久删除（不可逆）**，原措辞误作"归档(可恢复)"，此处更正；GitHub MCP 已连状态及源库扩充均不变。
+- **v2.2.3 文档一致性修正**：修正 SKILL.md 兼容性块第 62 行英文 stale 措辞 `(archived, recoverable)` → `(permanently removed, irreversible)`，消除与 v2.2.2 主题的残留矛盾；本地 skill / 仓库 / 发布包三端统一为 v2.2.3，无隐私泄露。
 
 > **模式选择**（第四节提供三套模板）：
 > - **通用深度调研模板**：通用主题、企业/产品/技术概览。
