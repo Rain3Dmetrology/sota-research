@@ -10,9 +10,15 @@ description: >
   company due diligence, multi-company benchmarking, or a due-diligence brief — e.g. 市场调研,
   竞品分析, 行业格局, 技术趋势, 深度调研, 竞争格局, 用户反馈分析, SOTA 商业落地, 行业趋势,
   赛道分析, 产业链研究, 投资机会, 公司调研, 竞品对位, 尽调, 帮我扒一下, 挖一下, 和 A/B/C 怎么对标.
-  v2.1.0 新增（均叠加、不替代主流程）：可选学术数据源模块（arXiv/PubMed/Semantic Scholar/Google Scholar + 引文处理）、
-  intel-brief 输出风格（事实→影响→原因 + [矛盾]/[待核实]/[已证伪] 标记）、宏观监测源、
-  微信公众号文章检索、Perplexity AI 搜索、以及第 4 套学术/基准/技术选型/尽调模板。
+  v2.1.0 新增（均叠加、不替代主流程）：可选学术数据源模块、intel-brief 输出风格
+  （事实→影响→原因 + [矛盾]/[待核实]/[已证伪] 标记）、宏观监测源、微信公众号文章检索、
+  Perplexity AI 搜索、以及第 4 套学术/基准/技术选型/尽调模板。
+  v2.2.0 新增（去粗取精、优先免费 API）：大幅扩充学术与开放科研数据源——OpenAlex/Semantic
+  Scholar/Crossref/arXiv/PubMed/bioRxiv/OpenCitations/EMBL-EBI(免费 API 直调)、Zenodo/Figshare/
+  哈佛 Dataverse/NASA(科研数据仓库)、引文溯源(Crossref/OpenCitations)；工程化讨论源
+  Stack Overflow/Hacker News/Reddit/知乎(MCP)/CSDN/Product Hunt/TechCrunch/Bluesky/X；
+  代码与模型平台 GitHub Trending/Hugging Face/魔塔 ModelScope。区分「🆓免费 API 直调」与
+  「🌐通用联网可达」两档，前者更稳更可复现。
 license: MIT
 compatibility: >
   WorkBuddy/CodeBuddy with web-access, agent-browser, agent-reach, markitdown, perplexity,
@@ -25,34 +31,48 @@ compatibility: >
   Connected MCPs add depth (all optional, degrade gracefully):
   tdx-connector / 通达信 (A-share financials F10 — used in the v2.0.0 competitive test),
   patsnap-search (patents), westock-mcp (finance), wk-workbuddy/yuandian-mcp (legal),
-  github (code/projects), ima-mcp (knowledge base).
+  zhihu (search_content + hot_list — connected), ima-mcp (knowledge base).
   On-demand MCPs (need user enable/connect): tyc-mcp / qcc-company (enterprise registry/risk),
-  sec-edgar (US SEC filings).
+  sec-edgar (US SEC filings), github (MCP currently NOT connected — use gh CLI + web instead).
   Macro data (general web reachable): Trading Economics, FRED, 国家统计局, 央行/证监会官网,
   财联社, 华尔街见闻 — register as optional "macro monitoring" sources.
   WeChat public-account article search (wechat-article-search skill) — high-value Chinese
   AI/tech signal source; fills the article-level gap left by UGC-comment-only coverage.
-  Scholarly sources (general web reachable; academic-research-hub / literature-search provide
-  multi-index retrieval + citation handling, license of the former is Proprietary — confirm
-  redistribution rights before embedding its scripts): arXiv, PubMed, Semantic Scholar,
-  Google Scholar, CNKI — treat as T3; honor access-ethics (no scraping of disallowed/auth sites).
-  General web reachable (no dedicated skill/connector; treat as T3–T4 depending on source):
-  Google Patents / USPTO / EPO for patents;
-  Hugging Face / ModelScope for AI models/code/docs/datasets; Wikipedia / Baidu Baike for background;
-  Reddit / Hacker News / Stack Overflow / Product Hunt / TechCrunch / 36Kr / Bluesky / X /
-  Zhihu / CSDN / 博客园 / V2EX / Xiaohongshu / Bilibili / YouTube / LinkedIn / Instagram /
-  抖音 / 微博 for UGC signals (agent-reach covers 14 platforms incl. diagnostics).
+  Scholarly / open-science sources — v2.2.0 expanded, FREE public REST APIs preferred
+  (🆓 directly callable via WebFetch/curl, no key or DEMO_KEY, far more robust than scraping):
+  OpenAlex (api.openalex.org — 250M+ works metadata, MAG successor), Semantic Scholar
+  (api.semanticscholar.org/graph/v1 — citation graph + TLDR), Crossref (api.crossref.org —
+  authoritative DOI metadata + references → citation provenance), arXiv (export.arxiv.org/api —
+  preprints), PubMed (eutils.ncbi.nlm.nih.gov — E-utilities, biomedical), bioRxiv/medRxiv
+  (api.biorxiv.org — bio preprints), OpenCitations (opencitations.net/index/api/v1 — open
+  citation network), EMBL-EBI / Europe PMC (ebi.ac.uk — bioinformatics + life-science lit).
+  Research-data / output repositories (🆓 free API): Zenodo (zenodo.org/api — CERN, DOI-minted),
+  Figshare (api.figshare.com/v2), Harvard Dataverse (dataverse.harvard.edu/api), NASA
+  (api.nasa.gov + data.nasa.gov). Nature/Science + CNKI: authoritative but full-text mostly
+  paywalled (abstracts public) — T1–T2 journals, cite DOI. Google Scholar: no official API,
+  user-exports only (access-ethics). literature-search skill = cleanest methodology reference;
+  academic-research-hub is Proprietary + needs OpenClawCLI → keep optional, do NOT hard-depend;
+  google-scholar-search (misnamed Semantic Scholar wrapper) is redundant → uninstall candidate.
+  Grade papers/preprints as T3 (authoritative preprints may rise to T2).
+  Code / AI-model platforms: GitHub search + Trending (gh CLI authenticated + web),
+  Hugging Face Hub API (🆓 huggingface.co/api), ModelScope /魔塔 (modelscope.cn — Chinese model
+  hub; user holds a read-only API token). Patents: patsnap-search MCP (connected),
+  Google Patents / USPTO / EPO / WIPO (public web).
+  Engineering-discussion & UGC (cross-validation signals, T4 unless authoritative): Stack Overflow
+  + Hacker News (🆓 free Stack Exchange / Algolia APIs), Reddit, Zhihu (zhihu MCP connected),
+  CSDN, Product Hunt, TechCrunch, 36Kr, Bluesky, X, Wikipedia / Baidu Baike (background, T3),
+  plus Xiaohongshu / Bilibili / YouTube / LinkedIn / 微博 / 抖音 via agent-reach (14 platforms).
   HONESTY RULE: only list skills/connectors actually available in the environment.
   Firecrawl (and any other absent service) is NOT bundled and must never be claimed as integrated.
 metadata:
-  version: "2.1.0"
+  version: "2.2.0"
   author: "Rain / WorkBuddy"
   adapted_from: "sota-research (Rain3Dmetrology) + RSSnewsnowTrendRadar (Rain3Dmetrology) 三方三角验证与联网查证注入机制 + 行业趋势深度调研五大板块模板 + 公司竞品深度调研四维框架/7字段证据清单/SWOT/情景推演 + market-researcher 的 TAM/SAM/SOM 市场测算/竞品4类法/2D定位图(作可选透镜) + material-organizer 的去重阈值与逐字引用铁律 + llm-wiki 的 Karpathy 增量沉淀/Lint 操作 + 黄益贺精英级分析咨询系统(Coze) 的 OPTIONAL 分析透镜库(波特五力/PESTEL/3C/BCG/价值链) + aihot/news-summary 注册为可选数据源 + NATO Admiralty source code + Cat-Research self-validation loop"
 ---
 
 # Deep Market Research Workflow — 深度市场调研工作流
 
-> 版本: 2.1.0 | 许可证: MIT
+> 版本: 2.2.0 | 许可证: MIT
 > 设计目标：**输出质量稳定、可复现、去重去旧去假去矛盾、并吸收真实用户热评**。对行业/赛道/产业链类查询，额外输出麦肯锡白皮书风格的五大板块结构；对公司/竞品尽调类查询，额外输出四维分析、7字段证据清单、SWOT 与情景推演。
 
 ---
@@ -78,6 +98,7 @@ metadata:
 - NATO Admiralty 信源评估码（A–F 可靠性 + 1–6 确认度）→ 适配为 4 级源分级
 - Cat-Research / OpenClaw 自验证闭环（事实单元拆解 + 多源交叉验证 + 矛盾消解不强行共识）
 - **v2.1.0 互补 Skill 吸收审计**：对 9 个已安装研究类 skill（intel-osint-daily / macro-monitor / news-summary / deep-research / agent-reach / wechat-article-search / perplexity / academic-research-hub / literature-search）做了"吸收/淘汰"审计，择优吸收其方法论（见下方「互补 Skill 方法论吸收 (v2.1.0)」小节），并明确拒绝各自的过度约束项——本流程的确定性 Step 0→8 管线与三套主模板始终为质量根基，新方法均为叠加。
+- **v2.2.0 学术与开放科研数据源大扩充（去粗取精、优先免费 API）**：把学术检索从"5 源抓取"升级为「🆓 免费 API 直调优先」的分层源库——论文/元数据（OpenAlex/Semantic Scholar/arXiv/PubMed/bioRxiv/EMBL-EBI）、引文溯源（Crossref/OpenCitations）、科研数据仓库（Zenodo/Figshare/哈佛 Dataverse/NASA）、专利（PatSnap 已连/Google Patents）、代码与模型（GitHub Trending/Hugging Face/魔塔）、工程化讨论（Stack Overflow/Hacker News/Reddit/知乎 MCP/CSDN/Product Hunt/TechCrunch/Bluesky/X）。核心是**区分「免费 API 直调（稳、可复现）」与「网页抓取（兜底）」两档**，并对学术三件套做优胜劣汰：留 `literature-search`、`academic-research-hub` 降为可选、`google-scholar-search` 列卸载候选。详见「新增模块 1」。
 
 > **模式选择**（第四节提供三套模板）：
 > - **通用深度调研模板**：通用主题、企业/产品/技术概览。
@@ -103,16 +124,50 @@ metadata:
 
 > 学术三件套 overlap 提示：`academic-research-hub` + `literature-search` + `google-scholar-search`（→审计建议卸载）同覆盖学术细分；吸收前两者后第三者冗余。
 
-#### 新增模块 1：学术数据源模块（源自 academic-research-hub + literature-search）
+#### 新增模块 1：学术与开放科研数据源模块（v2.2.0 大幅扩充，去粗取精、优先免费 API）
 
-当用户查询含"论文/SOTA/技术基准/学术/引用/文献"时，可启用学术检索分支：
+当用户查询含"论文/SOTA/技术基准/学术/引用/文献/科研数据/开源模型"时，可启用学术检索分支。**核心原则（去粗取精）**：多数权威学术源都有**免费公开 REST API**，可经 WebFetch/curl **直调**——比抓 HTML 或依赖 Proprietary/需外部 CLI 的 skill 更稳、更可复现。故本模块以「🆓 免费 API 直调」为首选，「🌐 通用联网可达（抓取/导出）」为兜底。
 
-- **多源并行检索**：arXiv（预印本）、PubMed（生物医学）、Semantic Scholar（引用网络）、Google Scholar（广覆盖）、CNKI（中文）。通过 WebSearch/WebFetch 或已装 `academic-research-hub` / `literature-search` skill 触发。
-- **范围澄清（先问后搜）**：主题、子领域、综述 vs 奠基性、时间范围。
-- **访问伦理**：不抓禁止自动访问或需登录的站点；Google Scholar 仅经用户导出使用。
-- **去重 / 分级**：按引用数 + 时效性去重；论文/综述按 T3 处理（权威预印本可升 T2）。
-- **引文格式（严格）**：`Authors. Title. Venue. Year. DOI/URL`；支持 BibTeX / RIS / JSON 导出。
-- **引文处理**：优先保留原文 DOI/URL，避免二手摘要失真。
+**A. 学术论文 / 元数据 / 引文溯源（🆓 免费 API 优先，均免 key）**
+
+| 源 | 入口 | 定位 | 层级 |
+|----|------|------|------|
+| **OpenAlex** | `api.openalex.org/works?search=` | 2.5 亿+ 论文/作者/机构元数据（MAG 继任者），学术元数据主库 | T3 |
+| **Semantic Scholar** | `api.semanticscholar.org/graph/v1/paper/search` | 引用网络 + TLDR 摘要 + 影响力字段 | T3 |
+| **Crossref** | `api.crossref.org/works?query=` | 权威 DOI 元数据 + 参考文献 → **引文溯源**主库 | T2–T3 |
+| **OpenCitations** | `opencitations.net/index/api/v1` | 开放引文网络（被引/引用关系）→ **引文溯源**补充 | T3 |
+| **arXiv** | `export.arxiv.org/api/query?search_query=` | 预印本（CS/物理/数学/AI），Atom API | T3（权威预印本可升 T2） |
+| **PubMed** | `eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed` | 生物医学文献库（E-utilities） | T3 |
+| **bioRxiv / medRxiv** | `api.biorxiv.org/details/biorxiv/` | 生物/医学预印本 | T3 |
+| **EMBL-EBI / Europe PMC** | `ebi.ac.uk` + `ebi.ac.uk/europepmc/webservices/rest/search` | 生物信息查询 + 生命科学文献 | T3 |
+| **Nature / Science 等期刊** | 官网 / DOI | 顶刊一手（摘要公开，全文多需订阅） | **T1–T2**，引 DOI |
+| **知网 CNKI** | 官网检索 | 中文核心文献（多需订阅） | T3 |
+| **Google Scholar** | 无官方 API | **仅用户导出**使用（访问伦理，不自动抓取） | T3 线索 |
+
+**B. 科研数据 / 成果仓库（🆓 免费 API，均带 DOI，可溯源）**
+
+| 源 | 入口 | 定位 |
+|----|------|------|
+| **Zenodo** | `zenodo.org/api/records?q=` | CERN 综合科研数据/软件/成果（DOI-minted） |
+| **Figshare** | `api.figshare.com/v2/articles?search_for=` | 学术成果/图表/数据集 |
+| **Harvard Dataverse** | `dataverse.harvard.edu/api/search?q=` | 哈佛多学科研究数据源 |
+| **NASA** | `api.nasa.gov` + `data.nasa.gov` | 航天/地球公共数据（DEMO_KEY 免费） |
+
+**C. 专利 / 代码 / AI 模型**
+
+| 源 | 入口 | 状态 |
+|----|------|------|
+| **智慧芽 PatSnap** | `patsnap-search` MCP | ✅ 已连（专利检索/家族/引用分析） |
+| **Google Patents / USPTO / EPO / WIPO** | 公开检索 | 🌐 通用联网可达 |
+| **GitHub 搜索 + Trending** | `gh` CLI（已认证）+ web | 开源实现/技术栈/Star 趋势（github MCP 当前未连，走 gh CLI） |
+| **Hugging Face** | `huggingface.co/api/models?search=` | 🆓 免费 API（模型/数据集/Spaces） |
+| **魔塔 ModelScope** | `modelscope.cn` | 🌐 中文 AI 模型库（用户持只读 API token 可直调） |
+
+- **范围澄清（先问后搜，源自 literature-search）**：主题、子领域、综述 vs 奠基性、时间范围。
+- **访问伦理**：不抓禁止自动访问或需登录的站点；Google Scholar 仅经用户导出；订阅库（Scopus/Web of Science）仅当用户提供 key/账号时启用，否则标"未覆盖"。
+- **去重 / 分级**：按引用数 + 时效性去重，重复时保留期刊/会议正式版优先于预印本；论文/综述按 T3 处理（权威预印本可升 T2）。
+- **引文格式（严格）**：`Authors. Title. Venue. Year. DOI/URL`；支持 BibTeX / RIS / JSON 导出；优先保留原文 DOI/URL，避免二手摘要失真。
+- **技能取舍（优胜劣汰）**：`literature-search`（纯方法论、官方 API 优先、无外部 CLI）为最优参考；`academic-research-hub`（Proprietary + 依赖 OpenClawCLI）仅作可选、不硬依赖；`google-scholar-search`（实为 Semantic Scholar 封装、命名误导）与上述及本模块完全重复 → 卸载候选。
 
 #### 新增模块 2：intel-brief 输出风格（源自 intel-osint-daily，可选）
 
@@ -207,11 +262,14 @@ metadata:
 │  搜索入口: Tavily(优先) → Perplexity(可选,需key) → web-access/agent-reach(兜底)     │
 │  专业数据库: 通达信(A股F10) 智慧芽(专利) 自选股/westock(财报) │
 │             威科/元典(法律) 天眼查/企查查(工商风险)        │
-│             GitHub(代码/项目) ima(知识库)                  │
-│  社媒/UGC: 知乎/小红书/CSDN/V2EX/Reddit/HN/SO/Bluesky/X/抖音/微博/LinkedIn/Instagram(仅作信号,agent-reach覆盖14平台) │
-│  学术/代码: Google Scholar/arXiv/PubMed/Semantic Scholar/CNKI(论文,学术模块)                 │
-│             Google Patents/USPTO/EPO(专利)                 │
-│             Hugging Face/魔塔ModelScope(模型/代码/数据集)    │
+│             GitHub(gh CLI+web,Trending) ima(知识库)        │
+│  社媒/UGC: 知乎(MCP:search+热榜)/小红书/CSDN/Reddit/HN/SO/Bluesky/X/抖音/微博/B站(信号,agent-reach覆盖14平台) │
+│  学术论文(🆓免费API直调优先): OpenAlex/Semantic Scholar/arXiv/PubMed/bioRxiv/EMBL-EBI(Europe PMC) │
+│  引文溯源: Crossref(DOI元数据+参考文献)/OpenCitations(开放引文网络)  │
+│           顶刊: Nature/Science(引DOI,T1-2); CNKI/Google Scholar(仅导出) │
+│  科研数据仓库(🆓免费API): Zenodo/Figshare/哈佛Dataverse/NASA(均带DOI) │
+│  专利: 智慧芽(已连)/Google Patents/USPTO/EPO/WIPO         │
+│  代码/模型: Hugging Face(🆓API)/魔塔ModelScope(用户有token)  │
 │  百科/背景: Wikipedia/百度百科                             │
 │  产品/创投: Product Hunt/TechCrunch/36氪/虎嗅
 │  宏观监测: Trading Economics/FRED/统计局/央行/证监会/财联社/华尔街见闻 │
@@ -315,7 +373,7 @@ metadata:
 # 深度调研报告：<主题>
 
 > 生成时间: <ISO> ｜ 调研范围: <地理/时间/竞品集> ｜ 质量分: <0–100>
-> 方法论: deep-market-research v2.1.0（源分级 + 三方三角验证 + ≥2源交叉验证 + 矛盾显式标注 + 增量Lint）
+> 方法论: deep-market-research v2.2.0（源分级 + 三方三角验证 + ≥2源交叉验证 + 矛盾显式标注 + 增量Lint）
 
 ## 1. 执行摘要
 - 三句话结论 + 最高置信度的 3 个关键发现 + 最大不确定性。
@@ -359,7 +417,7 @@ metadata:
 # 行业趋势深度调研：<赛道/行业>
 
 > 生成时间: <ISO> ｜ 调研范围: <地理/时间> ｜ 质量分: <0–100>
-> 方法论: deep-market-research v2.1.0 行业赛道模式
+> 方法论: deep-market-research v2.2.0 行业赛道模式
 
 ## 1. 执行摘要
 - 三句话结论 + 3 个最高置信度发现 + 最大不确定性。
@@ -408,7 +466,7 @@ metadata:
 # 公司/竞品深度调研：<目标公司> [vs <竞品 A/B/C>]
 
 > 生成时间: <ISO> ｜ 调研范围: <地理/时间> ｜ 质量分: <0–100>
-> 方法论: deep-market-research v2.1.0 公司/竞品模式
+> 方法论: deep-market-research v2.2.0 公司/竞品模式
 
 ## 0. 决策卡片（一页纸给决策者）
 - **一句话定位**: <公司在产业链中的核心位置>
@@ -498,7 +556,7 @@ metadata:
 # 学术 / 基准 / 技术选型调研：<主题>
 
 > 生成时间: <ISO> ｜ 调研范围: <地理/时间/文献集> ｜ 质量分: <0–100>
-> 方法论: deep-market-research v2.1.0 学术/基准模式（启用学术数据源模块 + 严格引文格式）
+> 方法论: deep-market-research v2.2.0 学术/基准模式（启用学术数据源模块 + 严格引文格式）
 
 ## 1. 执行摘要
 - 三句话结论 + 3 个最高置信度发现 + 最大不确定性。
@@ -507,7 +565,7 @@ metadata:
 - 主题、子领域、综述 vs 奠基性、时间范围（源自 literature-search 的范围澄清步骤）。
 
 ## 3. 文献 / 技术证据清单（带置信度）
-| 证据 ID | 事实陈述 | 来源(arXiv/PubMed/SS/G Scholar/CNKI) | 原文摘录 | 层级 | 确认度 | 置信度 | 日期 | 引用(DOI/URL) |
+| 证据 ID | 事实陈述 | 来源(OpenAlex/Semantic Scholar/Crossref/arXiv/PubMed/bioRxiv/Zenodo/HF/GitHub) | 原文摘录 | 层级 | 确认度 | 置信度 | 日期 | 引用(DOI/URL) |
 |---------|---------|----------|----------|------|--------|--------|------|---------------|
 | F001 | ... | | | T3 | A-1.. | Confirmed/... | | |
 
@@ -554,14 +612,18 @@ metadata:
 | 企业工商/风险 | `tyc-mcp`（天眼查）/`qcc-company`（企查查）MCP，按需连接 | 股权、司法、经营异常、行政处罚 |
 | 美股 / SEC | `sec-edgar` MCP，按需连接 | 10-K/10-Q/附注 |
 | 法律/合规 | `wk-workbuddy` / `yuandian-mcp` MCP（已连） | 诉讼/资质核查 |
-| 代码/项目 | `github` MCP（已连） | 开源实现/技术栈 |
-| 学术/论文(模块) | `academic-research-hub` / `literature-search`（多源检索+引文处理）+ WebSearch/WebFetch（Google Scholar / arXiv / PubMed / Semantic Scholar / CNKI） | 学术论文、引用网络；BibTeX/RIS/JSON 引文；访问伦理：不抓禁止/需登录站点（源自 v2.1.0 学术模块） |
+| 代码/项目 | `gh` CLI（已认证）+ web（GitHub 搜索 / Trending）；github MCP 当前未连 | 开源实现/技术栈/Star·PR 趋势 |
+| 学术论文(🆓免费API优先) | WebFetch/curl 直调：OpenAlex(`api.openalex.org`) / Semantic Scholar(`api.semanticscholar.org/graph/v1`) / arXiv(`export.arxiv.org/api`) / PubMed(`eutils.ncbi.nlm.nih.gov`) / bioRxiv(`api.biorxiv.org`) / EMBL-EBI·Europe PMC；`literature-search` skill 作方法论参考 | 论文元数据、引用网络、TLDR；免 key、可复现；顶刊引 DOI；Google Scholar 仅用户导出（源自 v2.2.0 学术模块） |
+| 引文溯源 | WebFetch 直调：Crossref(`api.crossref.org` — DOI 元数据+参考文献) / OpenCitations(`opencitations.net/index/api/v1` — 开放引文网络) | DOI 权威元数据、被引/引用关系（源自 v2.2.0） |
+| 科研数据仓库(🆓免费API) | WebFetch 直调：Zenodo(`zenodo.org/api`) / Figshare(`api.figshare.com/v2`) / 哈佛 Dataverse(`dataverse.harvard.edu/api`) / NASA(`api.nasa.gov`) | 数据集/软件/成果，均带 DOI 可溯源（源自 v2.2.0） |
+| 知乎(技术+反馈) | `zhihu` MCP（已连：search_content + hot_list） | 中文技术教程、用户反馈、产品体验交叉验证（T4 信号） |
 | AI 搜索(可选) | `perplexity` skill（需 `PERPLEXITY_API_KEY`） | 带引用 AI 搜索，与 Tavily 并列可选，无 key 跳过（源自 v2.1.0） |
 | 微信公众账号文章 | `wechat-article-search` skill | 中文一手深度内容，补 UGC 评论之外的文章级缺口（源自 v2.1.0） |
 | 宏观经济 | WebSearch/WebFetch（Trading Economics / FRED / 国家统计局 / 央行·证监会 / 财联社 / 华尔街见闻） | 宏观指标 + 超预期/不及预期判断，T3（源自 v2.1.0 宏观监测） |
-| AI 模型/代码/数据集 | WebSearch/WebFetch（Hugging Face / 魔塔 ModelScope）；如有 ModelScope API key 可直接调用 | 开源模型、应用文档 |
+| AI 模型/代码/数据集 | Hugging Face Hub API（🆓 `huggingface.co/api`）/ 魔塔 ModelScope（`modelscope.cn`，用户持只读 token 可直调） | 开源模型、数据集、应用文档 |
 | 开放百科 | WebSearch/WebFetch（Wikipedia / 百度百科） | 概念科普、背景知识 |
-| 产品/创投/开发者社区 | WebSearch/WebFetch + `agent-reach`（Product Hunt / TechCrunch / 36氪 / HN / SO / Reddit） | 市场热度、真实反馈 |
+| 产品/创投 | WebSearch/WebFetch + `agent-reach`（Product Hunt / TechCrunch / 36氪 / 虎嗅） | 新品发布、融资、市场热度 |
+| 开发者社区(工程化讨论) | Stack Overflow + Hacker News（🆓 Stack Exchange / Algolia API 免 key）/ Reddit / CSDN / `agent-reach` | 技术选型讨论、真实踩坑反馈（T4 信号） |
 | 知识库 | `ima-mcp` MCP（已连） / Obsidian / 本地 wiki | 用户自有资料 |
 | 文档净化 | `markitdown` | PDF/Word→Markdown，喂给 LLM |
 | 交叉验证 | 本工作流内 LLM 比对（把同一事实的多源描述喂给模型问"是否矛盾"） | 生成/验证分离 |
@@ -587,7 +649,8 @@ metadata:
 10. ❌ 透镜堆砌 → 波特五力/PESTEL/BCG/TAM-SOM 等经典框架是**可选分析透镜**，按查询意图触发，绝不每篇报告强制全套；它们不替代源分级与交叉验证（见「分析透镜库」）。
 11. ❌ 间接引用/数字失真 → **逐字引用铁律**（源自 material-organizer）：关键结论的摘录必须原文 `>` 引用块呈现，数字/日期/百分比与源完全一致；缺口标"信息不足"绝不猜测填充。
 12. ❌ 范围蔓延 → 本流程只做**二手案头研究**；不吸一手调研方法（问卷/Van Westendorp 定价/用户访谈），超范围能力不并入（market-researcher 一手部分已明确排除）。
-13. ❌ 强制新模块 → v2.1.0 新增的 intel-brief 输出风格、学术数据源模块、宏观监测、微信文章检索、Perplexity、模板 D 均为**可选叠加**，仅在查询意图匹配时启用；绝不每篇报告硬塞学术引文/宏观解读/intel-brief 三元。它们不替代 Step 0→8 主管线与模板 A/B/C 的质量根基，且与各来源 Skill 的过度约束项（硬格式/专属变量/外部 CLI 依赖）保持隔离。
+13. ❌ 强制新模块 → v2.1.0 的 intel-brief 输出风格、学术数据源模块、宏观监测、微信文章检索、Perplexity、模板 D，以及 v2.2.0 扩充的学术/开放科研数据源、引文溯源、科研数据仓库、工程化讨论源，均为**可选叠加**，仅在查询意图匹配时启用；绝不每篇报告硬塞全部数据源/学术引文/宏观解读/intel-brief 三元。它们不替代 Step 0→8 主管线与模板 A/B/C 的质量根基，且与各来源 Skill 的过度约束项（硬格式/专属变量/外部 CLI 依赖）保持隔离。
+14. ❌ 优先抓 HTML 而非用免费 API → v2.2.0 去粗取精原则：凡有免费公开 REST API 的学术/数据源（OpenAlex/Semantic Scholar/Crossref/arXiv/PubMed/bioRxiv/OpenCitations/EMBL-EBI/Zenodo/Figshare/Dataverse/NASA/Hugging Face/Stack Exchange/HN），一律**优先经 WebFetch/curl 直调 API**（稳、可复现、可溯源），仅在无 API 或受限时才退回网页抓取/用户导出（Google Scholar/CNKI/Nature 全文）。绝不硬依赖 Proprietary 或需外部 CLI 的 skill。
 
 ---
 
