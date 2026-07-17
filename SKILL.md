@@ -12,20 +12,23 @@ description: >
   赛道分析, 产业链研究, 投资机会, 公司调研, 竞品对位, 尽调, 帮我扒一下, 挖一下, 和 A/B/C 怎么对标.
 license: MIT
 compatibility: >
-  WorkBuddy/CodeBuddy with web-access, agent-reach, markitdown skills available.
-  Optional: Tavily API key (best search entry). Connected MCPs add depth:
+  WorkBuddy/CodeBuddy with web-access, agent-browser, agent-reach, markitdown skills available.
+  Search entry: built-in WebSearch/WebFetch; Tavily API key (best search entry) if present.
+  Connected MCPs add depth (all optional, degrade gracefully):
+  tdx-connector / 通达信 (A-share financials F10 — used in the v2.0.0 competitive test),
   patsnap-search (patents), westock-mcp (finance), wk-workbuddy/yuandian-mcp (legal),
-  github (code/projects), ima-mcp (knowledge base). All steps degrade gracefully when
-  a tool/key is absent.
+  github (code/projects), ima-mcp (knowledge base).
+  HONESTY RULE: only list skills/connectors actually available in the environment.
+  Firecrawl (and any other absent service) is NOT bundled and must never be claimed as integrated.
 metadata:
-  version: "1.5.0"
+  version: "2.0.0"
   author: "Rain / WorkBuddy"
   adapted_from: "sota-research (Rain3Dmetrology) + RSSnewsnowTrendRadar (Rain3Dmetrology) 三方三角验证与联网查证注入机制 + 行业趋势深度调研五大板块模板 + 公司竞品深度调研四维框架/7字段证据清单/SWOT/情景推演 + market-researcher 的 TAM/SAM/SOM 市场测算/竞品4类法/2D定位图(作可选透镜) + material-organizer 的去重阈值与逐字引用铁律 + llm-wiki 的 Karpathy 增量沉淀/Lint 操作 + 黄益贺精英级分析咨询系统(Coze) 的 OPTIONAL 分析透镜库(波特五力/PESTEL/3C/BCG/价值链) + aihot/news-summary 注册为可选数据源 + NATO Admiralty source code + Cat-Research self-validation loop"
 ---
 
 # Deep Market Research Workflow — 深度市场调研工作流
 
-> 版本: 1.5.0 | 许可证: MIT
+> 版本: 2.0.0 | 许可证: MIT
 > 设计目标：**输出质量稳定、可复现、去重去旧去假去矛盾、并吸收真实用户热评**。对行业/赛道/产业链类查询，额外输出麦肯锡白皮书风格的五大板块结构；对公司/竞品尽调类查询，额外输出四维分析、7字段证据清单、SWOT 与情景推演。
 
 ---
