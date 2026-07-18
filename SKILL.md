@@ -72,14 +72,14 @@ compatibility: >
   HONESTY RULE: only list skills/connectors actually available in the environment.
   Firecrawl (and any other absent service) is NOT bundled and must never be claimed as integrated.
 metadata:
-  version: "2.2.6"
+  version: "2.2.7"
   author: "Rain / WorkBuddy"
   adapted_from: "sota-research (Rain3Dmetrology) + RSSnewsnowTrendRadar (Rain3Dmetrology) 三方三角验证与联网查证注入机制 + 行业趋势深度调研五大板块模板 + 公司竞品深度调研四维框架/7字段证据清单/SWOT/情景推演 + market-researcher 的 TAM/SAM/SOM 市场测算/竞品4类法/2D定位图(作可选透镜) + material-organizer 的去重阈值与逐字引用铁律 + llm-wiki 的 Karpathy 增量沉淀/Lint 操作 + 黄益贺精英级分析咨询系统(Coze) 的 OPTIONAL 分析透镜库(波特五力/PESTEL/3C/BCG/价值链) + aihot/news-summary 注册为可选数据源 + NATO Admiralty source code + Cat-Research self-validation loop"
 ---
 
 # Deep Market Research Workflow — 深度市场调研工作流
 
-> 版本: 2.2.6 | 许可证: MIT
+> 版本: 2.2.7 | 许可证: MIT
 > 设计目标：**输出质量稳定、可复现、去重去旧去假去矛盾、并吸收真实用户热评**。对行业/赛道/产业链类查询，额外输出麦肯锡白皮书风格的五大板块结构；对公司/竞品尽调类查询，额外输出四维分析、7字段证据清单、SWOT 与情景推演。
 
 ---
@@ -104,7 +104,7 @@ metadata:
 - 黄益贺精英级分析咨询系统(Coze) 的 OPTIONAL 分析透镜库（波特五力/PESTEL/3C/BCG/价值链，仅作可选透镜）
 - NATO Admiralty 信源评估码（A–F 可靠性 + 1–6 确认度）→ 适配为 4 级源分级
 - Cat-Research / OpenClaw 自验证闭环（事实单元拆解 + 多源交叉验证 + 矛盾消解不强行共识）
-- **版本演进（摘要）**：v2.0.0 竞争对位实测 → v2.1.0 吸收 9 个互补研究类 skill 的方法论（去其过度约束项）→ v2.2.0 大幅扩充学术与开放科研数据源（优先 🆓 免费 API 直调）→ v2.2.1 去粗取精执行（永久删除 6 个冗余 absorbed skill，GitHub MCP 已连）→ v2.2.2 / v2.2.3 文档准确性与一致性修正 → **v2.2.4 规范性增强（新增 FAQ / 完整示例 / 本附录，并补充"环境受限≠能力不足"质量规则）**。**完整更新史与每项细节见文末「附录 A」。** → **v2.2.5 方法论 sharpening（anysearch 对齐）→ v2.2.6 对抗审计纪律（hyperresearch 吸收）**。
+- **版本演进（摘要）**：v2.0.0 竞争对位实测 → v2.1.0 吸收 9 个互补研究类 skill 的方法论（去其过度约束项）→ v2.2.0 大幅扩充学术与开放科研数据源（优先 🆓 免费 API 直调）→ v2.2.1 去粗取精执行（永久删除 6 个冗余 absorbed skill，GitHub MCP 已连）→ v2.2.2 / v2.2.3 文档准确性与一致性修正 → **v2.2.4 规范性增强（新增 FAQ / 完整示例 / 本附录，并补充"环境受限≠能力不足"质量规则）**。**完整更新史与每项细节见文末「附录 A」。** → **v2.2.5 方法论 sharpening（anysearch 对齐）→ v2.2.6 对抗审计纪律（hyperresearch 吸收）**。 → **v2.2.7 P1 集成（可选后端 + 沉淀结构化）+ 去粗取精（Step1 意图路由）**。
 
 
 > **模式选择**（第四节提供三套模板）：
@@ -263,6 +263,9 @@ metadata:
          ▼
 ┌──────────────────────────────────────────────────────────┐
 │ Step 1: 多源采集 (分层降级链 + 三段递进搜索)                │
+│  意图路由(Thin Router): 按查询意图选源——法律→威科/元典,   │
+│    专利→智慧芽, 代码→GitHub, 学术→🆓API, 中文UGC→知乎/    │
+│    小红书/公众号; 不每题全量扫所有源; 下方为可选菜单       │
 │  搜索策略: 第一段宏观锚定(市场规模/CAGR/政策)            │
 │           第二段产业链解剖(上下游利润分配/玩家格局/卡脖子) │
 │           第三段趋势预测与避坑(红利/颠覆技术/失败案例/反向)│
@@ -285,6 +288,9 @@ metadata:
 │  可选资讯: aihot(免key中文AI资讯) BBC/Reuters/Al Jazeera     │
 │           (国际一手新闻; 引用二手摘要须回溯源URL)            │
 │  降级:     主源失败自动切次源；每源记 (url, 日期, 层级)     │
+│  可选深度抓取后端: hyperresearch(Claude Code 环境,          │
+│    pip install 后作可选深度抓取; key-gated, 失败则跳过,    │
+│    不阻断 Step 0→8 主管线)                                │
 │  查证库:   维护优先级验证查询库(政策>人才>SOTA>社区反馈)，  │
 │           ≤18查×≤3结果控成本；无搜索key则优雅跳过不阻断    │
 └──────────────────────────────────────────────────────────┘
@@ -697,6 +703,8 @@ metadata:
 
 16. ❌ 终稿不经对抗审计 / 整篇 regenerate 掩盖 / 偷换议题 → 必须跑对抗式审计（corpus critic + ≥2 类并行 critic），仅做 surgical patch，canonical query 贯穿全篇，关键结论可回溯来源树，交付前勾 lint 自检清单（见「终稿纪律」小节）。这是输出可信度的最后一道闸门，与 Step 0–8 主管线互补，不新增工具/门槛。
 
+17. ❌ 把可选后端当必需 → hyperresearch / Tavily / Perplexity / web-access / agent-reach / agent-browser 均为**可选**增强：缺 key / 未安装 / 失败一律优雅跳过，绝不阻断 Step 0→8 主管线或报「无法完成」。主检索永远由内置 WebSearch / WebFetch + 🆓 免费 API 兜底（规则 14）。
+
 ---
 
 ## 七、触发与执行约定
@@ -705,7 +713,7 @@ metadata:
 - **行业赛道模式**：当查询含"行业趋势/赛道/产业链/投资机会/商业化落地/市场规模"时，默认采用模板 B（五大板块），并强制：利润穿透、至少 1 个反方观点、1–2 年趋势窗口、每板块 1 个非散文元素。
 - **公司/竞品模式**：当查询含"公司/竞品/尽调/扒一下/挖一下/对位/对标/我们和 A/B/C"时，默认采用模板 C，并强制：四维分析、7 字段证据清单、真实负面多渠道验证、SWOT、五类情景推演。多家对位时必含横向对比矩阵。
 - 默认跑完整 Step 0–8；若用户要"快版"，至少保留 Step1(采集) + Step4(交叉验证) + Step8(模板)，但必须在报告注明"快版，未全覆盖质量环"。
-- **增量知识沉淀（Karpathy 模式，源自 llm-wiki）**：每次完成后，把「评分卡 + 开放问题 + 核心证据」回写 ima 知识库，采用三层结构——① raw 源页（不可变，存原始 URL/摘录）② wiki 合成页（本次结论，绑定证据 ID）③ schema（统一字段：主题/玩家/评级/日期）。重跑同主题时先读历史 wiki 页，执行 **Lint 操作**扫描：矛盾论断（与旧页冲突）、过时论断（早于去年且未标 outdated）、孤儿页（源失效无新支撑）→ 在报告中显式标注"更新/推翻/维持"。避免重复采集、跨次矛盾无人管。
+- **增量知识沉淀（Karpathy 模式，源自 llm-wiki）**：每次完成后，把「评分卡 + 开放问题 + 核心证据」沉淀为**结构化 markdown note**（带 YAML frontmatter：topic / players / rating / date / sources[] / confidence，便于检索与跨次复用），落点三选一或并存：**ima 知识库（首选，已连）/ Obsidian（PARA 结构，适配本地第二大脑）/ 本地 wiki**，采用三层结构——① raw 源页（不可变，存原始 URL/摘录）② wiki 合成页（本次结论，绑定证据 ID）③ schema（统一字段：主题/玩家/评级/日期）。重跑同主题时先读历史 wiki 页，执行 **Lint 操作**扫描：矛盾论断（与旧页冲突）、过时论断（早于去年且未标 outdated）、孤儿页（源失效无新支撑）→ 在报告中显式标注"更新/推翻/维持"。避免重复采集、跨次矛盾无人管；建议维护一份**可检索索引**（按 topic 聚合 note 路径），让调研资产跨会话复利（不内建 SQLite，复用你已有 PARA / Obsidian 体系）。
 
 ## 八、常见问题（FAQ）
 
@@ -729,6 +737,9 @@ A：默认跑完整 Step 0–8；用户要"快版"时至少保留 Step1 + Step4 
 
 **Q7：增量知识沉淀一定要用 ima 吗？**
 A：ima-mcp 是首选（已连），但 Obsidian / 本地 wiki / 任意知识库均可；关键是三层结构（raw / wiki / schema）+ 重跑 Lint。不强制。
+
+**Q8：中文 / CJK 源（公众号、知乎、小红书、CNKI 等）能正常处理吗？**
+A：能，且是 dmr 的差异化优势。dmr 原生支持中文源采集与中文报告输出；对比竞品 hyperresearch 的已知缺陷（issue #37：其 `looks_like_junk()` 把**所有中文 / CJK 页面当 junk 直接丢弃**），dmr 明确保留中文页并视为一等信源（T3 / T4 按属性分级）。中文市场 / 竞品调研请放心使用，无需 workaround。
 
 ---
 
@@ -788,7 +799,7 @@ A：ima-mcp 是首选（已连），但 Obsidian / 本地 wiki / 任意知识库
 
 ---
 
-## 附录 A：完整更新史（v2.0.0 → v2.2.6）
+## 附录 A：完整更新史（v2.0.0 → v2.2.7）
 
 - **v2.0.0**：竞争对位实测，验证 Step 0–8 主管线与源分级框架；确立 NATO Admiralty 4 级源分级与 ≥2 源交叉验证硬规则。
 - **v2.1.0**：吸收 9 个互补研究类 skill 的方法论（去其过度约束项，叠加不替换）；新增 intel-brief 输出风格（事实→影响→原因 + [矛盾] / [待核实] / [已证伪]）、宏观监测源、微信公众号文章检索、Perplexity AI 搜索、第 4 套学术 / 基准 / 技术选型 / 尽调模板 D。
@@ -799,3 +810,4 @@ A：ima-mcp 是首选（已连），但 Obsidian / 本地 wiki / 任意知识库
 - **v2.2.4**：规范性增强（回应 SkillHub TRACE 测评 Convention 4.3 短板）。新增**常见问题 FAQ**、**完整端到端示例（Step 0→8 落地）**、**本附录 A（完整更新史）**；补充质量规则 15「环境受限≠能力不足」（核心源不可达时显式标注未覆盖，不降级为低置信结论）；并将 〇 节的冗长更新史压缩为摘要 + 附录指针，降低文档密度。本地 / 仓库 / 发布包三端统一为 v2.2.4。
 - **v2.2.5**：方法论 sharpening（仅措辞显式化，零新工具 / 零新硬门槛，回应 anysearch 方法论对齐审计）。Step 2 去重补「**信息密度优先**」选择准则 + 「**同源多样性权重（同源衰减）**」防单域霸屏；Step 2 新增「**语义相关度 × 时效 × 源层级 三轴混合**」排序准则（与 Step 5 冲突裁决轴互补）。不替 WebSearch、不动 Step 0→8 主管线、不接 anysearch 工具、不新设数值门槛；anysearch 厂商自称 76.4% 准确率 / 快 31% 属 [VENDOR CLAIM]，不写进 dmr 质量声明。本地 / 仓库 / 发布包三端统一为 v2.2.5。
 - **v2.2.6**：对抗式审计纪律（吸收 hyperresearch 方法论，纯提示词零依赖）。新增「终稿纪律」小节——① 对抗式审计(corpus critic + ≥2 类并行 critic：事实一致性/源层级一致性/时效/反向观点遗漏) ② patch-never-regenerate（终稿只 surgical edit）③ canonical query gospel（用户原话贯穿）④ provenance 来源树 ⑤ 输出前 lint 自检清单(6 项)；Step 7 质量环补对抗审计线；新增质量规则 16。不替 WebSearch、不动 Step 0→8 主管线、不新增工具/数值门槛、不降搜索/输出质量。本地 / 仓库 / 发布包三端统一为 v2.2.6。
+- **v2.2.7**：P1 集成 + 去粗取精（吸收 hyperresearch，集成 > 自造）。① 增量沉淀升级为**结构化 markdown note**（YAML frontmatter + 可检索索引），显式对接 ima / Obsidian(PARA) / 本地 wiki（不内建 SQLite）；② hyperresearch 注册为**可选深度抓取后端**（Claude Code 环境，key-gated，失败跳过不阻断主管线，镜像 Tavily 处理）+ 质量规则 17；③ Step 1 加**意图路由 hint（thin router 思想）**——按查询意图选源、catalog 保留为可选菜单不删，去粗取精不降搜索质量；④ FAQ Q8 文档化**中文/CJK 优势**（对比 hyperresearch #37 CJK junk bug，明确不吸收）。本地 / 仓库 / 发布包三端统一为 v2.2.7。
