@@ -72,14 +72,14 @@ compatibility: >
   HONESTY RULE: only list skills/connectors actually available in the environment.
   Firecrawl (and any other absent service) is NOT bundled and must never be claimed as integrated.
 metadata:
-  version: "2.2.4"
+  version: "2.2.5"
   author: "Rain / WorkBuddy"
   adapted_from: "sota-research (Rain3Dmetrology) + RSSnewsnowTrendRadar (Rain3Dmetrology) 三方三角验证与联网查证注入机制 + 行业趋势深度调研五大板块模板 + 公司竞品深度调研四维框架/7字段证据清单/SWOT/情景推演 + market-researcher 的 TAM/SAM/SOM 市场测算/竞品4类法/2D定位图(作可选透镜) + material-organizer 的去重阈值与逐字引用铁律 + llm-wiki 的 Karpathy 增量沉淀/Lint 操作 + 黄益贺精英级分析咨询系统(Coze) 的 OPTIONAL 分析透镜库(波特五力/PESTEL/3C/BCG/价值链) + aihot/news-summary 注册为可选数据源 + NATO Admiralty source code + Cat-Research self-validation loop"
 ---
 
 # Deep Market Research Workflow — 深度市场调研工作流
 
-> 版本: 2.2.4 | 许可证: MIT
+> 版本: 2.2.5 | 许可证: MIT
 > 设计目标：**输出质量稳定、可复现、去重去旧去假去矛盾、并吸收真实用户热评**。对行业/赛道/产业链类查询，额外输出麦肯锡白皮书风格的五大板块结构；对公司/竞品尽调类查询，额外输出四维分析、7字段证据清单、SWOT 与情景推演。
 
 ---
@@ -293,11 +293,18 @@ metadata:
 ┌──────────────────────────────────────────────────────────┐
 │ Step 2: 去重 + 去旧 + 信号门 + URL 验活                    │
 │  去重: 归一化标题/正文 → 内容哈希 → 同一信息只留最完整版   │
+│        (信息密度优先: 同义结论优先取含数字/一手数据/        │
+│         specifics 更密的一版);                            │
 │        阈值: 相似度>70% 或 同源 或 标题编辑距<3 → 合并;    │
-│        对立观点双方案保留(不强行合一, 见 Step 5)            │
+│        对立观点双方案保留(不强行合一, 见 Step 5);          │
+│        合并后若某域仍聚簇多个同质结果,排序做多样性权重      │
+│        (同源衰减),避免单域霸屏                            │
 │  去旧: 市场/趋势类主张优先近 3–6 月；                      │
 │        早于去年的数据强制标注 `outdated`（可作历史参考）  │
 │        常青事实(官方文档/基本面)保留但标"evergreen"        │
+│  排序准则: 语义相关度 × 时效 × 源层级 三轴混合——          │
+│        先按与查询意图的相关度粗排,再按时效与源层级精排      │
+│        (与 Step 5 冲突裁决轴 源层级>时效>详实度 互补)       │
 │  信号门: 超新鲜窗口(默认>7天且非evergreen)丢弃；          │
 │          低信号(<阈值)噪声项降级或剔除                     │
 │  假源过滤: 清 SEO 站/内容农场/机器 spun 文(低信号高广告)   │
@@ -751,7 +758,7 @@ A：ima-mcp 是首选（已连），但 Obsidian / 本地 wiki / 任意知识库
 
 ---
 
-## 附录 A：完整更新史（v2.0.0 → v2.2.4）
+## 附录 A：完整更新史（v2.0.0 → v2.2.5）
 
 - **v2.0.0**：竞争对位实测，验证 Step 0–8 主管线与源分级框架；确立 NATO Admiralty 4 级源分级与 ≥2 源交叉验证硬规则。
 - **v2.1.0**：吸收 9 个互补研究类 skill 的方法论（去其过度约束项，叠加不替换）；新增 intel-brief 输出风格（事实→影响→原因 + [矛盾] / [待核实] / [已证伪]）、宏观监测源、微信公众号文章检索、Perplexity AI 搜索、第 4 套学术 / 基准 / 技术选型 / 尽调模板 D。
@@ -760,3 +767,4 @@ A：ima-mcp 是首选（已连），但 Obsidian / 本地 wiki / 任意知识库
 - **v2.2.2**：文档准确性修正——将 6 个 skill 由「归档(可恢复)」更正为「永久删除(不可逆)」，消除与 v2.2.1 主题的残留矛盾。
 - **v2.2.3**：文档一致性修正——消除 SKILL.md 兼容性块英文 stale 措辞 `(archived, recoverable)` → `(permanently removed, irreversible)`；本地 skill / 仓库 / 发布包三端统一为 v2.2.3，无隐私泄露。
 - **v2.2.4**：规范性增强（回应 SkillHub TRACE 测评 Convention 4.3 短板）。新增**常见问题 FAQ**、**完整端到端示例（Step 0→8 落地）**、**本附录 A（完整更新史）**；补充质量规则 15「环境受限≠能力不足」（核心源不可达时显式标注未覆盖，不降级为低置信结论）；并将 〇 节的冗长更新史压缩为摘要 + 附录指针，降低文档密度。本地 / 仓库 / 发布包三端统一为 v2.2.4。
+- **v2.2.5**：方法论 sharpening（仅措辞显式化，零新工具 / 零新硬门槛，回应 anysearch 方法论对齐审计）。Step 2 去重补「**信息密度优先**」选择准则 + 「**同源多样性权重（同源衰减）**」防单域霸屏；Step 2 新增「**语义相关度 × 时效 × 源层级 三轴混合**」排序准则（与 Step 5 冲突裁决轴互补）。不替 WebSearch、不动 Step 0→8 主管线、不接 anysearch 工具、不新设数值门槛；anysearch 厂商自称 76.4% 准确率 / 快 31% 属 [VENDOR CLAIM]，不写进 dmr 质量声明。本地 / 仓库 / 发布包三端统一为 v2.2.5。
