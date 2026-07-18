@@ -180,7 +180,7 @@ The skill itself works using the agent's built-in web tools (WebSearch / WebFetc
 
 - **FAQ (7 questions)**: how this skill differs from WebSearch, what to do when core sources are unreachable, how to choose templates B/C/D, whether a paid key is needed, how to handle contradictory sources, report length, whether incremental accumulation must use ima — see SKILL.md [Section 8 · FAQ](SKILL.md).
 - **End-to-end example**: from the user query "Research China's industrial-robot track + reducer localization + Estun/Inovance positioning" to the per-step outputs of Step 0→8 (collection / dedupe / validation / contradiction resolution / tiering / template / scorecard) — see SKILL.md [Section 9 · Full Example](SKILL.md).
-- **Full changelog**: every change detail from v2.0.0 → v2.2.10 — see SKILL.md [Appendix A](SKILL.md#appendix-a-full-changelog-v200--v2210).
+- **Full changelog**: every change detail from v2.0.0 → v2.2.10 — see SKILL.md [Appendix A](SKILL.md#附录-a完整更新史v200--v2210).
 
 ---
 
