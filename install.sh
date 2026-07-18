@@ -7,14 +7,14 @@ SKILL_DIR="deep-market-research"
 SRC="$(cd "$(dirname "$0")" && pwd)"
 
 # 要复制的文件（排除 .git 与安装脚本自身）
-FILES=(SKILL.md README.md LICENSE CONTRIBUTING.md .gitignore)
+FILES=(SKILL.md README.md README_EN.md LICENSE CONTRIBUTING.md .gitignore)
 
 # 各平台 skills 根目录（存在的才安装）
 TARGETS=(
   "$HOME/.claude/skills"
   "$HOME/.codex/skills"
   "$HOME/.trae/skills"
-  "$HOME/.qodo/skills"
+  "$HOME/.qoder/skills"
   "$HOME/.workbuddy/skills"
 )
 
@@ -35,7 +35,7 @@ if [ "$installed" -eq 0 ]; then
   echo "No supported agent skills directory found on this machine."
   echo "  Manually copy this folder to your agent's skills directory, e.g.:"
   echo "    cp -r $SRC \"\$HOME/.claude/skills/$SKILL_DIR\""
-  echo "  Supported: ~/.claude ~/.codex ~/.trae ~/.qodo ~/.workbuddy"
+  echo "  Supported: ~/.claude ~/.codex ~/.trae ~/.qoder ~/.workbuddy"
   exit 1
 fi
 

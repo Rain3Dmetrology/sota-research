@@ -19,7 +19,7 @@
 
 ## 兼容性
 
-改动需确保 Skill 仍能被 Claude Code / OpenAI Codex / TRAE / Qodo / WorkBuddy 等 agentskills 兼容平台正常加载。
+改动需确保 Skill 仍能被 Claude Code / OpenAI Codex / TRAE / Qoder / WorkBuddy 等 agentskills 兼容平台正常加载。
 
 ## 许可证
 
