@@ -72,14 +72,14 @@ compatibility: >
   HONESTY RULE: only list skills/connectors actually available in the environment.
   Firecrawl (and any other absent service) is NOT bundled and must never be claimed as integrated.
 metadata:
-  version: "2.2.5"
+  version: "2.2.6"
   author: "Rain / WorkBuddy"
   adapted_from: "sota-research (Rain3Dmetrology) + RSSnewsnowTrendRadar (Rain3Dmetrology) 三方三角验证与联网查证注入机制 + 行业趋势深度调研五大板块模板 + 公司竞品深度调研四维框架/7字段证据清单/SWOT/情景推演 + market-researcher 的 TAM/SAM/SOM 市场测算/竞品4类法/2D定位图(作可选透镜) + material-organizer 的去重阈值与逐字引用铁律 + llm-wiki 的 Karpathy 增量沉淀/Lint 操作 + 黄益贺精英级分析咨询系统(Coze) 的 OPTIONAL 分析透镜库(波特五力/PESTEL/3C/BCG/价值链) + aihot/news-summary 注册为可选数据源 + NATO Admiralty source code + Cat-Research self-validation loop"
 ---
 
 # Deep Market Research Workflow — 深度市场调研工作流
 
-> 版本: 2.2.5 | 许可证: MIT
+> 版本: 2.2.6 | 许可证: MIT
 > 设计目标：**输出质量稳定、可复现、去重去旧去假去矛盾、并吸收真实用户热评**。对行业/赛道/产业链类查询，额外输出麦肯锡白皮书风格的五大板块结构；对公司/竞品尽调类查询，额外输出四维分析、7字段证据清单、SWOT 与情景推演。
 
 ---
@@ -104,7 +104,7 @@ metadata:
 - 黄益贺精英级分析咨询系统(Coze) 的 OPTIONAL 分析透镜库（波特五力/PESTEL/3C/BCG/价值链，仅作可选透镜）
 - NATO Admiralty 信源评估码（A–F 可靠性 + 1–6 确认度）→ 适配为 4 级源分级
 - Cat-Research / OpenClaw 自验证闭环（事实单元拆解 + 多源交叉验证 + 矛盾消解不强行共识）
-- **版本演进（摘要）**：v2.0.0 竞争对位实测 → v2.1.0 吸收 9 个互补研究类 skill 的方法论（去其过度约束项）→ v2.2.0 大幅扩充学术与开放科研数据源（优先 🆓 免费 API 直调）→ v2.2.1 去粗取精执行（永久删除 6 个冗余 absorbed skill，GitHub MCP 已连）→ v2.2.2 / v2.2.3 文档准确性与一致性修正 → **v2.2.4 规范性增强（新增 FAQ / 完整示例 / 本附录，并补充"环境受限≠能力不足"质量规则）**。**完整更新史与每项细节见文末「附录 A」。**
+- **版本演进（摘要）**：v2.0.0 竞争对位实测 → v2.1.0 吸收 9 个互补研究类 skill 的方法论（去其过度约束项）→ v2.2.0 大幅扩充学术与开放科研数据源（优先 🆓 免费 API 直调）→ v2.2.1 去粗取精执行（永久删除 6 个冗余 absorbed skill，GitHub MCP 已连）→ v2.2.2 / v2.2.3 文档准确性与一致性修正 → **v2.2.4 规范性增强（新增 FAQ / 完整示例 / 本附录，并补充"环境受限≠能力不足"质量规则）**。**完整更新史与每项细节见文末「附录 A」。** → **v2.2.5 方法论 sharpening（anysearch 对齐）→ v2.2.6 对抗审计纪律（hyperresearch 吸收）**。
 
 
 > **模式选择**（第四节提供三套模板）：
@@ -359,6 +359,9 @@ metadata:
 │  评分维度(例: 竞品/技术): 市场存在感30 + 技术成熟度25      │
 │           + 势头/动量20 + 用户口碑15 + 风险10 → A+~D       │
 │  质量环: ≥2 轮(最多5)，Critic 多维打分，ratchet 保最优版  │
+│  对抗审计: 终稿前跑 corpus critic + ≥2 类并行 critic        │
+│    (事实一致性/源层级一致性/时效/反向观点遗漏)→ 缺陷回对应  │
+│    Step 修补, 不整篇 regenerate 掩盖                        │
 │  加权质量分 = 源25% + 事实35% + 结论40%                    │
 └──────────────────────────────────────────────────────────┘
          │
@@ -371,6 +374,31 @@ metadata:
 ```
 
 ---
+
+### 终稿纪律：对抗式审计 + 来源树 + lint 自检（吸收 hyperresearch 方法论，纯提示词零依赖）
+
+> 以下为 Step 7→8 终稿阶段的质量纪律，**不新增工具、不新增数值门槛、不阻断 Step 0→8 主管线**。
+
+- **① 对抗式审计（adversarial audit）**：终稿交付前，必须独立跑一轮「对抗式审计」——以一个 corpus critic 通读全篇找自相矛盾/无源结论，并至少并行 2 类 critic 角色挑战：
+  - *事实一致性 critic*：每条结论是否都有对应 (源, 层级, 日期) 支撑？
+  - *源层级 critic*：是否把 Tier 4 当成了硬事实？Confirmed 是否真有 ≥2 独立 Tier1–3？
+  - *时效 critic*：趋势/市场类主张是否用了近 3–6 月？outdated 是否标了？
+  - *反向观点 critic*：是否遗漏了 contrarian / 失败案例 / 看空视角（尤其行业赛道类）？
+  - 发现缺陷 → **回到对应 Step 局部修补**，不整篇 regenerate 掩盖旧错。
+
+- **② patch-never-regenerate 原则**：终稿只允许 surgical edit（局部 patch）；禁止为「修正一处」而整篇重新生成（regenerate 易丢失已验证事实、引入新错）。每次 patch 后重跑一次对抗审计确认未引入回归。
+
+- **③ canonical query gospel（用户原话贯穿）**：Step 0 澄清出的「决策用途 / 竞品集 / 地理时间范围 / 输出形态」是 gospel，贯穿全篇；终稿必须可逐条回推到原始问题，**禁止临场偷换议题或扩大范围**。范围蔓延须显式标注「超出原定范围」。
+
+- **④ provenance 来源树**：关键结论须能回溯到传导链——一手源(T1) → 二手源(T3) → 社媒信号(T4) 的来龙去脉，建议以「来源树」呈现（谁引用谁、哪级定结论），不可只抛结论无痕。与第二节置信标签互补。
+
+- **⑤ 输出前 lint 自检清单**（交付前逐项勾，缺一项不交付）：
+  1. 每条源带 (URL/DOI, 层级, 日期)；
+  2. Confirmed 须 ≥2 独立 Tier1–3，否则降档；
+  3. 矛盾未强行合一（Conflicting 双方案并列）；
+  4. 推断/解读标 LOW 且注明假设；
+  5. 开放问题已列「环境受限未覆盖」项（规则 15）；
+  6. 无死链（Step 2 URL 验活通过）。
 
 ## 四、输出模板（每次调研都套用，保证稳定）
 
@@ -667,6 +695,8 @@ metadata:
 14. ❌ 优先抓 HTML 而非用免费 API → v2.2.0 去粗取精原则：凡有免费公开 REST API 的学术/数据源（OpenAlex/Semantic Scholar/Crossref/arXiv/PubMed/bioRxiv/OpenCitations/EMBL-EBI/Zenodo/Figshare/Dataverse/NASA/Hugging Face/Stack Exchange/HN），一律**优先经 WebFetch/curl 直调 API**（稳、可复现、可溯源），仅在无 API 或受限时才退回网页抓取/用户导出（Google Scholar/CNKI/Nature 全文）。绝不硬依赖 Proprietary 或需外部 CLI 的 skill。
 15. ❌ 把「环境受限」误判为「能力不足」 → 当核心数据源（OpenAlex / Semantic Scholar / 知乎 MCP / 学术论文 🆓 API 等）因网络/区域不可达而失败时，必须**显式标注该维度"因环境受限未覆盖"**，并在「开放问题」中单列，绝不将其降格为低置信结论或编造填充；换用兜底源（web 抓取 / 其他 API / 已连 MCP）时须注明降级路径。严格区分"Skill 能力边界"与"运行环境限制"——这是输出准确性的前提，也是避免被误判为结论质量缺陷的关键。
 
+16. ❌ 终稿不经对抗审计 / 整篇 regenerate 掩盖 / 偷换议题 → 必须跑对抗式审计（corpus critic + ≥2 类并行 critic），仅做 surgical patch，canonical query 贯穿全篇，关键结论可回溯来源树，交付前勾 lint 自检清单（见「终稿纪律」小节）。这是输出可信度的最后一道闸门，与 Step 0–8 主管线互补，不新增工具/门槛。
+
 ---
 
 ## 七、触发与执行约定
@@ -758,7 +788,7 @@ A：ima-mcp 是首选（已连），但 Obsidian / 本地 wiki / 任意知识库
 
 ---
 
-## 附录 A：完整更新史（v2.0.0 → v2.2.5）
+## 附录 A：完整更新史（v2.0.0 → v2.2.6）
 
 - **v2.0.0**：竞争对位实测，验证 Step 0–8 主管线与源分级框架；确立 NATO Admiralty 4 级源分级与 ≥2 源交叉验证硬规则。
 - **v2.1.0**：吸收 9 个互补研究类 skill 的方法论（去其过度约束项，叠加不替换）；新增 intel-brief 输出风格（事实→影响→原因 + [矛盾] / [待核实] / [已证伪]）、宏观监测源、微信公众号文章检索、Perplexity AI 搜索、第 4 套学术 / 基准 / 技术选型 / 尽调模板 D。
@@ -768,3 +798,4 @@ A：ima-mcp 是首选（已连），但 Obsidian / 本地 wiki / 任意知识库
 - **v2.2.3**：文档一致性修正——消除 SKILL.md 兼容性块英文 stale 措辞 `(archived, recoverable)` → `(permanently removed, irreversible)`；本地 skill / 仓库 / 发布包三端统一为 v2.2.3，无隐私泄露。
 - **v2.2.4**：规范性增强（回应 SkillHub TRACE 测评 Convention 4.3 短板）。新增**常见问题 FAQ**、**完整端到端示例（Step 0→8 落地）**、**本附录 A（完整更新史）**；补充质量规则 15「环境受限≠能力不足」（核心源不可达时显式标注未覆盖，不降级为低置信结论）；并将 〇 节的冗长更新史压缩为摘要 + 附录指针，降低文档密度。本地 / 仓库 / 发布包三端统一为 v2.2.4。
 - **v2.2.5**：方法论 sharpening（仅措辞显式化，零新工具 / 零新硬门槛，回应 anysearch 方法论对齐审计）。Step 2 去重补「**信息密度优先**」选择准则 + 「**同源多样性权重（同源衰减）**」防单域霸屏；Step 2 新增「**语义相关度 × 时效 × 源层级 三轴混合**」排序准则（与 Step 5 冲突裁决轴互补）。不替 WebSearch、不动 Step 0→8 主管线、不接 anysearch 工具、不新设数值门槛；anysearch 厂商自称 76.4% 准确率 / 快 31% 属 [VENDOR CLAIM]，不写进 dmr 质量声明。本地 / 仓库 / 发布包三端统一为 v2.2.5。
+- **v2.2.6**：对抗式审计纪律（吸收 hyperresearch 方法论，纯提示词零依赖）。新增「终稿纪律」小节——① 对抗式审计(corpus critic + ≥2 类并行 critic：事实一致性/源层级一致性/时效/反向观点遗漏) ② patch-never-regenerate（终稿只 surgical edit）③ canonical query gospel（用户原话贯穿）④ provenance 来源树 ⑤ 输出前 lint 自检清单(6 项)；Step 7 质量环补对抗审计线；新增质量规则 16。不替 WebSearch、不动 Step 0→8 主管线、不新增工具/数值门槛、不降搜索/输出质量。本地 / 仓库 / 发布包三端统一为 v2.2.6。
