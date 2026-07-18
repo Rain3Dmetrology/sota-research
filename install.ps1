@@ -3,13 +3,13 @@
 
 $SkillDir = "deep-market-research"
 $Src = Split-Path -Parent $MyInvocation.MyCommand.Path
-$Files = @("SKILL.md", "README.md", "LICENSE", "CONTRIBUTING.md", ".gitignore")
+$Files = @("SKILL.md", "README.md", "README_EN.md", "LICENSE", "CONTRIBUTING.md", ".gitignore")
 
 $Targets = @(
   "$env:USERPROFILE\.claude\skills",
   "$env:USERPROFILE\.codex\skills",
   "$env:USERPROFILE\.trae\skills",
-  "$env:USERPROFILE\.qodo\skills",
+  "$env:USERPROFILE\.qoder\skills",
   "$env:USERPROFILE\.workbuddy\skills"
 )
 
