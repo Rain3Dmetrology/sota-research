@@ -9,12 +9,13 @@ Follows the [Agent Skills open standard](https://agentskills.io/) (initiated by 
 
 ---
 
-## ✨ Features (v2.2.9)
+## ✨ Features (v2.2.10)
 
 > Core difference vs generic AI search / deep-research skills: **dmr is not a search wrapper — it is a reproducible, confidence-labeled research pipeline with adversarial final-draft auditing.**
 
 ### Version evolution (newest first)
 
+- **v2.2.10 Optional search backend appendix reinforcement**: registers AnySearch (pre-filter RRF/deduplication; its 76.4% claim is marked as [VENDOR CLAIM] only) and Metaso/秘塔搜索 (domestic AI search + fact-checking) as optional CN enhancements; keeps key-free graceful degradation, adds no default dependency, does not touch the Step 0→8 main pipeline.
 - **v2.2.7 P1 integration + de-cluttering**: structured markdown asset accumulation + optional hyperresearch deep backend + Step 1 intent routing + native Chinese/CJK advantage.
 - **v2.2.6 Adversarial audit discipline**: corpus critic + 4 parallel critics + patch-never-regenerate + provenance source tree + final-draft lint checklist.
 - **v2.2.5 Search methodology sharpening**: information-density first, cross-source diversity weighting, semantic × recency × source-tier three-axis hybrid ranking.
@@ -179,7 +180,7 @@ The skill itself works using the agent's built-in web tools (WebSearch / WebFetc
 
 - **FAQ (7 questions)**: how this skill differs from WebSearch, what to do when core sources are unreachable, how to choose templates B/C/D, whether a paid key is needed, how to handle contradictory sources, report length, whether incremental accumulation must use ima — see SKILL.md [Section 8 · FAQ](SKILL.md).
 - **End-to-end example**: from the user query "Research China's industrial-robot track + reducer localization + Estun/Inovance positioning" to the per-step outputs of Step 0→8 (collection / dedupe / validation / contradiction resolution / tiering / template / scorecard) — see SKILL.md [Section 9 · Full Example](SKILL.md).
-- **Full changelog**: every change detail from v2.0.0 → v2.2.9 — see SKILL.md [Appendix A](SKILL.md).
+- **Full changelog**: every change detail from v2.0.0 → v2.2.10 — see SKILL.md [Appendix A](SKILL.md#appendix-a-full-changelog-v200--v2210).
 
 ---
 
