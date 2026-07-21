@@ -168,7 +168,7 @@ metadata:
 | **智慧芽 PatSnap** | `patsnap-search` MCP | ✅ 真实可用（专利检索/家族/引用分析） |
 | **Google Patents / USPTO / EPO / WIPO** | 公开检索 | 🌐 通用联网可达 |
 | **GitHub 搜索 + Trending** | `github` MCP + `gh` CLI（已认证）+ web | 开源实现/技术栈/Star·PR 趋势（MCP 直连优先，gh CLI 兜底） |
-| **Hugging Face** | `huggingface.co/api/models?search=` | 🆓 免费 API（模型/数据集/Spaces） |
+| **Hugging Face** | `huggingface.co/mcp`（MCP 已连）| ✅ MCP 已连（模型/数据集/Spaces/Papers） |
 | **魔塔 ModelScope** | `modelscope.cn` | 🌐 中文 AI 模型库（用户持只读 API token 可直调） |
 
 - **范围澄清（先问后搜，源自 literature-search）**：主题、子领域、综述 vs 奠基性、时间范围。
@@ -690,7 +690,7 @@ metadata:
 | 学术论文(🆓免费API优先) | WebFetch/curl 直调：OpenAlex / Semantic Scholar / arXiv / PubMed / bioRxiv / EMBL-EBI·Europe PMC（免 key、可复现） | — （已是免费 API，无需增强） |
 | 引文溯源 | WebFetch 直调：Crossref / OpenCitations（DOI 元数据 + 引文网络） | — |
 | 科研数据仓库(🆓免费API) | WebFetch 直调：Zenodo / Figshare / 哈佛 Dataverse / NASA（均带 DOI） | — |
-| 知乎(技术+反馈) | WebSearch 知乎（WebFetch 抓页） | zhihu MCP 🎯（平台特定） |
+| 知乎(技术+反馈) | WebSearch 知乎（WebFetch 抓页） | zhihu MCP 🎯（已连·平台特定） |
 | AI 搜索(可选) | 内置 `web_search`（带引用优先） | Perplexity 🎯 / Tavily 🥈 / AnySearch 🎯 / 秘塔搜索 🎯（需 key 则跳过） |
 | 微信公众账号文章 | WebSearch 公众号文章 | wechat-article-search skill 🎯（平台特定） |
 | 宏观经济 | WebSearch（Trading Economics / FRED / 统计局 / 央行 / 财联社） | — |
