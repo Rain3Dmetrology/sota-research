@@ -1,1 +1,439 @@
-IyBEZWVwIE1hcmtldCBSZXNlYXJjaCDigJQg5rex5bqm5biC5Zy66LCD56CUIFNraWxsDQoNCj4g8J+MkCDor63oqIAgLyBMYW5ndWFnZe+8mioqW/Cfh6jwn4ezIOS4reaWh10oUkVBRE1FLm1kKSoqIMK3IFvwn4e68J+HuCBFbmdsaXNoXShSRUFETUVfRU4ubWQpDQoNCj4g6Leo5bmz5Y+wIEFJIEFnZW50IOiwg+eglOW3peS9nOa1ge+8mua6kOWIhue6pyArIOKJpTIg5rqQ5Lqk5Y+J6aqM6K+BICsg5Y676YeNL+WOu+aXpy/ljrvlgYcv5Y6755+b55u+ICsg5ZC45pS255yf5a6e55So5oi354Ot6K+E77yM6L6T5Ye66LSo6YeP56iz5a6a44CB5Y+v5aSN546w44CB5bim572u5L+h5bqm5qCH562+55qE6LCD56CU5oql5ZGK44CCDQoNClshW0xpY2Vuc2U6IE1JVF0oaHR0cHM6Ly9pbWcuc2hpZWxkcy5pby9iYWRnZS9MaWNlbnNlLU1JVC15ZWxsb3cuc3ZnKV0oTElDRU5TRSkNCumBteW+qiBbQWdlbnQgU2tpbGxzIOW8gOaUvuagh+WHhl0oaHR0cHM6Ly9hZ2VudHNraWxscy5pby8p77yIQW50aHJvcGljIOWPkei1t++8jENsYXVkZSBDb2RlIC8gT3BlbkFJIENvZGV4IC8gVFJBRSAvIFFvZGVyIC8gV29ya0J1ZGR5IOetiSA1MCsg5bmz5Y+w5Y6f55Sf5pSv5oyB77yJ44CCDQoNCi0tLQ0KDQojIyDinKgg54m55oCn77yIdjIuMy4w77yJDQoNCj4g5LiO6YCa55SoIEFJIOaQnOe0oiAvIOa3seW6pueglOeptiBza2lsbCDnmoTmoLjlv4Plt67lvILvvJoqKmRtciDkuI3mmK/mkJzntKLljIXoo4XvvIzogIzmmK/kuIDmnaHlj6/lpI3njrDjgIHluKbnva7kv6HmoIfnrb7jgIHnu4jnqL/lr7nmipflrqHorqHnmoTosIPnoJTmtYHmsLTnur/jgIIqKg0KDQojIyMg54mI5pys5ryU6L+b77yI5pyA5paw5Zyo5YmN77yJDQoNCi0gKip2Mi4zLjAg5bmz5Y+w5peg5YWzICsg5rex5bqm56CU56m26Zet546v77yI5Y6757KX5Y+W57K+44CB5rOb5YyW5LyY5YWI77yJKirvvJrikaAg6buY6K6k6Zu25L6d6LWW6Zu25a6J6KOF77yM5LiN57uR5a6a5Lu75L2V5bmz5Y+wIE1DUCAvIGFnZW50LXRlYW0g5Y2P6K6uIC8g5LiT5pyJ5ZCO56uv77yb4pGhIOaWsOWinuOAjOS4iS1CIOa3seW6pueglOeptumXreeOr++8iOW5s+WPsOaXoOWFs++8jOe6r+aPkOekuuivjee8luaOku+8ieOAje+8jOWQuOaUtuWkmuW5s+WPsOa3seW6pueglOeptiBhZ2VudCDlm6LpmJ/nsr7ljY7vvJvikaIg56ue5ZOB5YWz6ZSu5Y+C5pWw5Lqk5Y+J6aqM6K+B55SxIOKJpTIg5Y2HIOKJpTPvvJvikaMg6LSo6YeP6KeE5YiZ5aKe6KGl44CM5Y+v6YCJ5bel5YW36Z2e6LSo6YeP5YmN5o+QIC8g5LiN57uR5q275bmz5Y+w44CN77yb4pGkIOaWsOWiniBgcmVmZXJlbmNlcy9jcm9zcy1wbGF0Zm9ybS10b29scy5tZGAg5YWt5bmz5Y+w5Y+v6YCJ5bel5YW35o6l5YWl5oyH5Y2X44CCDQotICoqdjIuMi4xMCDlj6/pgInmkJzntKLlkI7nq6/pmYTlvZXooaXlvLoqKu+8mkFueVNlYXJjaCAvIOenmOWhlOaQnOe0oueZu+iusOS4uiBDTiDlj6/pgInlop7lvLrvvIzml6Aga2V5IOS8mOmbhemZjee6p++8jOS4jeWKqOS4u+euoee6v+OAgg0KLSAqKnYyLjIuNyBQMSDpm4bmiJAgKyDljrvnspflj5bnsr4qKu+8mue7k+aehOWMluayiea3gCArIOWPr+mAiea3seW6puWQjuerryArIFN0ZXAgMSDmhI/lm77ot6/nlLEgKyBDSksg5Y6f55Sf44CCDQotICoqdjIuMi42IOWvueaKl+W8j+Wuoeiuoee6quW+iyoq77yaY29ycHVzIGNyaXRpYyArIDQg57G75bm26KGMIGNyaXRpYyArIHBhdGNoLW5ldmVyLXJlZ2VuZXJhdGUgKyDmnaXmupDmoJEgKyBsaW50IOa4heWNleOAgg0KLSAqKnYyLjIuNSDmkJzntKLmlrnms5Xorrogc2hhcnBlbmluZyoq77ya5L+h5oGv5a+G5bqm5LyY5YWI44CB5ZCM5rqQ5aSa5qC35oCn5p2D6YeN44CB5LiJ6L205re35ZCI5o6S5bqP44CCDQotICoqdjIuMi40IOinhOiMg+aAp+WinuW8uioq77yaRkFR44CB56uv5Yiw56uv56S65L6L44CB5a6M5pW05pu05paw5Y+y6ZmE5b2V44CC4oaSIFtTS0lMTC5tZCDnrKzlhasv5Lmd6IqCXShTS0lMTC5tZCPlhavluLjop4Hpl67pophmYXEpDQoNCiMjIyDni6zmnInkvJjlir8NCg0KLSAqKuehruWumuaAp+a1geawtOe6vyoq77ya5Zu65a6aIFN0ZXAgMOKAkzjvvIzmr4/mrKHlj6/lpI3njrDjgIHlj6/lr7nmr5TjgIINCi0gKirmupDliIbnuqfnva7kv6EqKu+8mlQxIOWumOaWuSAvIFQyIOS4k+WutiAvIFQzIOS6jOaJiyAvIFQ0IOekvuWqku+8jOavj+adoee7k+iuuuW4pue9ruS/oeagh+etvuOAgg0KLSAqKuKJpTIg5rqQ5Lqk5Y+J6aqM6K+BKirvvJrkuovlrp7mi4bop6PvvIzlhrLnqoHmmL7lvI/moIfms6jvvIzkuI3lvLrooYzlhbHor4bjgIINCi0gKirnu4jnqL/lr7nmipflrqHorqEqKu+8mue7iOeov+WJjeeLrOeriyBjcml0aWMg5oyR5oiY77yM5bGA6YOo5L+u6KGl77yM5LiN5pW056+H6YeN5YaZ44CCDQotICoq5Lit5paHL0NKSyDljp/nlJ/mlK/mjIEqKu+8muWFrOS8l+WPt+OAgeefpeS5juOAgeWwj+e6ouS5puOAgUNOS0kg562J5Lit5paH5rqQ5LiN5Lii5byD44CB5LiN5b2TIGp1bmvjgIINCi0gKirpm7blronoo4UgU2tpbGwqKu+8mue6r+aWueazleiuuu+8jOiwg+eUqCBBZ2VudCDlhoXnva7lt6XlhbfvvIzml6DpnIDpop3lpJYgUHl0aG9uIOS+nei1luOAgg0KLSAqKuWPr+mAieW3peWFt+awuOS4jemYu+aWrSoq77yaRXhhIC8gRmlyZWNyYXdsIC8gVGF2aWx5IC8gUGVycGxleGl0eSAvIEdQVCBSZXNlYXJjaGVyIC8gTW9kZWxTY29wZSDmnInliJnlop7lvLrvvIznvLrlpLHkvJjpm4XpmY3nuqfjgIINCi0gKirlubPlj7Dml6DlhbMqKu+8muS4jee7keWumuS7u+S9lSBNQ1Ag6YWN572uIC8gYWdlbnQtdGVhbSDljY/orq4gLyDkuJPmnInlkI7nq6/vvIxXb3JrQnVkZHkgLyBDbGF1ZGUgLyBDb2RleCAvIFRyYWUgLyBxb2RlciAvIEN1cnNvciDpgJrnlKjvvJvlj6/pgInlt6XlhbfnvLrlpLHljbPkvJjpm4XpmY3nuqfjgIINCg0KIyMjIOi+k+WHuuiDveWKmw0KDQotICoq5LiJ5aWX5qih5p2/KirvvJrpgJrnlKjosIPnoJQgLyDooYzkuJrotZvpgZPvvIjpuqbogq/plKHpo47vvIkvIOWFrOWPuOernuWTge+8iFNXT1QgKyDmg4Xmma/mjqjmvJTvvInjgIINCi0gKippbnRlbC1icmllZiDpo47moLwqKu+8muS6i+WuniDihpIg5b2x5ZONIOKGkiDljp/lm6DkuInlhYPnu4Tnu4fjgIINCi0gKirlrabmnK/mqKHlnZcqKu+8mmFyWGl2IC8gUHViTWVkIC8gT3BlbkFsZXggLyBTZW1hbnRpYyBTY2hvbGFyIC8gQ05LSe+8jOS8mOWFiCDwn4aTIOWFjei0uSBBUEnjgIINCi0gKirliIbmnpDpgI/plZwqKu+8muazoueJueS6lOWKmyAvIFBFU1RFTCAvIEJDRyAvIDNDIC8gVEFNLVNPTe+8jOaMieaEj+WbvuinpuWPke+8jOS4jeWghuegjOOAgg0KLSAqKuWinumHj+ayiea3gCoq77ya57uT5p6E5YyWIG1hcmtkb3duIG5vdGXvvIhZQU1MIGZyb250bWF0dGVy77yJ77yM5a+55o6lIGltYSAvIE9ic2lkaWFuIC8g5pys5ZywIHdpa2njgIINCg0KIyMjIOaKgOacr+agiOS4jua1geawtOe6v++8iOWPr+inhuWMlu+8iQ0KDQoqKuiwg+eglOa1geawtOe6v++8iFBpcGVsaW5l77yJKiog4oCUIOS4u+euoee6vyBTdGVwIDDigJM4IOS4juS4iS1CIOa3seW6pueglOeptumXreeOr+ato+S6pO+8jOi0qOmHj+eUseaWueazleiuuuS/neivgeiAjOmdnuafkOS4quaQnOe0oiBBUEnvvJoNCg0KIVvosIPnoJTmtYHmsLTnur9dKGFzc2V0cy9waXBlbGluZS5zdmcpDQoNCioq5oqA5pyv5qCI77yIU3RhY2vvvIkqKiDigJQg6buY6K6k5bGC6Zu25L6d6LWW6Zu25a6J6KOF77yb5Y+v6YCJ5aKe5by65bGC57y65aSx5Y2z5LyY6ZuF6ZmN57qn77yM5LuF5Liw5a+M57Sg5p2Q5p2l5rqQ77yaDQoNCiFb5oqA5pyv5qCIXShhc3NldHMvc3RhY2suc3ZnKQ0KDQotLS0NCg0KIyMg8J+MkCDmlK/mjIHnmoTlubPlj7ANCg0K5pys5LuT5bqT6YG15b6qIFtBZ2VudCBTa2lsbHMg5byA5pS+5qCH5YeGXShodHRwczovL2FnZW50c2tpbGxzLmlvLynvvIzku6XkuIvlubPlj7Dljp/nlJ/mlK/mjIHvvIwqKuebtOaOpeWuieijheWNs+WPr+iiq+iHquWKqOWPkeeOsOW5tuinpuWPkSoq77yaDQoNCnwg5bmz5Y+wIHwgU2tpbGxzIOebruW9lSB8IOinpuWPkeaWueW8jyB8DQp8LS0tLS0tfC0tLS0tLS0tLS0tLXwtLS0tLS0tLS18DQp8ICoqQ2xhdWRlIENvZGUgLyBDbGF1ZGUqKiB8IGB+Ly5jbGF1ZGUvc2tpbGxzL2AgfCDoh6rliqjlj5HnjrAgKyBgL2RlZXAtbWFya2V0LXJlc2VhcmNoYCB8DQp8ICoqT3BlbkFJIENvZGV4KiogfCBgfi8uY29kZXgvc2tpbGxzL2AgfCDoh6rliqjlj5HnjrAgfA0KfCAqKlRSQUUqKiB8IGB+Ly50cmFlL3NraWxscy9gIHwg6Ieq5Yqo5Y+R546wIHwNCnwgKipRb2RlcioqIHwgYH4vLnFvZGVyL3NraWxscy9gIHwg6Ieq5Yqo5Y+R546wIHwNCnwgKipXb3JrQnVkZHkgLyBDb2RlQnVkZHkqKiB8IGB+Ly53b3JrYnVkZHkvc2tpbGxzL2AgfCDoh6rliqjlj5HnjrAgfA0KfCDlhbbku5YgYWdlbnRza2lsbHMg5YW85a655bmz5Y+wIHwg5a+55bqUIGBza2lsbHMvYCDnm67lvZUgfCDoh6rliqjlj5HnjrAgfA0KDQo+IOWujOaVtOeahOWFvOWuueW5s+WPsOWIl+ihqOingSBbYWdlbnRza2lsbHMuaW8vY2xpZW50c10oaHR0cHM6Ly9hZ2VudHNraWxscy5pby9jbGllbnRzKeOAgg0KDQotLS0NCg0KIyMg8J+TpiDlronoo4UNCg0KIyMjIOaWueW8j+S4gO+8muS4gOmUruWuieijheiEmuacrO+8iOaOqOiNkO+8iQ0KDQrlhYvpmoblkI7ov5DooYzlronoo4XohJrmnKzvvIzkvJroh6rliqjmo4DmtYvmnKzmnLrlt7Llronoo4XnmoQgQWdlbnQg5bmz5Y+w5bm25aSN5Yi25Yiw5a+55bqUIGBza2lsbHMvYCDnm67lvZXvvJoNCg0KYGBgYmFzaA0KIyBVbml4IC8gbWFjT1MgLyBHaXQgQmFzaA0KZ2l0IGNsb25lIGh0dHBzOi8vZ2l0aHViLmNvbS9SYWluM0RtZXRyb2xvZ3kvZGVlcC1tYXJrZXQtcmVzZWFyY2guZ2l0DQpjZCBkZWVwLW1hcmtldC1yZXNlYXJjaA0KLi9pbnN0YWxsLnNoDQoNCiMgV2luZG93cyAoUG93ZXJTaGVsbCkNCmdpdCBjbG9uZSBodHRwczovL2dpdGh1Yi5jb20vUmFpbjNEbWV0cm9sb2d5L2RlZXAtbWFya2V0LXJlc2VhcmNoLmdpdA0KY2QgZGVlcC1tYXJrZXQtcmVzZWFyY2gNCnBvd2Vyc2hlbGwgLUV4ZWN1dGlvblBvbGljeSBCeXBhc3MgLUZpbGUgaW5zdGFsbC5wczENCmBgYA0KDQrohJrmnKzkvJrmo4DmtYsgYH4vLmNsYXVkZWDjgIFgfi8uY29kZXhg44CBYH4vLnRyYWVg44CBYH4vLnFvZGVyYOOAgWB+Ly53b3JrYnVkZHlgIOS4rSoq5bey5a2Y5ZyoKirnmoTnm67lvZXlubblronoo4XvvIzmnKrlronoo4XnmoToh6rliqjot7Pov4fjgIINCg0KIyMjIOaWueW8j+S6jO+8muaJi+WKqOWuieijhQ0KDQrlsIbmlbTkuKogYGRlZXAtbWFya2V0LXJlc2VhcmNoL2Ag5paH5Lu25aS55aSN5Yi25Yiw55uu5qCH5bmz5Y+w55qEIHNraWxscyDnm67lvZXvvJoNCg0KYGBgYmFzaA0KZ2l0IGNsb25lIGh0dHBzOi8vZ2l0aHViLmNvbS9SYWluM0RtZXRyb2xvZ3kvZGVlcC1tYXJrZXQtcmVzZWFyY2guZ2l0DQojIENsYXVkZSBDb2RlIC8gQ29kZXggLyBDdXJzb3IgLyBXaW5kc3VyZiAvIEdlbWluaSBDTEkg562JDQpjcCAtciBkZWVwLW1hcmtldC1yZXNlYXJjaCB+Ly5jbGF1ZGUvc2tpbGxzLw0KIyBXb3JrQnVkZHkNCmNwIC1yIGRlZXAtbWFya2V0LXJlc2VhcmNoIH4vLndvcmtidWRkeS9za2lsbHMvDQojIFRSQUUNCmNwIC1yIGRlZXAtbWFya2V0LXJlc2VhcmNoIH4vLnRyYWUvc2tpbGxzLw0KIyBRb2Rlcg0KY3AgLXIgZGVlcC1tYXJrZXQtcmVzZWFyY2ggfi8ucW9kZXIvc2tpbGxzLw0KYGBgDQoNCuWuieijheWQjioq6YeN5ZCvIEFnZW50KirvvIjmiJbmiafooYwgc2tpbGwg5Yi35paw5oyH5Luk77yJ5Y2z5Y+v5Yqg6L2944CCDQoNCi0tLQ0KDQojIyDwn5qAIOS9v+eUqA0KDQrnm7TmjqXlr7kgQWdlbnQg6K+077yI6Ieq5Yqo5Yy56YWNIGBTS0lMTC5tZGAg55qEIGBkZXNjcmlwdGlvbmAg6Kem5Y+R77yJ77yaDQoNCi0g44CM6LCD56CU5LiA5LiL5bel5LiaIEFJIDNEIOinhuiniea1i+mHj+eahOernuS6ieagvOWxgOOAjQ0KLSDjgIznq57lk4HliIbmnpDvvJrmtbflurfmnLrlmajkurogdnMg5rex6KeG5pm66IO9IHZzIOWkqeWHhuenkeaKgOOAjQ0KLSDjgIzooYzkuJrotovlir/vvJrkuK3lm73mnLrlmajop4bop4nkuqfkuJrpk77mipXotYTmnLrkvJrjgI0NCi0g44CM5omS5LiA5LiLIEtleWVuY2Ug5Lit5Zu955qE5bqV44CNDQoNCkFnZW50IOS8muaMiSBTS0lMTC5tZCDnmoTlm7rlrprmtYHnqIvmiafooYzvvJrojIPlm7TmlLbmlZsg4oaSIOWkmua6kOmHh+mbhiDihpIg5Y676YeN5Y675penIOKGkiDmupDliIbnuqcg4oaSIOS6pOWPiemqjOivgeWOu+WBhyDihpIg55+b55u+5raI6KejIOKGkiDlkLjmlLbng63or4Qg4oaSIDEwMCDliIbor4TliIYg4oaSIOe7k+aehOWMlui+k+WHuuOAgg0KDQotLS0NCg0KIyMg8J+TgiDnm67lvZXnu5PmnoQNCg0KYGBgDQpkZWVwLW1hcmtldC1yZXNlYXJjaC8NCuKUnOKUgOKUgCBTS0lMTC5tZCAgICAgICAgICAgICAgICAgICAgICAjIOaguOW/g++8muWFg+aVsOaNriArIOWujOaVtOW3peS9nOa1geaMh+S7pO+8iFN0ZXAgMOKAkzggKyDkuInlpZfmqKHmnb8gKyDliIbmnpDpgI/plZwgKyDotKjph4/op4TliJnvvIkNCuKUnOKUgOKUgCBSRUFETUUubWQgICAgICAgICAgICAgICAgICAgICAjIOS4reaWh+ivtOaYju+8iOacrOaWh+S7tu+8iQ0K4pSc4pSA4pSAIFJFQURNRV9FTi5tZCAgICAgICAgICAgICAgICAgICMgRW5nbGlzaCBkb2N1bWVudGF0aW9uDQrilJzilIDilIAgYXNzZXRzLw0K4pSCICAg4pSc4pSA4pSAIHBpcGVsaW5lLnN2ZyAgICAgICAgICAgICAgIyDosIPnoJTmtYHmsLTnur/lj6/op4bljJblm74NCuKUgiAgIOKUlOKUgOKUgCBzdGFjay5zdmcgICAgICAgICAgICAgICAgICMg5oqA5pyv5qCI5Y+v6KeG5YyW5Zu+DQrilJzilIDilIAgcmVmZXJlbmNlcy8NCuKUgiAgIOKUlOKUgOKUgCBjcm9zcy1wbGF0Zm9ybS10b29scy5tZCAgICMg5Y+v6YCJ77ya5YWt5bmz5Y+w5Y+v6YCJ5aKe5by65bel5YW35o6l5YWl5oyH5Y2X77yI57y65aSx5LiN5b2x5ZON5Li75rWB56iL77yJDQrilJzilIDilIAgTElDRU5TRSAgICAgICAgICAgICAgICAgICAgICAgIyBNSVQNCuKUnOKUgOKUgCBDT05UUklCVVRJTkcubWQgICAgICAgICAgICAgICAjIOi0oeeMruaMh+WNlw0K4pSc4pSA4pSAIGluc3RhbGwuc2ggICAgICAgICAgICAgICAgICAgICMgVW5peCDlronoo4XohJrmnKwNCuKUnOKUgOKUgCBpbnN0YWxsLnBzMSAgICAgICAgICAgICAgICAgICAjIFdpbmRvd3Mg5a6J6KOF6ISa5pysDQrilJTilIDilIAgLmdpdGlnbm9yZQ0KYGBgDQoNCj4gU2tpbGwg5qC45b+DKiroh6rljIXlkKsqKu+8muaJgOacieW3peS9nOa1geOAgeaooeadv+OAgeinhOWImemDveWGheW1jOWcqCBgU0tJTEwubWRgIOS4re+8jOaXoOmcgOmineWkluiEmuacrOaIlumFjee9ruaWh+S7tu+8m2ByZWZlcmVuY2VzL2Ag5LuF5piv5Y+v6YCJ6aG55aKe5by65bel5YW35o6l5YWl5oyH5Y2X77yM57y65aSx5LiN5b2x5ZON5Li75rWB56iL44CCDQoNCi0tLQ0KDQojIyDimpnvuI8g5Y+v6YCJ5pWw5o2u5rqQ5LiO5aKe5by6IFNraWxs77yI5oyJ6ZyA5o6l5YWl77yM5LyY6ZuF6ZmN57qn77yJDQoNClNraWxsIOacrOi6q+iwg+eUqCBBZ2VudCDlhoXnva7ogZTnvZHlt6XlhbfvvIhXZWJTZWFyY2ggLyBXZWJGZXRjaO+8ieWNs+WPr+W3peS9nOOAguiLpeS9oOeahCBBZ2VudCDlt7Loo4Xku6XkuIsgU2tpbGwg5oiW6L+e5Lul5LiLIE1DUO+8jOS8muiHquWKqOiOt+W+l+abtOW8uua3seW6pu+8myoq57y65aSx5pe25LiA5b6L5LyY6ZuF6ZmN57qn77yM5LiN5Lya5Lit5pat6LCD56CUKirvvJoNCg0KfCDnu7TluqYgfCDmlbDmja7mupAgLyBTa2lsbCB8IOeUqOmAlCB8IOeKtuaAgSB8DQp8LS0tLS0tfC0tLS0tLS0tfC0tLS0tLXwtLS0tLS18DQp8ICoq5pCc57Si5YWl5Y+jKiogfCDlhoXnva4gV2ViU2VhcmNoL1dlYkZldGNo77yI5LyY5YWI77yJKyAqKlRhdmlseSoq77yIQVBJIGtleSDnm7TosIPvvIxza2lsbCDlt7Lkuo4gdjIuMi4xIOawuOS5heWIoOmZpO+8iSsgKipBZ2VudEtleSoq77yI6IGa5ZCI5pWw5o2uIEFQSe+8muaQnOe0oi/mlrDpl7sv56S+5aqSL+iCoeelqC/kvIHkuJov5a6e5pe277yM5Y+v6YCJ5YWc5bqV77yJIHwg6YCa55So6IGU572R5qOA57Si44CB5p+l6K+B44CB6IGa5ZCI5pWw5o2u77yI5Y+v5pu/5Luj57y65aSx55qE5LiT5LiaIE1DUO+8iSB8IOKchSDnnJ/lrp7lj6/nlKggfA0KfCAqKkFJIOaQnOe0ou+8iOWPr+mAie+8iSoqIHwgKipQZXJwbGV4aXR5KiogLyAqKlRhdmlseSoq77yI5pyJIGtleSDnm7TosIPlhbYgQVBJ77yMc2tpbGwg5bey5LqOIHYyLjIuMSDmsLjkuYXliKDpmaTvvIkgfCDluKblvJXnlKjnmoQgQUkg5pCc57Si77yM5pegIGtleSDot7Pov4cgfCDlj6/pgInmupDvvIjpnIAga2V577yJIHwNCnwgKirnpL7lqpIgLyDng63or4QqKiB8ICoqYWdlbnQtcmVhY2gqKiAvICoqYWdlbnQtYnJvd3NlcioqIC8gd2ViLWFjY2VzcyB8IOWwj+e6ouS5pi/nn6XkuY4vUmVkZGl0L0JsdWVza3kvWC/or4TorrrmipPlj5bvvIgxNCDlubPlj7DvvIkgfCDinIUg55yf5a6e5Y+v55SoIHwNCnwgKirnn6XkuY7vvIjmioDmnK8r5Y+N6aaI77yJKiogfCAqKnpoaWh1IE1DUCoq77yIc2VhcmNoX2NvbnRlbnQgKyBob3RfbGlzdO+8iSB8IOS4reaWh+aKgOacr+aVmeeoi+OAgeeUqOaIt+WPjemmiOOAgeS6p+WTgeS9k+mqjOS6pOWPiemqjOivgSB8IOKchSDnnJ/lrp7lj6/nlKggfA0KfCAqKuW+ruS/oeWFrOS8l+WPt+aWh+eroCoqIHwgKip3ZWNoYXQtYXJ0aWNsZS1zZWFyY2gqKiB8IOS4reaWh+S4gOaJi+a3seW6puaWh+eroOajgOe0ou+8jOihpSBVR0Mg6K+E6K665LmL5aSW55qE5paH56ug57qn57y65Y+jIHwg4pyFIOecn+WunuWPr+eUqCB8DQp8ICoq5paH5qGj5YeA5YyWKiogfCAqKm1hcmtpdGRvd24qKiB8IFBERi9Xb3JkL+i0ouaKpSDihpIgTWFya2Rvd24gfCDinIUg55yf5a6e5Y+v55SoIHwNCnwgKipBIOiCoei0ouWKoSoqIHwgKirpgJrovr7kv6EgdGR4LWNvbm5lY3Rvcioq77yIdjIuMC4wIOWunua1i+W3sueUqO+8iSB8IOS4iuW4guWFrOWPuCBGMTAg6LSi5oqlL+iCoeS4nC/otYTph5HmtYEgfCDinIUg55yf5a6e5Y+v55SoIHwNCnwgKirkuJPliKkqKiB8ICoq5pm65oWn6Iq9IFBhdFNuYXAgTUNQKiogfCDmioDmnK/lo4HlnpLjgIHkuJPliKnlrrbml4/jgIHlvJXnlKjliIbmnpAgfCDinIUg55yf5a6e5Y+v55SoIHwNCnwgKirku6PnoIEgLyDpobnnm64qKiB8IEdpdEh1YiDmkJzntKIgKyBUcmVuZGluZ++8iGBnaXRodWJgIE1DUCArIGBnaGAgQ0xJIOW3suiupOivgSArIHdlYu+8iSB8IOW8gOa6kOWunueOsOOAgeaKgOacr+agiOOAgVN0YXIvUFIg6LaL5Yq/77yITUNQIOebtOi/nuS8mOWFiO+8jGdoIENMSSDlhZzlupXvvIkgfCDinIUg55yf5a6e5Y+v55SoIHwNCnwgKirlrabmnK/orrrmlocgLyDlhYPmlbDmja4qKiB8ICoqT3BlbkFsZXgqKiAvICoqU2VtYW50aWMgU2Nob2xhcioqIC8gKiphclhpdioqIC8gKipQdWJNZWQqKiAvICoqYmlvUnhpdioqIC8gKipFTUJMLUVCScK3RXVyb3BlIFBNQyoq77ybYGxpdGVyYXR1cmUtc2VhcmNoYCBza2lsbCDkvZzmlrnms5Xorrrlj4LogIMgfCDorrrmloflhYPmlbDmja7jgIHlvJXnlKjnvZHnu5zjgIFUTERSIOaRmOimgeOAgemihOWNsOacrCB8IPCfhpMg5YWN6LS5IEFQSSDnm7TosIMgfA0KfCAqKuW8leaWh+a6r+a6kCoqIHwgKipDcm9zc3JlZioq77yIRE9JIOWFg+aVsOaNrivlj4LogIPmlofnjK7vvIkvICoqT3BlbkNpdGF0aW9ucyoq77yI5byA5pS+5byV5paH572R57uc77yJIHwgRE9JIOadg+WogeWFg+aVsOaNruOAgeiiq+W8lS/lvJXnlKjlhbPns7sgfCDwn4aTIOWFjei0uSBBUEkg55u06LCDIHwNCnwgKirnp5HnoJTmlbDmja7ku5PlupMqKiB8ICoqWmVub2RvKiogLyAqKkZpZ3NoYXJlKiogLyAqKuWTiOS9myBEYXRhdmVyc2UqKiAvICoqTkFTQSoqIHwg5pWw5o2u6ZuGL+i9r+S7ti/miJDmnpzvvIzlnYfluKYgRE9JIOWPr+a6r+a6kCB8IPCfhpMg5YWN6LS5IEFQSSDnm7TosIMgfA0KfCAqKkFJIOaooeWeiyAvIOaVsOaNrumbhioqIHwgKipIdWdnaW5nIEZhY2UgSHViIEFQSSoqIC8g6a2U5aGUIE1vZGVsU2NvcGUgfCBBSSDmqKHlnovjgIHku6PnoIHjgIHlupTnlKjmlofmoaPjgIHmlbDmja7pm4YgfCDwn4aTIEhGIOWFjei0uSBBUEnvvIjprZTloZTnlKjmiLfmjIHlj6ror7sgdG9rZW4g5Y+v55u06LCD77yJIHwNCnwgKirlvIDlj5HogIXnpL7ljLoqKiB8ICoqU3RhY2sgT3ZlcmZsb3cqKiArICoqSGFja2VyIE5ld3MqKu+8iFN0YWNrIEV4Y2hhbmdlIC8gQWxnb2xpYSBBUEnvvIkvIFJlZGRpdCAvIENTRE4gfCDmioDmnK/pgInlnovorqjorrrjgIHnnJ/lrp7ouKnlnZHlj43ppoggfCDwn4aTIFNPL0hOIOWFjei0uSBBUEnvvIjkvZkg8J+MkO+8iSB8DQp8ICoq6LSi57uPKiogfCDohb7orq/oh6rpgInogqEgLyB3ZXN0b2NrLW1jcCB8IOS4iuW4guWFrOWPuOWfuuacrOmdouOAgeihjOaDheOAgeeglOaKpSB8IOaMiemcgOi/nuaOpSB8DQp8ICoq5rOV5b6LIC8g5ZCI6KeEKiogfCDlqIHnp5HlhYjooYwgLyDlhYPlhbggLyAqKuWMl+Wkp+azleWune+8iHBrdWxhd++8iSoqIHwg6K+J6K6844CB6LWE6LSo44CB6KGM5pS/5aSE572a44CB5rOV5b6L5rOV6KeE5qOA57SiIHwg5oyJ6ZyA6L+e5o6lIHwNCnwgKirkvIHkuJrlt6XllYYgLyDpo47pmakqKiB8IOWkqeecvOafpSBNQ1AgLyDkvIHmn6Xmn6UgTUNQIC8gKirlkK/kv6HmhafnnLzvvIhxaXhpbmh1aXlhbu+8iSoqIHwg6IKh5p2D44CB5Y+45rOV44CB57uP6JCl5byC5bi444CB55+l6K+G5Lqn5p2D44CB5LyB5Lia6aOO6Zmp5rSe5a+fIHwg5oyJ6ZyA6L+e5o6lIHwNCnwgKirnvo7ogqEgLyBTRUMqKiB8IFNFQyBFREdBUiBNQ1AgfCAxMC1LLzEwLVEv6LSi5oql6ZmE5rOoIHwg5oyJ6ZyA6L+e5o6l77yI5b2T5YmN5pyq5ZCv55So77yJIHwNCnwgKirpobbliIogLyDkuK3mlofmlofnjK4qKiB8IE5hdHVyZSAvIFNjaWVuY2XvvIjlvJUgRE9J77yJLyBDTktJIC8gR29vZ2xlIFNjaG9sYXLvvIjku4XnlKjmiLflr7zlh7rvvIkgfCDpobbliIrkuIDmiYvvvIjmkZjopoHlhazlvIDvvIzlhajmloflpJrpnIDorqLpmIXvvInvvJvorr/pl67kvKbnkIYgfCDwn4yQIOmAmueUqOiBlOe9keWPr+i+viB8DQp8ICoq5a6P6KeC57uP5rWOKiogfCBUcmFkaW5nIEVjb25vbWljcyAvIEZSRUQgLyDlm73lrrbnu5/orqHlsYAgLyDlpK7ooYzCt+ivgeebkeS8miAvIOi0ouiBlOekviAvIOWNjuWwlOihl+ingemXuyB8IOWuj+inguaMh+aghyArIOi2hemihOacny/kuI3lj4rpooTmnJ/liKTmlq0gfCDwn4yQIOmAmueUqOiBlOe9keWPr+i+viB8DQp8ICoq5LiT5Yip77yI5YWs5byA5bqT77yJKiogfCBHb29nbGUgUGF0ZW50cyAvIFVTUFRPIC8gRVBPIC8gV0lQTyB8IOS4k+WIqeWOn+aWh+OAgeazleW+i+eKtuaAgSB8IPCfjJAg6YCa55So6IGU572R5Y+v6L6+IHwNCnwgKirlvIDmlL7nmb7np5EqKiB8IFdpa2lwZWRpYSAvIOeZvuW6pueZvuenkSB8IOamguW/teenkeaZruOAgeiDjOaZr+efpeivhiB8IPCfjJAg6YCa55So6IGU572R5Y+v6L6+IHwNCnwgKirkuqflk4EgLyDliJvmipUqKiB8IFByb2R1Y3QgSHVudCAvIFRlY2hDcnVuY2ggLyAzNuawqiAvIOiZjuWXhSB8IOaWsOWTgeWPkeW4g+OAgeiejei1hOOAgeW4guWcuueDreW6piB8IPCfjJAg6YCa55So6IGU572R5Y+v6L6+IHwNCnwgKirkuK3mlofnpL7ljLoqKiB8IOWNmuWuouWbrSAvIFYyRVggLyDlsI/nuqLkuaYgLyBC56uZIHwg55So5oi35Y+N6aaI44CB5Lqn5ZOB5L2T6aqM44CB5pWZ56iLIHwg8J+MkCDpgJrnlKjogZTnvZHlj6/ovr4gfA0KfCAqKuWbvemZheekvuWqkioqIHwgQmx1ZXNreSAvIFgoVHdpdHRlcikgLyBZb3VUdWJlIC8gTGlua2VkSW4gfCDlrpjmlrnliqjmgIHjgIFLT0wg6K+E6K6644CB55So5oi35oOF57uqIHwg8J+MkCDpgJrnlKjogZTnvZHlj6/ovr4gfA0KfCAqKuaWsOmXuyAvIOi1hOiuryoqIHwgYWlob3TvvIjlhY0ga2V5IOS4reaWhyBBSSDotYTorq/vvIkvIEJCQyAvIFJldXRlcnMgLyBBbCBKYXplZXJhIHwg6KGM5Lia5b+r6K6v44CB5Zu96ZmF5LiA5omL5paw6Ze7IHwg5Y+v6YCJ5rqQ77yI5YWNIGtleSDmiJblhazlvIDvvIkgfA0KfCAqKuefpeivhuW6kyoqIHwgaW1hLW1jcCAvIE9ic2lkaWFuIC8g5pys5ZywIHdpa2kgLyAqKm5vdGlvbioqIHwg55So5oi36Ieq5pyJ6LWE5paZ44CB5aKe6YePIExpbnQg5rKJ5reAIHwg5oyJ6ZyA6L+e5o6lIHwNCnwgKirkupHlrZjlgqggLyDmlofku7YqKiB8ICoq55m+5bqm572R55uY77yIYmFpZHUtbmV0ZGlza++8iS8gR29vZ2xlIERyaXZl77yI5rW35aSW55So5oi35Y+v6YCJ77yJKiogfCDnlKjmiLfoh6rmnInmlofku7bjgIHmiqXlkYrlvZLmoaPkuI7mipXpgJIgfCDinIUg55yf5a6e5Y+v55SoIHwNCg0KKirnirbmgIHor7TmmI4qKg0KDQotIOKchSAqKuecn+WunuWPr+eUqCoq77ya5b2T5YmN546v5aKD5bey5pyJIFNraWxsIOaIluW3sui/nuaOpSBNQ1DvvIzlvIDnrrHljbPnlKjjgIINCi0g8J+GkyAqKuWFjei0uSBBUEkg55u06LCDKirvvIh2Mi4yLjAg5Y6757KX5Y+W57K+6YeN54K577yJ77ya5rqQ5o+Q5L6bKirlhY3otLnlhazlvIAgUkVTVCBBUEkqKu+8jOWPr+e7jyBXZWJGZXRjaC9jdXJsICoq55u06LCDKirvvIjml6Aga2V5IOaIliBERU1PX0tFWe+8ie+8jOavlOaKkyBIVE1MIOabtOeos+OAgeWPr+WkjeeOsOOAgeWPr+a6r+a6kOKAlOKAlOS8mOWFiOS6jue9kemhteaKk+WPluOAgg0KLSAqKuaMiemcgOi/nuaOpSoq77ya5b2T5YmN546v5aKD5pyJ5a+55bqUIE1DUC9Ta2lsbO+8jOS9huacquWQr+eUqOaIlumcgOeUqOaIt+aJi+WKqOmFjee9ru+8iOWmgiBTRUMgRURHQVLjgIHlpKnnnLzmn6XjgIHkvIHmn6Xmn6XvvInjgIINCi0g8J+MkCAqKumAmueUqOiBlOe9keWPr+i+vioq77ya5peg5LiT55SoIEFQSS/ov57mjqXlmajvvIzpgJrov4cgV2ViU2VhcmNoL1dlYkZldGNoL2FnZW50LXJlYWNoL2FnZW50LWJyb3dzZXIg5oqT5Y+W5oiW55So5oi35a+85Ye677yb5oyJ5rqQ5YiG57qn5aSE55CG77yI6YCa5bi4IFQzIOWqkuS9ky/lrpjmlrnorrDlvZXmiJYgVDQgVUdDIOS/oeWPt++8ieOAgg0KLSAqKuWPr+mAiea6kO+8iOWFjSBrZXkg5oiW5YWs5byA77yJKirvvJrlhazlvIDlj6/orr/pl67nmoTmlrDpl7sv6LWE6K6v56uZ54K577yM5peg6ZyA5LiT55So6L+e5o6l5Zmo44CCDQoNCj4gKiror5rlrp7lo7DmmI7vvIjph43opoHvvIkqKu+8muacrCBTa2lsbCDku4Xlo7DmmI4qKuecn+WunuWtmOWcqOeahOi/nuaOpeWZqOexu+Weiyoq77yI5aaCIEFnZW50S2V5IC8g55m+5bqm572R55uYIC8gR29vZ2xlIERyaXZlIC8gbm90aW9uIC8g5YyX5aSn5rOV5a6dIC8g5ZCv5L+h5oWn55y8IC8g5aiB56eR5YWI6KGMIC8g5YWD5YW4IC8g5pm65oWn6Iq9IC8g6YCa6L6+5L+hIC8g5aSp55y85p+lIC8g5LyB5p+l5p+lIOetie+8ie+8jCoq5LiN5pq06Zyy5Lu75L2V5Liq5Lq6546v5aKD55qE6L+e5o6l54q25oCBKirvvIznvLrlpLHml7bkuIDlvovkvJjpm4XpmY3nuqfjgIHkuI3kuK3mlq3osIPnoJTjgIJGaXJlY3Jhd2zjgIFDcnVuY2hiYXNlIFByb+OAgVBpdGNoQm9vayDnrYnmnKrmj5DkvpvnmoTmnI3liqEqKuS4jeS8mioq6KKr6Jma5YGH5qCH5rOo4oCU4oCU6Iul5L2g5omA5Zyo5bmz5Y+w5o+Q5L6b77yM5Y+v6Ieq6KGM5ZyoIFN0ZXAgMSDmkJzntKLlhaXlj6Pov73liqDjgIJHaXRIdWIgTUNQIOWPr+ebtOi/nuaQnOe0oi/ku6PnoIEvSXNzdWUvUFIvUmVsZWFzZe+8jOS6puWPr+eUqCBgZ2hgIENMSSDlhZzlupXjgIIqKnYyLjIuMSDlt7LmsLjkuYXliKDpmaTvvIjkuI3lj6/pgIbvvIkqKueahOmHjeWkjeWGl+S9mSBza2lsbO+8iOaWueazleiuuuW3suW5tuWFpSBkbXLvvInvvJpgZ29vZ2xlLXNjaG9sYXItc2VhcmNoYO+8iOWunuS4uiBTZW1hbnRpYyBTY2hvbGFyIOWwgeijhe+8ieOAgWBhY2FkZW1pYy1yZXNlYXJjaC1odWJg77yIUHJvcHJpZXRhcnkgKyBPcGVuQ2xhd0NMSe+8ieOAgWBkZWVwLXJlc2VhcmNoYO+8iOW3peS9nOa1geW3suWQuOaUtu+8ieOAgWBuZXdzLXN1bW1hcnlg77yIUlNTIOW3suWQuOaUtu+8ieOAgWBwZXJwbGV4aXR5YCAvIGB0YXZpbHlg77yI5LiOIFdlYlNlYXJjaCDph43lpI3nmoQgQUkg5pCc57Si77yJ44CC5qCHIPCfhpMg55qE5a2m5pyvL+aVsOaNrua6kOS4uuWFjei0ueWFrOW8gCBBUEnvvIzml6DpnIDkuJPnlKjov57mjqXlmajljbPlj6/nm7TosIPjgIINCg0KLS0tDQoNCiMjIOKdkyDluLjop4Hpl67popjkuI7lrozmlbTnpLrkvosNCg0KLSAqKkZBUe+8iDcg6Zeu77yJKirvvJrmnKwgc2tpbGwg5LiOIFdlYlNlYXJjaCDnmoTljLrliKvjgIHmoLjlv4PmupDkuI3lj6/ovr7mgI7kuYjlip7jgIHmqKHmnb8gQi9DL0Qg5aaC5L2V6YCJ5oup44CB5piv5ZCm6ZyA6KaB5LuY6LS5IGtleeOAgeefm+ebvua6kOWmguS9leWkhOeQhuOAgeaKpeWRiumVv+W6puOAgeWinumHj+ayiea3gOaYr+WQpuW/hemhuyBpbWEg4oCU4oCUIOingSBTS0lMTC5tZCBb56ys5YWr6IqCIMK3IOW4uOingemXrumimO+8iEZBUe+8iV0oU0tJTEwubWQj5YWr5bi46KeB6Zeu6aKYZmFxKeOAgg0KLSAqKuerr+WIsOerr+ekuuS+iyoq77ya5LuO44CM6LCD56CU5Lit5Zu95bel5Lia5py65Zmo5Lq66LWb6YGTICsg5YeP6YCf5Zmo5Zu95Lqn5YyWICsg5Z+D5pav6aG/L+axh+W3neWvueS9jeOAjeeUqOaIt+aPkOmXru+8jOWIsCBTdGVwIDDihpI4IOmAkOeOr+S6p+WHuueJqe+8iOmHh+mbhiAvIOWOu+mHjSAvIOmqjOivgSAvIOefm+ebvua2iOinoyAvIOWIhue6pyAvIOaooeadvyAvIOivhOWIhuWNoe+8ieKAlOKAlCDop4EgU0tJTEwubWQgW+esrOS5neiKgiDCtyDlrozmlbTnpLrkvotdKFNLSUxMLm1kI+S5neWujOaVtOekuuS+i+err+WIsOerr+S7jueUqOaIt+aPkOmXruWIsOaKpeWRiinjgIINCi0gKirlrozmlbTmm7TmlrDlj7IqKu+8mnYyLjAuMCDihpIgdjIuMy4wIOavj+mhueWPmOabtOe7huiKgiDigJTigJQg6KeBIFNLSUxMLm1kIFvpmYTlvZUgQV0oU0tJTEwubWQj6ZmE5b2VLWHlrozmlbTmm7TmlrDlj7J2MjAwLS12MjMwKeOAgg0KDQotLS0NCg0KIyMg8J+TnCDorrjlj6/or4ENCg0KW01JVCBMaWNlbnNlXShMSUNFTlNFKQ0K
+# Deep Market Research — 深度市场调研 Skill
+
+
+
+> 🌐 语言 / Language：**[🇨🇳 中文](README.md)** · [🇺🇸 English](README_EN.md)
+
+
+
+> 跨平台 AI Agent 调研工作流：源分级 + ≥2 源交叉验证 + 去重/去旧/去假/去矛盾 + 吸收真实用户热评，输出质量稳定、可复现、带置信度标签的调研报告。
+
+
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+遵循 [Agent Skills 开放标准](https://agentskills.io/)（Anthropic 发起，Claude Code / OpenAI Codex / TRAE / Qoder / WorkBuddy 等 50+ 平台原生支持）。
+
+
+
+---
+
+
+
+## ✨ 特性（v2.3.0）
+
+
+
+> 与通用 AI 搜索 / 深度研究 skill 的核心差异：**dmr 不是搜索包装，而是一条可复现、带置信标签、终稿对抗审计的调研流水线。**
+
+
+
+### 版本演进（最新在前）
+
+
+
+- **v2.3.0 平台无关 + 深度研究闭环（去粗取精、泛化优先）**：① 默认零依赖零安装，不绑定任何平台 MCP / agent-team 协议 / 专有后端；② 新增「三-B 深度研究闭环（平台无关，纯提示词编排）」，吸收多平台深度研究 agent 团队精华；③ 竞品关键参数交叉验证由 ≥2 升 ≥3；④ 质量规则增补「可选工具非质量前提 / 不绑死平台」；⑤ 新增 `references/cross-platform-tools.md` 六平台可选工具接入指南。
+
+- **v2.2.10 可选搜索后端附录补强**：AnySearch / 秘塔搜索登记为 CN 可选增强，无 key 优雅降级，不动主管线。
+
+- **v2.2.7 P1 集成 + 去粗取精**：结构化沉淀 + 可选深度后端 + Step 1 意图路由 + CJK 原生。
+
+- **v2.2.6 对抗式审计纪律**：corpus critic + 4 类并行 critic + patch-never-regenerate + 来源树 + lint 清单。
+
+- **v2.2.5 搜索方法论 sharpening**：信息密度优先、同源多样性权重、三轴混合排序。
+
+- **v2.2.4 规范性增强**：FAQ、端到端示例、完整更新史附录。→ [SKILL.md 第八/九节](SKILL.md#八常见问题faq)
+
+
+
+### 独有优势
+
+
+
+- **确定性流水线**：固定 Step 0–8，每次可复现、可对比。
+
+- **源分级置信**：T1 官方 / T2 专家 / T3 二手 / T4 社媒，每条结论带置信标签。
+
+- **≥2 源交叉验证**：事实拆解，冲突显式标注，不强行共识。
+
+- **终稿对抗审计**：终稿前独立 critic 挑战，局部修补，不整篇重写。
+
+- **中文/CJK 原生支持**：公众号、知乎、小红书、CNKI 等中文源不丢弃、不当 junk。
+
+- **零安装 Skill**：纯方法论，调用 Agent 内置工具，无需额外 Python 依赖。
+
+- **可选工具永不阻断**：Exa / Firecrawl / Tavily / Perplexity / GPT Researcher / ModelScope 有则增强，缺失优雅降级。
+
+- **平台无关**：不绑定任何 MCP 配置 / agent-team 协议 / 专有后端，WorkBuddy / Claude / Codex / Trae / qoder / Cursor 通用；可选工具缺失即优雅降级。
+
+
+
+### 输出能力
+
+
+
+- **三套模板**：通用调研 / 行业赛道（麦肯锡风）/ 公司竞品（SWOT + 情景推演）。
+
+- **intel-brief 风格**：事实 → 影响 → 原因三元组织。
+
+- **学术模块**：arXiv / PubMed / OpenAlex / Semantic Scholar / CNKI，优先 🆓 免费 API。
+
+- **分析透镜**：波特五力 / PESTEL / BCG / 3C / TAM-SOM，按意图触发，不堆砌。
+
+- **增量沉淀**：结构化 markdown note（YAML frontmatter），对接 ima / Obsidian / 本地 wiki。
+
+
+
+### 技术栈与流水线（可视化）
+
+
+
+**调研流水线（Pipeline）** — 主管线 Step 0–8 与三-B 深度研究闭环正交，质量由方法论保证而非某个搜索 API：
+
+
+
+![调研流水线](assets/pipeline.svg)
+
+
+
+**技术栈（Stack）** — 默认层零依赖零安装；可选增强层缺失即优雅降级，仅丰富素材来源：
+
+
+
+![技术栈](assets/stack.svg)
+
+
+
+---
+
+
+
+## 🌐 支持的平台
+
+
+
+本仓库遵循 [Agent Skills 开放标准](https://agentskills.io/)，以下平台原生支持，**直接安装即可被自动发现并触发**：
+
+
+
+| 平台 | Skills 目录 | 触发方式 |
+
+|------|------------|---------|
+
+| **Claude Code / Claude** | `~/.claude/skills/` | 自动发现 + `/deep-market-research` |
+
+| **OpenAI Codex** | `~/.codex/skills/` | 自动发现 |
+
+| **TRAE** | `~/.trae/skills/` | 自动发现 |
+
+| **Qoder** | `~/.qoder/skills/` | 自动发现 |
+
+| **WorkBuddy / CodeBuddy** | `~/.workbuddy/skills/` | 自动发现 |
+
+| 其他 agentskills 兼容平台 | 对应 `skills/` 目录 | 自动发现 |
+
+
+
+> 完整的兼容平台列表见 [agentskills.io/clients](https://agentskills.io/clients)。
+
+
+
+---
+
+
+
+## 📦 安装
+
+
+
+### 方式一：一键安装脚本（推荐）
+
+
+
+克隆后运行安装脚本，会自动检测本机已安装的 Agent 平台并复制到对应 `skills/` 目录：
+
+
+
+```bash
+
+# Unix / macOS / Git Bash
+
+git clone https://github.com/Rain3Dmetrology/deep-market-research.git
+
+cd deep-market-research
+
+./install.sh
+
+
+
+# Windows (PowerShell)
+
+git clone https://github.com/Rain3Dmetrology/deep-market-research.git
+
+cd deep-market-research
+
+powershell -ExecutionPolicy Bypass -File install.ps1
+
+```
+
+
+
+脚本会检测 `~/.claude`、`~/.codex`、`~/.trae`、`~/.qoder`、`~/.workbuddy` 中**已存在**的目录并安装，未安装的自动跳过。
+
+
+
+### 方式二：手动安装
+
+
+
+将整个 `deep-market-research/` 文件夹复制到目标平台的 skills 目录：
+
+
+
+```bash
+
+git clone https://github.com/Rain3Dmetrology/deep-market-research.git
+
+# Claude Code / Codex / Cursor / Windsurf / Gemini CLI 等
+
+cp -r deep-market-research ~/.claude/skills/
+
+# WorkBuddy
+
+cp -r deep-market-research ~/.workbuddy/skills/
+
+# TRAE
+
+cp -r deep-market-research ~/.trae/skills/
+
+# Qoder
+
+cp -r deep-market-research ~/.qoder/skills/
+
+```
+
+
+
+安装后**重启 Agent**（或执行 skill 刷新指令）即可加载。
+
+
+
+---
+
+
+
+## 🚀 使用
+
+
+
+直接对 Agent 说（自动匹配 `SKILL.md` 的 `description` 触发）：
+
+
+
+- 「调研一下工业 AI 3D 视觉测量的竞争格局」
+
+- 「竞品分析：海康机器人 vs 深视智能 vs 天准科技」
+
+- 「行业趋势：中国机器视觉产业链投资机会」
+
+- 「扒一下 Keyence 中国的底」
+
+
+
+Agent 会按 SKILL.md 的固定流程执行：范围收敛 → 多源采集 → 去重去旧 → 源分级 → 交叉验证去假 → 矛盾消解 → 吸收热评 → 100 分评分 → 结构化输出。
+
+
+
+---
+
+
+
+## 📂 目录结构
+
+
+
+```
+
+deep-market-research/
+
+├── SKILL.md                      # 核心：元数据 + 完整工作流指令（Step 0–8 + 三套模板 + 分析透镜 + 质量规则）
+
+├── README.md                     # 中文说明（本文件）
+
+├── README_EN.md                  # English documentation
+
+├── assets/
+
+│   ├── pipeline.svg              # 调研流水线可视化图
+
+│   └── stack.svg                 # 技术栈可视化图
+
+├── references/
+
+│   └── cross-platform-tools.md   # 可选：六平台可选增强工具接入指南（缺失不影响主流程）
+
+├── LICENSE                       # MIT
+
+├── CONTRIBUTING.md               # 贡献指南
+
+├── install.sh                    # Unix 安装脚本
+
+├── install.ps1                   # Windows 安装脚本
+
+└── .gitignore
+
+```
+
+
+
+> Skill 核心**自包含**：所有工作流、模板、规则都内嵌在 `SKILL.md` 中，无需额外脚本或配置文件；`references/` 仅是可选项增强工具接入指南，缺失不影响主流程。
+
+
+
+---
+
+
+
+## ⚙️ 可选数据源与增强 Skill（按需接入，优雅降级）
+
+
+
+Skill 本身调用 Agent 内置联网工具（WebSearch / WebFetch）即可工作。若你的 Agent 已装以下 Skill 或连以下 MCP，会自动获得更强深度；**缺失时一律优雅降级，不会中断调研**：
+
+
+
+| 维度 | 数据源 / Skill | 用途 | 状态 |
+
+|------|--------|------|------|
+
+| **搜索入口** | 内置 WebSearch/WebFetch（优先）+ **Tavily**（API key 直调，skill 已于 v2.2.1 永久删除）+ **AgentKey**（聚合数据 API：搜索/新闻/社媒/股票/企业/实时，可选兜底） | 通用联网检索、查证、聚合数据（可替代缺失的专业 MCP） | ✅ 真实可用 |
+
+| **AI 搜索（可选）** | **Perplexity** / **Tavily**（有 key 直调其 API，skill 已于 v2.2.1 永久删除） | 带引用的 AI 搜索，无 key 跳过 | 可选源（需 key） |
+
+| **社媒 / 热评** | **agent-reach** / **agent-browser** / web-access | 小红书/知乎/Reddit/Bluesky/X/评论抓取（14 平台） | ✅ 真实可用 |
+
+| **知乎（技术+反馈）** | **zhihu MCP**（search_content + hot_list） | 中文技术教程、用户反馈、产品体验交叉验证 | ✅ 真实可用 |
+
+| **微信公众号文章** | **wechat-article-search** | 中文一手深度文章检索，补 UGC 评论之外的文章级缺口 | ✅ 真实可用 |
+
+| **文档净化** | **markitdown** | PDF/Word/财报 → Markdown | ✅ 真实可用 |
+
+| **A 股财务** | **通达信 tdx-connector**（v2.0.0 实测已用） | 上市公司 F10 财报/股东/资金流 | ✅ 真实可用 |
+
+| **专利** | **智慧芽 PatSnap MCP** | 技术壁垒、专利家族、引用分析 | ✅ 真实可用 |
+
+| **代码 / 项目** | GitHub 搜索 + Trending（`github` MCP + `gh` CLI 已认证 + web） | 开源实现、技术栈、Star/PR 趋势（MCP 直连优先，gh CLI 兜底） | ✅ 真实可用 |
+
+| **学术论文 / 元数据** | **OpenAlex** / **Semantic Scholar** / **arXiv** / **PubMed** / **bioRxiv** / **EMBL-EBI·Europe PMC**；`literature-search` skill 作方法论参考 | 论文元数据、引用网络、TLDR 摘要、预印本 | 🆓 免费 API 直调 |
+
+| **引文溯源** | **Crossref**（DOI 元数据+参考文献）/ **OpenCitations**（开放引文网络） | DOI 权威元数据、被引/引用关系 | 🆓 免费 API 直调 |
+
+| **科研数据仓库** | **Zenodo** / **Figshare** / **哈佛 Dataverse** / **NASA** | 数据集/软件/成果，均带 DOI 可溯源 | 🆓 免费 API 直调 |
+
+| **AI 模型 / 数据集** | **Hugging Face Hub API** / 魔塔 ModelScope | AI 模型、代码、应用文档、数据集 | 🆓 HF 免费 API（魔塔用户持只读 token 可直调） |
+
+| **开发者社区** | **Stack Overflow** + **Hacker News**（Stack Exchange / Algolia API）/ Reddit / CSDN | 技术选型讨论、真实踩坑反馈 | 🆓 SO/HN 免费 API（余 🌐） |
+
+| **财经** | 腾讯自选股 / westock-mcp | 上市公司基本面、行情、研报 | 按需连接 |
+
+| **法律 / 合规** | 威科先行 / 元典 / **北大法宝（pkulaw）** | 诉讼、资质、行政处罚、法律法规检索 | 按需连接 |
+
+| **企业工商 / 风险** | 天眼查 MCP / 企查查 MCP / **启信慧眼（qixinhuiyan）** | 股权、司法、经营异常、知识产权、企业风险洞察 | 按需连接 |
+
+| **美股 / SEC** | SEC EDGAR MCP | 10-K/10-Q/财报附注 | 按需连接（当前未启用） |
+
+| **顶刊 / 中文文献** | Nature / Science（引 DOI）/ CNKI / Google Scholar（仅用户导出） | 顶刊一手（摘要公开，全文多需订阅）；访问伦理 | 🌐 通用联网可达 |
+
+| **宏观经济** | Trading Economics / FRED / 国家统计局 / 央行·证监会 / 财联社 / 华尔街见闻 | 宏观指标 + 超预期/不及预期判断 | 🌐 通用联网可达 |
+
+| **专利（公开库）** | Google Patents / USPTO / EPO / WIPO | 专利原文、法律状态 | 🌐 通用联网可达 |
+
+| **开放百科** | Wikipedia / 百度百科 | 概念科普、背景知识 | 🌐 通用联网可达 |
+
+| **产品 / 创投** | Product Hunt / TechCrunch / 36氪 / 虎嗅 | 新品发布、融资、市场热度 | 🌐 通用联网可达 |
+
+| **中文社区** | 博客园 / V2EX / 小红书 / B站 | 用户反馈、产品体验、教程 | 🌐 通用联网可达 |
+
+| **国际社媒** | Bluesky / X(Twitter) / YouTube / LinkedIn | 官方动态、KOL 评论、用户情绪 | 🌐 通用联网可达 |
+
+| **新闻 / 资讯** | aihot（免 key 中文 AI 资讯）/ BBC / Reuters / Al Jazeera | 行业快讯、国际一手新闻 | 可选源（免 key 或公开） |
+
+| **知识库** | ima-mcp / Obsidian / 本地 wiki / **notion** | 用户自有资料、增量 Lint 沉淀 | 按需连接 |
+
+| **云存储 / 文件** | **百度网盘（baidu-netdisk）/ Google Drive（海外用户可选）** | 用户自有文件、报告归档与投递 | ✅ 真实可用 |
+
+
+
+**状态说明**
+
+
+
+- ✅ **真实可用**：当前环境已有 Skill 或已连接 MCP，开箱即用。
+
+- 🆓 **免费 API 直调**（v2.2.0 去粗取精重点）：源提供**免费公开 REST API**，可经 WebFetch/curl **直调**（无 key 或 DEMO_KEY），比抓 HTML 更稳、可复现、可溯源——优先于网页抓取。
+
+- **按需连接**：当前环境有对应 MCP/Skill，但未启用或需用户手动配置（如 SEC EDGAR、天眼查、企查查）。
+
+- 🌐 **通用联网可达**：无专用 API/连接器，通过 WebSearch/WebFetch/agent-reach/agent-browser 抓取或用户导出；按源分级处理（通常 T3 媒体/官方记录或 T4 UGC 信号）。
+
+- **可选源（免 key 或公开）**：公开可访问的新闻/资讯站点，无需专用连接器。
+
+
+
+> **诚实声明（重要）**：本 Skill 仅声明**真实存在的连接器类型**（如 AgentKey / 百度网盘 / Google Drive / notion / 北大法宝 / 启信慧眼 / 威科先行 / 元典 / 智慧芽 / 通达信 / 天眼查 / 企查查 等），**不暴露任何个人环境的连接状态**，缺失时一律优雅降级、不中断调研。Firecrawl、Crunchbase Pro、PitchBook 等未提供的服务**不会**被虚假标注——若你所在平台提供，可自行在 Step 1 搜索入口追加。GitHub MCP 可直连搜索/代码/Issue/PR/Release，亦可用 `gh` CLI 兜底。**v2.2.1 已永久删除（不可逆）**的重复冗余 skill（方法论已并入 dmr）：`google-scholar-search`（实为 Semantic Scholar 封装）、`academic-research-hub`（Proprietary + OpenClawCLI）、`deep-research`（工作流已吸收）、`news-summary`（RSS 已吸收）、`perplexity` / `tavily`（与 WebSearch 重复的 AI 搜索）。标 🆓 的学术/数据源为免费公开 API，无需专用连接器即可直调。
+
+### 分类推荐排名（首选 / 备选 / 兜底 / 个性化）
+
+> 基于官方文档 + 第三方定价聚合站（usagepricing / aicosthub / apivault / theaiagentindex 等）联网交叉验证（2026-07 快照；搜索 API 季度漂移，生产前请回源官网复核）。
+> **推荐层级**：🥇 首选（默认增强，零配置优先）· 🥈 备选（同级替代）· 🛟 兜底（keyless 默认层，缺 key 也能跑）· 🎯 个性化（需用户提供 key / 账号，或仅特定平台 / 区域 / 场景适用）。
+
+| 分类 | 工具 | 推荐层级 | 关键事实（免费额度 / keyless / 维护） | 适用场景 / 备注 |
+|------|------|----------|----------------------------------------|----------------|
+| **通用搜索/抓取** | **Firecrawl** | 🥇 首选 | keyless 远程 MCP · 1,000 积分/月（2026-06 上线）· 活跃维护 | 默认结构化抓取/抽取增强；额度耗尽可绑 key |
+| 通用搜索/抓取 | Exa | 🥈 备选 | 1,000 请求/月 · 需 key · 活跃维护 | 神经/语义检索；免费层较小 |
+| 通用搜索/抓取 | Tavily | 🥈 备选 | 1,000 积分/月 · 需 key · 2026-02 被 Nebius 收购（$275M–$400M） | 通用搜索 API；长期独立性待观察 |
+| 通用搜索/抓取 | Brave Search | 🥉 备选 | $5 月度赠金 ≈ 1,000 次 · 需 key · 活跃维护 | 独立索引、隐私优先；需绑卡 |
+| 通用搜索/抓取 | AnySearch | 🎯 个性化 | 匿名 1,000 次/天（keyless）/ 免费 key 更高 · 新兴 | 垂直领域搜索有特色；76.4% 系 [VENDOR CLAIM]，质量待验证 |
+| 通用搜索/抓取 | DuckDuckGo | 🛟 兜底 | keyless · 免费 · 限额低/非官方 API | 内置层外的轻量兜底检索 |
+| **AI 搜索/答案** | Perplexity Sonar | 🎯 个性化 | 无永久免费层 · 付费（$1–$15/1M tokens）· 活跃维护 | 高质量带引用答案；纯免费场景不经济 |
+| AI 搜索/答案 | 秘塔搜索 Metaso | 🎯 个性化 | Web 免费 · API ≈ ¥0.03/次（新用户 50 次试用）· CN 活跃 | 中文 AI 搜索 + 事实检验 |
+| **深度研究闭环** | GPT Researcher | 🛟 兜底（高级） | 本地进程/Ollama · 依赖重 · 启动慢 | 仅高级用户在独立 venv 部署；纯提示词三-B 已可替代 |
+| 深度研究闭环 | local-deep-researcher | ⚠️ 不推荐通用 | 依赖本地 Ollama/LMStudio | 仅涉密/离线场景单独考虑，与“零本地”定位冲突 |
+| **代码/仓库/文档** | **DeepWiki** | 🥇 首选 | keyless 远程 MCP · 公共仓库完全免费 · Cognition 官方维护 | 仓库/文档问答默认增强 |
+| 代码/仓库/文档 | GitHub MCP / gh CLI | 🥈 备选 | 平台特定 · 多用 token/key | WorkBuddy/Claude 等平台原生接入 |
+| **中文/国内** | ModelScope 魔塔 | 🎯 个性化 | 2,000 次/天 · 需阿里云账号 + 实名认证 + token · 活跃 | 中文模型/数据集/推理（Qwen/DeepSeek 等） |
+| 中文/国内 | aihot（已内置） | 🛟 兜底 | 免 key · 中文 AI 资讯 · 已吸收为可选源 | 中文 AI 资讯兜底，无需额外接入 |
+| **平台专有 Skill** | web-access / agent-reach / agent-browser | 🎯 个性化 | 平台专有 skill（WorkBuddy 等）· 不跨平台 | 仅特定平台 UGC/浏览器覆盖；不纳入平台无关推荐层 |
+| **兜底基座** | 内置 `web_search` / `web_fetch` + 🆓 免费 REST API | 🛟 兜底（质量基座） | keyless · 零安装 · 所有平台 | 默认主力检索入口，保证管线永不中断 |
+
+> 规则：🥇 首选 与 🥈 备选 默认接入（keyless 优先）；🛟 兜底 始终在线；🎯 个性化 按用户 key / 平台按需开；⚠️ 不推荐通用 项不纳入默认路径。所有项缺失即优雅跳过，输出质量由 Step 0–8 + 三-B 闭环保证，不降档。
+
+
+
+
+---
+
+
+
+## ❓ 常见问题与完整示例
+
+
+
+- **FAQ（7 问）**：本 skill 与 WebSearch 的区别、核心源不可达怎么办、模板 B/C/D 如何选择、是否需要付费 key、矛盾源如何处理、报告长度、增量沉淀是否必须 ima —— 见 SKILL.md [第八节 · 常见问题（FAQ）](SKILL.md#八常见问题faq)。
+
+- **端到端示例**：从「调研中国工业机器人赛道 + 减速器国产化 + 埃斯顿/汇川对位」用户提问，到 Step 0→8 逐环产出物（采集 / 去重 / 验证 / 矛盾消解 / 分级 / 模板 / 评分卡）—— 见 SKILL.md [第九节 · 完整示例](SKILL.md#九完整示例端到端从用户提问到报告)。
+
+- **完整更新史**：v2.0.0 → v2.3.0 每项变更细节 —— 见 SKILL.md [附录 A](SKILL.md#附录-a完整更新史v200--v230)。
+
+
+
+---
+
+
+
+## 📜 许可证
+
+
+
+[MIT License](LICENSE)
+
