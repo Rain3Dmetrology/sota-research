@@ -270,7 +270,7 @@ metadata:
 │  搜索策略: 第一段宏观锚定(市场规模/CAGR/政策)            │
 │           第二段产业链解剖(上下游利润分配/玩家格局/卡脖子) │
 │           第三段趋势预测与避坑(红利/颠覆技术/失败案例/反向)│
-│  搜索入口: WebSearch/WebFetch(优先) → Tavily/Perplexity(若装/有key) → agentkey(聚合兜底) → web-access/agent-reach(兜底) │
+│  搜索入口(基座并行): 内置 WebSearch/WebFetch 始终调用 + 已配置 Tavily/Perplexity/AgentKey 并行增强(无 key 跳过); 多源以 Step 4 交叉验证裁决 │
 │  专业数据库: 通达信(A股F10) 智慧芽(专利) 自选股/westock(财报) │
 │             威科/元典/北大法宝(法律) 天眼查/企查查/启信慧眼(工商风险)    │
 │             GitHub(gh CLI+web,Trending) ima(知识库)/notion              │
