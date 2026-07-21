@@ -169,7 +169,7 @@ metadata:
 | **Google Patents / USPTO / EPO / WIPO** | 公开检索 | 🌐 通用联网可达 |
 | **GitHub 搜索 + Trending** | `github` MCP + `gh` CLI（已认证）+ web | 开源实现/技术栈/Star·PR 趋势（MCP 直连优先，gh CLI 兜底） |
 | **Hugging Face** | `huggingface.co/mcp`（MCP 已连）| ✅ MCP 已连（模型/数据集/Spaces/Papers） |
-| **魔塔 ModelScope** | `modelscope.cn` | 🌐 中文 AI 模型库（用户持只读 API token 可直调） |
+| **魔塔 ModelScope** | `modelscope` MCP（MCP 已连）| ✅ MCP 已连（模型/数据集/论文） |
 
 - **范围澄清（先问后搜，源自 literature-search）**：主题、子领域、综述 vs 奠基性、时间范围。
 - **访问伦理**：不抓禁止自动访问或需登录的站点；Google Scholar 仅经用户导出；订阅库（Scopus/Web of Science）仅当用户提供 key/账号时启用，否则标"未覆盖"。
@@ -694,7 +694,7 @@ metadata:
 | AI 搜索(可选) | 内置 `web_search`（带引用优先） | Perplexity 🎯 / Tavily 🥈 / AnySearch 🎯 / 秘塔搜索 🎯（需 key 则跳过） |
 | 微信公众账号文章 | WebSearch 公众号文章 | wechat-article-search skill 🎯（平台特定） |
 | 宏观经济 | WebSearch（Trading Economics / FRED / 统计局 / 央行 / 财联社） | — |
-| AI 模型/代码/数据集 | Hugging Face Hub API（🆓）/ ModelScope web（用户有 token 直调） | ModelScope 🎯（平台特定，需 token） |
+| AI 模型/代码/数据集 | Hugging Face Hub API（🆓）/ ModelScope web（用户有 token 直调） | ModelScope 🎯（已连·平台特定） |
 | 开放百科 | WebSearch（Wikipedia / 百度百科） | — |
 | 产品/创投 | WebSearch + WebFetch（Product Hunt / TechCrunch / 36氪） | agent-reach 🎯（平台特定） |
 | 开发者社区 | WebSearch（Stack Overflow / HN / Reddit / CSDN） | agent-reach 🎯（平台特定） |
