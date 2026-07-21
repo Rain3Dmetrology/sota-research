@@ -311,7 +311,7 @@ The skill itself works using the agent's built-in web tools (WebSearch / WebFetc
 
 | Dimension | Data source / Skill | Purpose | Recommendation |
 |-----------|---------------------|---------|---------|
-| **Search entry** | built-in WebSearch/WebFetch (preferred) + **Firecrawl** (keyless MCP) + **Tavily** (key, direct API) + **SearXNG** (key-free metasearch) + **Novada** (free 1000/mo) + **AgentKey** (aggregated API) | general web retrieval, verification, aggregated data | 🛟 Built-in base · 🥇 Firecrawl · 🥈 Tavily/Novada · 🛟 SearXNG/AgentKey |
+| **Search entry** | built-in WebSearch/WebFetch (preferred) + **Firecrawl** (keyless MCP) + **Tavily** (key, direct API) + **SearXNG** (key-free metasearch) + **Novada** (free 1000/mo) + **AgentKey** (aggregated API) | general web retrieval, verification, aggregated data | 🛟 Built-in base (always) · 🥇 Firecrawl · 🥈 Tavily/Novada · 🛟 SearXNG/AgentKey (parallel) |
 | **AI search (optional)** | **Perplexity** / **Tavily** (key) / **AnySearch** / **Metaso (秘塔)** | cited AI search; skipped without key | 🎯 Perplexity/Metaso · 🥈 Tavily · 🎯 AnySearch |
 | **Social / reviews** | **agent-reach** / **agent-browser** / web-access | Xiaohongshu/Zhihu/Reddit/Bluesky/X/comments (14 platforms) | 🎯 Platform-specific |
 | **Zhihu (tech + feedback)** | **zhihu MCP** | Chinese tutorials, user feedback, cross-validation | 🎯 Platform-specific |
