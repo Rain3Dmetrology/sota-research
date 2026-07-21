@@ -18,61 +18,40 @@
 
 ## 1. 可选工具清单（按推荐层级分类）
 
-### 分类推荐排名表（首选 / 备选 / 兜底 / 个性化）
+> 推荐层级：🥇 首选（keyless 零配置）· 🥈 备选 · 🥉 备选 · 🛟 兜底（缺 key 也能跑）· 🎯 个性化（需 key / 账号 / 特定平台）· ⚠️ 不推荐通用。免费额度为 2026-07 交叉验证快照，搜索 API 季度漂移，生产前请回源官网复核。
 
-> 下表按「分类 + 推荐层级」对可选数据源与增强 Skill 做统一排名（2026-07 交叉验证快照；搜索 API 季度漂移，生产前请回源官网复核）。
-> **推荐层级**：🥇 首选（默认增强）· 🥈 备选（同级替代）· 🛟 兜底（keyless 默认层，缺 key 也能跑）· 🎯 个性化（需 key / 账号 / 特定平台）· ⚠️ 不推荐通用。
+### 1.1 默认层 · 零依赖零安装（质量基座 · 🛟 兜底）
 
-| 分类 | 工具 | 推荐层级 | 关键事实（免费额度 / keyless / 维护） | 适用场景 / 备注 |
-|------|------|----------|----------------------------------------|----------------|
-| **通用搜索/抓取** | **Firecrawl** | 🥇 首选 | keyless 远程 MCP · 1,000 积分/月（2026-06 上线）· 活跃维护 | 默认结构化抓取/抽取增强；额度耗尽可绑 key |
-| 通用搜索/抓取 | Exa | 🥈 备选 | 1,000 请求/月 · 需 key · 活跃维护 | 神经/语义检索；免费层较小 |
-| 通用搜索/抓取 | Tavily | 🥈 备选 | 1,000 积分/月 · 需 key · 2026-02 被 Nebius 收购（$275M–$400M） | 通用搜索 API；长期独立性待观察 |
-| 通用搜索/抓取 | Brave Search | 🥉 备选 | $5 月度赠金 ≈ 1,000 次 · 需 key · 活跃维护 | 独立索引、隐私优先；需绑卡 |
-| 通用搜索/抓取 | AnySearch | 🎯 个性化 | 匿名 1,000 次/天（keyless）/ 免费 key 更高 · 新兴 | 垂直领域搜索有特色；76.4% 系 [VENDOR CLAIM]，质量待验证 |
-| 通用搜索/抓取 | DuckDuckGo | 🛟 兜底 | keyless · 免费 · 限额低/非官方 API | 内置层外的轻量兜底检索 |
-| **AI 搜索/答案** | Perplexity Sonar | 🎯 个性化 | 无永久免费层 · 付费（$1–$15/1M tokens）· 活跃维护 | 高质量带引用答案；纯免费场景不经济 |
-| AI 搜索/答案 | 秘塔搜索 Metaso | 🎯 个性化 | Web 免费 · API ≈ ¥0.03/次（新用户 50 次试用）· CN 活跃 | 中文 AI 搜索 + 事实检验 |
-| **深度研究闭环** | GPT Researcher | 🛟 兜底（高级） | 本地进程/Ollama · 依赖重 · 启动慢 | 仅高级用户在独立 venv 部署；纯提示词三-B 已可替代 |
-| 深度研究闭环 | local-deep-researcher | ⚠️ 不推荐通用 | 依赖本地 Ollama/LMStudio | 仅涉密/离线场景单独考虑，与“零本地”定位冲突 |
-| **代码/仓库/文档** | **DeepWiki** | 🥇 首选 | keyless 远程 MCP · 公共仓库完全免费 · Cognition 官方维护 | 仓库/文档问答默认增强 |
-| 代码/仓库/文档 | GitHub MCP / gh CLI | 🥈 备选 | 平台特定 · 多用 token/key | WorkBuddy/Claude 等平台原生接入 |
-| **中文/国内** | ModelScope 魔塔 | 🎯 个性化 | 2,000 次/天 · 需阿里云账号 + 实名认证 + token · 活跃 | 中文模型/数据集/推理（Qwen/DeepSeek 等） |
-| 中文/国内 | aihot（已内置） | 🛟 兜底 | 免 key · 中文 AI 资讯 · 已吸收为可选源 | 中文 AI 资讯兜底，无需额外接入 |
-| **平台专有 Skill** | web-access / agent-reach / agent-browser | 🎯 个性化 | 平台专有 skill（WorkBuddy 等）· 不跨平台 | 仅特定平台 UGC/浏览器覆盖；不纳入平台无关推荐层 |
-| **兜底基座** | 内置 `web_search` / `web_fetch` + 🆓 免费 REST API | 🛟 兜底（质量基座） | keyless · 零安装 · 所有平台 | 默认主力检索入口，保证管线永不中断 |
-
-> 规则：🥇 首选 与 🥈 备选 默认接入（keyless 优先）；🛟 兜底 始终在线；🎯 个性化 按用户 key / 平台按需开；⚠️ 不推荐通用 项不纳入默认路径。所有项缺失即优雅跳过，输出质量由 Step 0–8 + 三-B 闭环保证，不降档。
-
-### 1.1 默认层 · 零依赖零安装（质量基座）
-
-| 工具 | 能力 | 接入方式 | 费用 | 备注 |
-|------|------|----------|------|------|
-| **LLM 内置搜索** | 通用网页搜索 / 网页抓取 | 无需配置 | 包含在模型订阅/额度中 | 各平台实现不同，结果质量取决于模型 |
-| **免费 REST API** | 学术/代码/开放数据 | 直调 OpenAlex / arXiv / Crossref / GitHub API 等 | 免费 | 优先用于论文、DOI、开源项目 |
-| **DuckDuckGo** | 通用网页搜索 | 社区 MCP（stdio）或 WebFetch | 免费、免 key | HTML 前端抓取，无 SLA，偶发解析失效；适合低频兜底 |
+| 工具 | 能力 | 接入方式 | 费用 | 推荐层级 | 备注 |
+|------|------|----------|------|----------|------|
+| LLM 内置搜索 | 通用网页搜索 / 网页抓取 | 无需配置 | 含模型订阅/额度 | 🛟 兜底（基座） | 各平台实现不同，质量取决于模型 |
+| 免费 REST API | 学术/代码/开放数据 | 直调 OpenAlex / arXiv / Crossref / GitHub API 等 | 免费 | 🛟 兜底（基座） | 优先用于论文、DOI、开源项目 |
+| DuckDuckGo | 通用网页搜索 | 社区 MCP（stdio）或 WebFetch | 免费、免 key | 🛟 兜底 | HTML 前端抓取，无 SLA，偶发解析失效；低频兜底 |
 
 ### 1.2 可选增强层 · 按需接入
 
-| 工具 | 能力 | 接入方式 | 免费额度（2026-07 交叉验证） | 推荐度 | 备注 |
-|------|------|----------|------------------------------|--------|------|
-| **Firecrawl** | 网页抓取 / 搜索 / 页面交互 | 远程 MCP `https://mcp.firecrawl.dev/v2/mcp`（keyless）或 API key | keyless 1,000 积分/月 | ⭐⭐⭐⭐⭐ | 官方 keyless MCP，开箱即用；额度耗尽后可绑 key |
-| **DeepWiki** | GitHub 仓库研究 | 远程 MCP `https://mcp.deepwiki.com/mcp`（keyless） | 免费（仅公共仓库） | ⭐⭐⭐⭐⭐ | Cognition 官方，免登录；对技术仓库调研极有价值 |
-| **Exa** | 神经/垂直索引搜索 | 远程 MCP `https://mcp.exa.ai/mcp` 需 API key | 1,000 请求/月（免费层） | ⭐⭐⭐⭐ | 神经搜索质量高，$7/1k；免费层较小 |
-| **Tavily** | AI 搜索 API | 远程 MCP `https://mcp.tavily.com/mcp` 或 API key | 1,000 积分/月 | ⭐⭐⭐⭐ | LangChain 生态默认；2026-02 被 Nebius 收购（$275M–$400M），长期独立性需观察 |
-| **Brave Search** | 独立索引搜索 | API key 直调 | $5 月度赠金 ≈ 1,000 次 | ⭐⭐⭐ | 独立索引、隐私优先；需绑卡/验证 |
-| **Perplexity Sonar** | 带引用一站式答案 | API key 直调 | 无永久免费层；Pro 订阅含 $5/月 API 额度 | ⭐⭐⭐ | 答案质量高，但成本随 token 叠加；不适合纯免费场景 |
-| **ModelScope 魔塔** | 中文模型/数据集/推理 | API token 直调 | 2,000 次/天（需阿里云账号 + 实名认证） | ⭐⭐⭐⭐ | 国内首选；适合 Qwen/DeepSeek 等中文模型推理 |
-| **AnySearch** | 统一实时搜索（23 垂直领域） | 远程 MCP `https://api.anysearch.com/mcp`（keyless 匿名）或 API key | 匿名 1,000 次/天；免费 key 更高 | ⭐⭐⭐ | 新兴工具，垂直领域搜索有特色；质量与稳定性待更多实战验证 |
-| **秘塔搜索 Metaso** | 中文 AI 搜索 / 学术搜索 | Web 免费；API 按次计费 | Web 搜索免费；API 约 ¥0.03/次，新用户 50 次试用 | ⭐⭐⭐ | 中文搜索体验好；API 非免费，适合轻量 CN 增强 |
+| 工具 | 能力 | 接入方式 | 免费额度（2026-07 交叉验证） | 推荐层级 | 备注 |
+|------|------|----------|------------------------------|----------|------|
+| Firecrawl | 网页抓取 / 搜索 / 页面交互 | 远程 MCP `https://mcp.firecrawl.dev/v2/mcp`（keyless）或 API key | keyless 1,000 积分/月 | 🥇 首选 | 官方 keyless MCP，开箱即用；额度耗尽可绑 key |
+| DeepWiki | GitHub 仓库研究 | 远程 MCP `https://mcp.deepwiki.com/mcp`（keyless） | 免费（仅公共仓库） | 🥇 首选 | Cognition 官方，免登录；技术仓库调研极有价值 |
+| Exa | 神经/垂直索引搜索 | 远程 MCP `https://mcp.exa.ai/mcp` 需 API key | 1,000 请求/月（免费层） | 🥈 备选 | 神经搜索质量高；免费层较小 |
+| Tavily | AI 搜索 API | 远程 MCP `https://mcp.tavily.com/mcp` 或 API key | 1,000 积分/月 | 🥈 备选 | 2026-02 被 Nebius 收购（$275M–$400M），长期独立性待观察 |
+| Brave Search | 独立索引搜索 | API key 直调 | $5 月度赠金 ≈ 1,000 次 | 🥉 备选 | 独立索引、隐私优先；需绑卡/验证 |
+| Novada | 网页搜索/SERP/抓取/提取/地图/爬取/深度研究（25+ 工具） | 托管 Streamable-HTTP MCP，`npx novada-mcp` | 免费 1,000 次/月 | 🥈 备选 | 新兴 SaaS，免安装，覆盖 195 国；长期可用性待观察 |
+| SearXNG | 元搜索引擎（多引擎聚合） | 自托管实例 / 公共实例 MCP | 免费、免 key（自托管） | 🛟 兜底（自托管 keyless） | 元搜索聚合；需自托管或可信公共实例 |
+| Perplexity Sonar | 带引用一站式答案 | API key 直调 | 无永久免费层；Pro 订阅含 $5/月 API 额度 | 🎯 个性化 | 答案质量高，成本随 token 叠加；非纯免费场景 |
+| ModelScope 魔塔 | 中文模型/数据集/推理 | API token 直调 | 2,000 次/天（需阿里云账号 + 实名认证） | 🎯 个性化 | 国内首选；适合 Qwen/DeepSeek 等中文模型推理 |
+| AnySearch | 统一实时搜索（23 垂直领域） | 远程 MCP `https://api.anysearch.com/mcp`（keyless 匿名）或 API key | 匿名 1,000 次/天；免费 key 更高 | 🎯 个性化 | 新兴工具，垂直领域有特色；质量稳定性待验证 |
+| 秘塔搜索 Metaso | 中文 AI 搜索 / 学术搜索 | Web 免费；API 按次计费 | Web 搜索免费；API 约 ¥0.03/次，新用户 50 次试用 | 🎯 个性化 | 中文搜索体验好；API 非免费，轻量 CN 增强 |
 
 ### 1.3 不推荐 / 仅特定场景
 
-| 工具 | 原因 |
-|------|------|
-| **GPT Researcher（本地进程）** | 需要 `git clone` + `pip install` + 配置多个 API key，依赖重、启动慢，不符合"大多数人开箱即用"目标。仅建议高级用户在独立 venv/容器中使用。 |
-| **local-deep-researcher / local-deep-research** | 依赖本地 Ollama/LMStudio，与 skill "零本地、泛化优先"定位冲突。仅推荐涉密/离线场景单独考虑。 |
-| **agent-browser / agent-reach** | WorkBuddy 生态专有 skill/工具，不具备跨平台通用性。仅 WorkBuddy 用户可按需安装，不纳入平台无关的推荐层。 |
+| 工具 | 推荐层级 | 原因 |
+|------|----------|------|
+| GPT Researcher（本地进程） | ⚠️ 不推荐通用 | 需 git clone + pip install + 多 API key，依赖重、启动慢；仅高级用户在独立 venv/容器部署 |
+| local-deep-researcher / local-deep-research | ⚠️ 不推荐通用 | 依赖本地 Ollama/LMStudio，与"零本地、泛化优先"定位冲突；仅涉密/离线场景单独考虑 |
+| agent-browser / agent-reach | 🎯 平台专有 | WorkBuddy 生态专有 skill/工具，不跨平台；仅 WorkBuddy 用户按需安装 |
+
 
 ---
 
