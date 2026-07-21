@@ -9,16 +9,17 @@ Follows the [Agent Skills open standard](https://agentskills.io/) (initiated by 
 
 ---
 
-## ✨ Features (v2.2.10)
+## ✨ Features (v2.3.0)
 
 > Core difference vs generic AI search / deep-research skills: **dmr is not a search wrapper — it is a reproducible, confidence-labeled research pipeline with adversarial final-draft auditing.**
 
 ### Version evolution (newest first)
 
-- **v2.2.10 Optional search backend appendix reinforcement**: registers AnySearch (pre-filter RRF/deduplication; its 76.4% claim is marked as [VENDOR CLAIM] only) and Metaso/秘塔搜索 (domestic AI search + fact-checking) as optional CN enhancements; keeps key-free graceful degradation, adds no default dependency, does not touch the Step 0→8 main pipeline.
-- **v2.2.7 P1 integration + de-cluttering**: structured markdown asset accumulation + optional hyperresearch deep backend + Step 1 intent routing + native Chinese/CJK advantage.
-- **v2.2.6 Adversarial audit discipline**: corpus critic + 4 parallel critics + patch-never-regenerate + provenance source tree + final-draft lint checklist.
-- **v2.2.5 Search methodology sharpening**: information-density first, cross-source diversity weighting, semantic × recency × source-tier three-axis hybrid ranking.
+- **v2.3.0 Platform-agnostic + deep-research loop (de-cluttered, generalization-first)**: ① zero-dependency, zero-install by default - no assumption of any platform MCP / agent-team protocol / proprietary backend; ② new **Three-B deep-research loop (platform-agnostic, pure-prompt orchestration)** absorbing the essence of multi-platform deep-research agent teams; ③ competitive-key-param cross-validation raised from >=2 to >=3 sources; ④ quality rules added - optional tools are not a quality prerequisite / no platform lock-in; ⑤ new `references/cross-platform-tools.md` guide for six platforms.
+- **v2.2.10 Optional search backend appendix reinforcement**: AnySearch / Metaso registered as optional CN enhancements; key-free graceful degradation; main pipeline untouched.
+- **v2.2.7 P1 integration + de-cluttering**: structured asset accumulation + optional deep backend + Step 1 intent routing + native CJK.
+- **v2.2.6 Adversarial audit discipline**: corpus critic + 4 parallel critics + patch-never-regenerate + source tree + lint checklist.
+- **v2.2.5 Search methodology sharpening**: information-density first, cross-source diversity weighting, three-axis hybrid ranking.
 - **v2.2.4 Normative enhancements**: FAQ, end-to-end example, full changelog appendix. → [SKILL.md Section 8 / FAQ](SKILL.md)
 
 ### Unique advantages
@@ -29,7 +30,8 @@ Follows the [Agent Skills open standard](https://agentskills.io/) (initiated by 
 - **Adversarial final-draft audit**: an independent critic challenges the draft before delivery; local patches, never full regeneration.
 - **Native Chinese/CJK support**: WeChat official accounts, Zhihu, Xiaohongshu, CNKI and other Chinese sources are never dropped or treated as junk.
 - **Zero-install skill**: pure methodology calling the agent's built-in tools, no extra Python dependency.
-- **Optional backends never block**: Tavily / Perplexity / hyperresearch enhance when a key is present, gracefully degrade when absent.
+- **Optional tools never block**: Exa / Firecrawl / Tavily / Perplexity / GPT Researcher / ModelScope enhance when present, gracefully degrade when absent.
+- **Platform-agnostic**: no assumption of any MCP config / agent-team protocol / proprietary backend; works on WorkBuddy / Claude / Codex / Trae / qoder / Cursor; optional tools degrade gracefully when absent.
 
 ### Output capabilities
 
@@ -38,6 +40,56 @@ Follows the [Agent Skills open standard](https://agentskills.io/) (initiated by 
 - **Academic modules**: arXiv / PubMed / OpenAlex / Semantic Scholar / CNKI, free 🆓 APIs preferred.
 - **Analysis lenses**: Porter's Five Forces / PESTEL / BCG / 3C / TAM-SOM, triggered by intent, never piled on.
 - **Incremental accumulation**: structured markdown note (YAML frontmatter), integrates with ima / Obsidian / local wiki.
+
+---
+
+
+### Tech stack & pipeline (visual)
+
+**Research pipeline** - the Step 0-8 main line and the Three-B deep-research loop are orthogonal; quality is guaranteed by methodology, not by any single search API:
+
+```mermaid
+flowchart TB
+  subgraph MAIN["Main line - Step 0-8 (deterministic pipeline)"]
+    direction LR
+    S0["0 Scope convergence"] --> S1["1 Multi-source collect"]
+    S1 --> S2["2 Dedupe - Stale-removal"]
+    S2 --> S3["3 Source tiering T1-T4"]
+    S3 --> S4["4 Cross-validate >=2 sources, fake-removal<br/>key params >=3 sources"]
+    S4 --> S5["5 Contradiction resolution"]
+    S5 --> S6["6 Absorb user reviews T4"]
+    S6 --> S7["7 Adversarial audit"]
+    S7 --> S8["8 Structured output + 100-score"]
+  end
+  subgraph CLOSE["Three-B deep-research loop (platform-agnostic - pure prompt)"]
+    direction LR
+    P1["Phase1 Initial research"] --> P2["Phase2 Outline planning"]
+    P2 --> P3["Phase3 Per-chapter deep-dive - review"]
+    P3 --> P4["Phase4 Drafting framework"]
+    P4 --> P5["Phase5 Publish integration"]
+  end
+  CLOSE -. "per-chapter progress report" .- S1
+```
+
+**Tech stack** - default layer is zero-dependency, zero-install; the optional enhancement layer degrades gracefully when absent and only enriches source material:
+
+```mermaid
+flowchart TB
+  subgraph L0["Default layer - zero-dep, zero-install (quality base)"]
+    direction LR
+    D1["LLM built-in web_search / web_fetch"]
+    D2["Free REST APIs (OpenAlex / arXiv / Crossref etc.)"]
+  end
+  subgraph L1["Optional enhancement layer - graceful degrade when absent"]
+    direction LR
+    E1["Exa - Firecrawl - Tavily - Brave (search)"]
+    E2["Perplexity Sonar (AI search)"]
+    E3["GPT Researcher (local/remote deep loop)"]
+    E4["ModelScope (CN models/datasets)"]
+  end
+  L1 -. "enriches sources only - not a quality prerequisite" .- L0
+  L0 --> OUT["Source tiering + cross-validation + confidence labels<br/>reproducible research report"]
+```
 
 ---
 
@@ -117,15 +169,17 @@ The agent executes the fixed SKILL.md flow: scope convergence → multi-source c
 deep-market-research/
 ├── SKILL.md          # Core: metadata + complete workflow instructions (Step 0–8 + three templates + analysis lenses + quality rules)
 ├── README.md         # Chinese documentation (this repo's home page)
-├── README_EN.md      # English documentation
-├── LICENSE           # MIT
-├── CONTRIBUTING.md   # Contribution guide
-├── install.sh        # Unix install script
-├── install.ps1       # Windows install script
+├── README_EN.md                  # English documentation
+├── references/
+│   └── cross-platform-tools.md   # Optional: six-platform enhancement-tool setup guide (absence does not affect main flow)
+├── LICENSE                       # MIT
+├── CONTRIBUTING.md               # Contribution guide
+├── install.sh                    # Unix install script
+├── install.ps1                   # Windows install script
 └── .gitignore
 ```
 
-> The skill is **self-contained**: all workflows, templates, and rules are embedded in `SKILL.md`; no extra scripts or config files are needed.
+> The skill's core is **self-contained**: all workflows, templates, and rules are embedded in `SKILL.md`; no extra scripts or config files are needed. `references/` is only an optional enhancement-tool guide; its absence does not affect the main flow.
 
 ---
 
@@ -180,7 +234,7 @@ The skill itself works using the agent's built-in web tools (WebSearch / WebFetc
 
 - **FAQ (7 questions)**: how this skill differs from WebSearch, what to do when core sources are unreachable, how to choose templates B/C/D, whether a paid key is needed, how to handle contradictory sources, report length, whether incremental accumulation must use ima — see SKILL.md [Section 8 · FAQ](SKILL.md).
 - **End-to-end example**: from the user query "Research China's industrial-robot track + reducer localization + Estun/Inovance positioning" to the per-step outputs of Step 0→8 (collection / dedupe / validation / contradiction resolution / tiering / template / scorecard) — see SKILL.md [Section 9 · Full Example](SKILL.md).
-- **Full changelog**: every change detail from v2.0.0 → v2.2.10 — see SKILL.md [Appendix A](SKILL.md#附录-a完整更新史v200--v2210).
+- **Full changelog**: every change detail from v2.0.0 → v2.3.0 — see SKILL.md [Appendix A](SKILL.md#附录-a完整更新史v200--v230).
 
 ---
 
