@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 470">
+  <defs><style>
+      text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 13px; }
+      .title { font-size: 15px; font-weight: 600; fill: #1f2328; }
+      .subtitle { font-size: 12px; fill: #656d76; }
+      .layer-base { fill: #ddf4ff; stroke: #54aeff; stroke-width: 1.5; }
+      .layer-opt { fill: #fff2cc; stroke: #f9a825; stroke-width: 1.5; }
+      .box-main { fill: #ddf4ff; stroke: #54aeff; stroke-width: 1.5; }.box-loop { fill: #fff2cc; stroke: #f9a825; stroke-width: 1.5; }.box-label { fill: #f6f8fa; stroke: #d0d7de; stroke-width: 1; }.maintxt { fill: #1f2328; font-weight: 600; }.subtxt { fill: #656d76; font-size: 11px; }.looptxt { fill: #1f2328; font-weight: 600; } { fill: #dafbe1; stroke: #2da44e; stroke-width: 1.5; }
+      .chip { fill: #ffffff; stroke: #d0d7de; stroke-width: 1; }
+      .arrow { fill: none; stroke: #656d76; stroke-width: 1.5; marker-end: url(#ah); }
+      .arrow-dashed { fill: none; stroke: #0969da; stroke-width: 1.5; stroke-dasharray: 5,4; marker-end: url(#ahb); }
+      .pilltxt { font-size: 12px; font-weight: 600; fill: #ffffff; }
+      .chiptxt { font-size: 12px; fill: #1f2328; }
+
+    <marker id="ah" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#656d76"/>
+    </marker>
+    <marker id="ahb" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#0969da"/>
+    </marker></style></defs>
+  <text x="30" y="28" class="title">调研流水线（Pipeline）</text>
+  <text x="30" y="48" class="subtitle">主管线 Step 0-8 与三-B 深度研究闭环正交，质量由方法论保证而非某个搜索 API</text>
+  <rect x="30" y="68" width="1060" height="132" fill="#ffffff" stroke="#d0d7de" stroke-width="1" rx="8"/>
+  <text x="45" y="90" font-size="13" font-weight="600" fill="#0969da">主管线 · Step 0-8（确定性流水线）</text>
+  <g transform="translate(55,110)"><rect width="90" height="44" rx="6" class="box-main"/><text x="45.0" y="19" text-anchor="middle" class="maintxt">0 范围收敛</text><text x="45.0" y="35" text-anchor="middle" class="subtxt">Scope</text></g>
+  <g transform="translate(170,110)"><rect width="90" height="44" rx="6" class="box-main"/><text x="45.0" y="19" text-anchor="middle" class="maintxt">1 多源采集</text><text x="45.0" y="35" text-anchor="middle" class="subtxt">Collect</text></g>
+  <line x1="145" y1="132" x2="170" y2="132" class="arrow"/>
+  <g transform="translate(285,110)"><rect width="90" height="44" rx="6" class="box-main"/><text x="45.0" y="19" text-anchor="middle" class="maintxt">2 去重去旧</text><text x="45.0" y="35" text-anchor="middle" class="subtxt">Dedupe</text></g>
+  <line x1="260" y1="132" x2="285" y2="132" class="arrow"/>
+  <g transform="translate(400,110)"><rect width="90" height="44" rx="6" class="box-main"/><text x="45.0" y="19" text-anchor="middle" class="maintxt">3 源分级</text><text x="45.0" y="35" text-anchor="middle" class="subtxt">T1-T4</text></g>
+  <line x1="375" y1="132" x2="400" y2="132" class="arrow"/>
+  <g transform="translate(515,110)"><rect width="132" height="44" rx="6" class="box-main"/><text x="66.0" y="19" text-anchor="middle" class="maintxt">4 交叉验证去伪</text><text x="66.0" y="35" text-anchor="middle" class="subtxt">≥2 / ≥3 params</text></g>
+  <line x1="490" y1="132" x2="515" y2="132" class="arrow"/>
+  <g transform="translate(672,110)"><rect width="90" height="44" rx="6" class="box-main"/><text x="45.0" y="19" text-anchor="middle" class="maintxt">5 矛盾消解</text><text x="45.0" y="35" text-anchor="middle" class="subtxt">Resolve</text></g>
+  <line x1="647" y1="132" x2="672" y2="132" class="arrow"/>
+  <g transform="translate(787,110)"><rect width="110" height="44" rx="6" class="box-main"/><text x="55.0" y="19" text-anchor="middle" class="maintxt">6 吸收热评 T4</text><text x="55.0" y="35" text-anchor="middle" class="subtxt">Reviews</text></g>
+  <line x1="762" y1="132" x2="787" y2="132" class="arrow"/>
+  <g transform="translate(922,110)"><rect width="90" height="44" rx="6" class="box-main"/><text x="45.0" y="19" text-anchor="middle" class="maintxt">7 对抗审计</text><text x="45.0" y="35" text-anchor="middle" class="subtxt">Audit</text></g>
+  <line x1="897" y1="132" x2="922" y2="132" class="arrow"/>
+  <line x1="1012" y1="132" x2="1037" y2="132" class="arrow"/>
+  <g transform="translate(1037,110)"><rect width="64" height="44" rx="6" class="box-label"/><text x="32" y="19" text-anchor="middle" class="maintxt" font-size="12">8 输出</text><text x="32" y="35" text-anchor="middle" class="subtxt" font-size="10">100分</text></g>
+  <rect x="55" y="216" width="430" height="30" rx="4" fill="#fff8e6" stroke="#f9a825" stroke-width="1"/>
+  <text x="68" y="236" class="subtxt" font-size="11" fill="#bf5b00">可选增强层在此接入：Firecrawl / DeepWiki / Tavily / SearXNG … 缺失即优雅降级</text>
+  <line x1="170" y1="216" x2="170" y2="154" class="arrow-dashed"/>
+  <rect x="30" y="262" width="1060" height="150" fill="#ffffff" stroke="#d0d7de" stroke-width="1" rx="8"/>
+  <text x="45" y="284" font-size="13" font-weight="600" fill="#bf5b00">三-B 深度研究闭环（平台无关 · 纯提示词）</text>
+  <g transform="translate(75,300)"><rect width="110" height="44" rx="6" class="box-loop"/><text x="55.0" y="19" text-anchor="middle" class="looptxt">Phase1 初始调研</text><text x="55.0" y="35" text-anchor="middle" class="subtxt">Initial research</text></g>
+  <g transform="translate(230,300)"><rect width="110" height="44" rx="6" class="box-loop"/><text x="55.0" y="19" text-anchor="middle" class="looptxt">Phase2 规划大纲</text><text x="55.0" y="35" text-anchor="middle" class="subtxt">Outline</text></g>
+  <line x1="185" y1="322" x2="230" y2="322" class="arrow"/>
+  <g transform="translate(385,300)"><rect width="120" height="44" rx="6" class="box-loop"/><text x="60.0" y="19" text-anchor="middle" class="looptxt">Phase3 逐章深研</text><text x="60.0" y="35" text-anchor="middle" class="subtxt">Deep-dive</text></g>
+  <line x1="340" y1="322" x2="385" y2="322" class="arrow"/>
+  <g transform="translate(550,300)"><rect width="110" height="44" rx="6" class="box-loop"/><text x="55.0" y="19" text-anchor="middle" class="looptxt">Phase4 撰写框架</text><text x="55.0" y="35" text-anchor="middle" class="subtxt">Drafting</text></g>
+  <line x1="505" y1="322" x2="550" y2="322" class="arrow"/>
+  <g transform="translate(705,300)"><rect width="110" height="44" rx="6" class="box-loop"/><text x="55.0" y="19" text-anchor="middle" class="looptxt">Phase5 发布整合</text><text x="55.0" y="35" text-anchor="middle" class="subtxt">Publish</text></g>
+  <line x1="660" y1="322" x2="705" y2="322" class="arrow"/>
+  <path d="M 815 344 Q 1040 450 105 450 Q 75 450 75 344" fill="none" stroke="#bf5b00" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#ah)"/>
+  <text x="560.0" y="464" text-anchor="middle" class="subtxt" font-size="11" fill="#bf5b00">按章节进度报告回注主管线</text>
+  <line x1="215" y1="234" x2="215" y2="262" class="arrow-dashed"/>
+  <text x="225" y="252" class="subtxt" font-size="11" fill="#0969da">章节级进度通报</text>
+</svg>
