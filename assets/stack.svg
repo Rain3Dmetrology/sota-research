@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 440">
+  <defs><style>
+      text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 13px; }
+      .title { font-size: 15px; font-weight: 600; fill: #1f2328; }
+      .subtitle { font-size: 12px; fill: #656d76; }
+      .layer-base { fill: #ddf4ff; stroke: #54aeff; stroke-width: 1.5; }
+      .layer-opt { fill: #fff2cc; stroke: #f9a825; stroke-width: 1.5; }
+      .layer-out { fill: #dafbe1; stroke: #2da44e; stroke-width: 1.5; }
+      .chip { fill: #ffffff; stroke: #d0d7de; stroke-width: 1; }
+      .arrow { fill: none; stroke: #656d76; stroke-width: 1.5; marker-end: url(#ah); }
+      .arrow-dashed { fill: none; stroke: #0969da; stroke-width: 1.5; stroke-dasharray: 5,4; marker-end: url(#ahb); }
+      .pilltxt { font-size: 12px; font-weight: 600; fill: #ffffff; }
+      .chiptxt { font-size: 12px; fill: #1f2328; }
+
+    <marker id="ah" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#656d76"/>
+    </marker>
+    <marker id="ahb" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#0969da"/>
+    </marker></style></defs>
+  <text x="30" y="28" class="title">技术栈（Stack）</text>
+  <text x="30" y="48" class="subtitle">默认层零依赖零安装；可选增强层缺失即优雅降级，仅丰富素材来源（推荐层级：🥇首选 · 🥈备选 · 🛟兜底 · 🎯个性化）</text>
+  <rect x="30" y="66" width="880" height="76" rx="8" class="layer-base"/>
+  <text x="48" y="88" font-size="13" font-weight="600" fill="#0969da">默认层 · 零依赖零安装（质量基座）</text>
+  <text x="48" y="106" class="subtitle">Methodology-first quality baseline; works without any API key or local process</text>
+  <g transform="translate(48,118)"><rect width="231" height="26" rx="4" class="chip"/><text x="115.5" y="17" text-anchor="middle" class="chiptxt">LLM 内置 web_search / web_fetch</text></g>
+  <g transform="translate(291,118)"><rect width="367" height="26" rx="4" class="chip"/><text x="183.5" y="17" text-anchor="middle" class="chiptxt">免费 REST API（OpenAlex / arXiv / Crossref / 官方）</text></g>
+  <g transform="translate(670,118)"><rect width="201" height="26" rx="4" class="chip"/><text x="100.5" y="17" text-anchor="middle" class="chiptxt">源分级 / 交叉验证 / 置信标签</text></g>
+  <line x1="470.0" y1="142" x2="470.0" y2="158" class="arrow"/>
+  <rect x="30" y="158" width="880" height="220" rx="8" class="layer-opt"/>
+  <text x="48" y="180" font-size="13" font-weight="600" fill="#bf5b00">可选增强层 · 缺失即优雅降级（推荐层级）</text>
+  <text x="48" y="198" class="subtitle">Optional enrichment only — never a quality prerequisite</text>
+  <rect x="46" y="212" width="66" height="26" rx="13" fill="#1a7f37"/><text x="79.0" y="229" text-anchor="middle" class="pilltxt">🥇 首选</text>
+  <g transform="translate(126,212)"><rect width="182" height="26" rx="4" class="chip"/><text x="91.0" y="17" text-anchor="middle" class="chiptxt">Firecrawl（keyless MCP）</text></g>
+  <g transform="translate(318,212)"><rect width="157" height="26" rx="4" class="chip"/><text x="78.5" y="17" text-anchor="middle" class="chiptxt">DeepWiki（代码/文档）</text></g>
+  <rect x="46" y="246" width="66" height="26" rx="13" fill="#bf5b00"/><text x="79.0" y="263" text-anchor="middle" class="pilltxt">🥈 备选</text>
+  <g transform="translate(126,246)"><rect width="126" height="26" rx="4" class="chip"/><text x="63.0" y="17" text-anchor="middle" class="chiptxt">Tavily（Nebius）</text></g>
+  <g transform="translate(262,246)"><rect width="165" height="26" rx="4" class="chip"/><text x="82.5" y="17" text-anchor="middle" class="chiptxt">Novada（免费 1000/月）</text></g>
+  <g transform="translate(437,246)"><rect width="37" height="26" rx="4" class="chip"/><text x="18.5" y="17" text-anchor="middle" class="chiptxt">Exa</text></g>
+  <g transform="translate(484,246)"><rect width="51" height="26" rx="4" class="chip"/><text x="25.5" y="17" text-anchor="middle" class="chiptxt">Brave</text></g>
+  <rect x="46" y="280" width="66" height="26" rx="13" fill="#0969da"/><text x="79.0" y="297" text-anchor="middle" class="pilltxt">🛟 兜底</text>
+  <g transform="translate(126,280)"><rect width="178" height="26" rx="4" class="chip"/><text x="89.0" y="17" text-anchor="middle" class="chiptxt">SearXNG（免 key 元搜索）</text></g>
+  <g transform="translate(314,280)"><rect width="86" height="26" rx="4" class="chip"/><text x="43.0" y="17" text-anchor="middle" class="chiptxt">DuckDuckGo</text></g>
+  <g transform="translate(410,280)"><rect width="166" height="26" rx="4" class="chip"/><text x="83.0" y="17" text-anchor="middle" class="chiptxt">GPT Researcher（可选）</text></g>
+  <rect x="46" y="314" width="79" height="26" rx="13" fill="#8250df"/><text x="85.5" y="331" text-anchor="middle" class="pilltxt">🎯 个性化</text>
+  <g transform="translate(139,314)"><rect width="128" height="26" rx="4" class="chip"/><text x="64.0" y="17" text-anchor="middle" class="chiptxt">Perplexity Sonar</text></g>
+  <g transform="translate(277,314)"><rect width="108" height="26" rx="4" class="chip"/><text x="54.0" y="17" text-anchor="middle" class="chiptxt">秘塔搜索（CN）</text></g>
+  <g transform="translate(395,314)"><rect width="79" height="26" rx="4" class="chip"/><text x="39.5" y="17" text-anchor="middle" class="chiptxt">AnySearch</text></g>
+  <g transform="translate(484,314)"><rect width="119" height="26" rx="4" class="chip"/><text x="59.5" y="17" text-anchor="middle" class="chiptxt">ModelScope 魔塔</text></g>
+  <line x1="470.0" y1="378" x2="470.0" y2="390" class="arrow"/>
+  <rect x="235.0" y="390" width="470" height="34" rx="8" class="layer-out"/>
+  <text x="470.0" y="412" text-anchor="middle" font-size="13" font-weight="600" fill="#1a7f37">可复现调研报告（结构化 markdown + provenance）</text>
+</svg>

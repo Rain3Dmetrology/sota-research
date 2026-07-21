@@ -674,41 +674,39 @@ metadata:
 
 ## 五、工具分层（默认零依赖，可选工具按平台接入）
 
-> **默认层（所有平台通用，零安装）**：LLM 内置 `web_search` / `web_fetch` + 🆓 免费公开 REST API（OpenAlex 等）。这是主力检索入口，**不依赖任何 MCP 配置或本地进程**。
-> **可选增强层（按平台配置，缺失则优雅跳过）**：Exa / Firecrawl / Tavily / Perplexity（API 或 MCP）、GPT Researcher（CLI 或 MCP 本地进程）、ModelScope（API 或 MCP）。这些**不是质量必需**——它们只丰富素材来源；缺失时回退默认层，输出质量由 Step 0–8 + 三-B 闭环保证，不降档。
-> 各平台（WorkBuddy / Claude / Codex / Trae / qoder / Cursor）如何接入可选工具，见 **references/cross-platform-tools.md**。
+> **默认层（零安装）**：LLM 内置 `web_search` / `web_fetch` + 🆓 免费 REST API（OpenAlex 等）；主力入口，不依赖 MCP / 本地进程。
+> **可选增强层（缺失则优雅跳过，非质量必需）**：Firecrawl / DeepWiki / Exa / Tavily / Brave / Perplexity / 秘塔 / AnySearch / ModelScope / SearXNG / Novada 等按平台接入；GPT Researcher 等本地进程依赖重，仅高级用户按需部署。各平台接入见 **references/cross-platform-tools.md**。
+> 推荐层级：🥇 首选 · 🥈 备选 · 🥉 备选 · 🛟 兜底 · 🎯 个性化（平台专有 / 需 key）· ⚠️ 不推荐通用。
 
-| 步骤 | 默认层（零依赖，所有平台通用） | 可选增强层（按平台接入，缺失则跳过） |
+| 步骤 | 默认层（零依赖，所有平台通用） | 可选增强层（按平台接入，缺失则跳过 · 标注推荐层级） |
 |------|----------------|-------------------------------|
-| 搜索入口 | 内置 `web_search` / `web_fetch`（首选）+ 🆓 免费 REST API（OpenAlex 等） | Exa / Firecrawl / Tavily / Perplexity（API 或 MCP，见 cross-platform-tools.md） |
-| 社媒/热评 | `web_search` 通用社媒（Reddit / X / 知乎 / 微博 / 小红书等）+ WebFetch | agent-reach / agent-browser（平台特定，复用登录态抓评论）；UGC 仅作 T4 信号 |
-| 专利 | WebSearch 公开库（Google Patents / USPTO / EPO / WIPO） | patsnap-search MCP（若平台已连） |
-| 财经/财报 | WebSearch 公司官网 / 财报 / 财经媒体 | westock-mcp / tdx-connector MCP + markitdown（平台特定） |
-| 企业工商/风险 | WebSearch 工商/司法公开信息 | tyc-mcp / qcc-company / qixinhuiyan-mcp（平台特定） |
-| 法律/合规 | WebSearch 法规/裁判文书公开信息 | wk-workbuddy / yuandian-mcp / pkulaw（平台特定） |
-| 代码/项目 | WebSearch + WebFetch GitHub Trending / Hugging Face | github MCP + gh CLI（平台特定） |
+| 搜索入口 | 内置 `web_search` / `web_fetch`（首选）+ 🆓 免费 REST API（OpenAlex 等） | Firecrawl 🥇 / DeepWiki 🥇（keyless MCP）/ Exa 🥈 / Tavily 🥈 / Brave 🥉 / Perplexity 🎯 / Novada 🥈（免费 1000/月，npx）/ SearXNG 🛟（自托管 keyless） |
+| 社媒/热评 | `web_search` 通用社媒（Reddit / X / 知乎 / 微博 / 小红书等）+ WebFetch | agent-reach / agent-browser 🎯（平台特定，复用登录态抓评论）；UGC 仅作 T4 信号 |
+| 专利 | WebSearch 公开库（Google Patents / USPTO / EPO / WIPO） | patsnap-search MCP 🎯（若平台已连） |
+| 财经/财报 | WebSearch 公司官网 / 财报 / 财经媒体 | westock-mcp / tdx-connector MCP + markitdown 🎯（平台特定） |
+| 企业工商/风险 | WebSearch 工商/司法公开信息 | tyc-mcp / qcc-company / qixinhuiyan-mcp 🎯（平台特定） |
+| 法律/合规 | WebSearch 法规/裁判文书公开信息 | wk-workbuddy / yuandian-mcp / pkulaw 🎯（平台特定） |
+| 代码/项目 | WebSearch + WebFetch GitHub Trending / Hugging Face | DeepWiki 🥇（keyless，仓库研究）/ github MCP + gh CLI 🥈（平台特定） |
 | 学术论文(🆓免费API优先) | WebFetch/curl 直调：OpenAlex / Semantic Scholar / arXiv / PubMed / bioRxiv / EMBL-EBI·Europe PMC（免 key、可复现） | — （已是免费 API，无需增强） |
 | 引文溯源 | WebFetch 直调：Crossref / OpenCitations（DOI 元数据 + 引文网络） | — |
 | 科研数据仓库(🆓免费API) | WebFetch 直调：Zenodo / Figshare / 哈佛 Dataverse / NASA（均带 DOI） | — |
-| 知乎(技术+反馈) | WebSearch 知乎（WebFetch 抓页） | zhihu MCP（平台特定） |
-| AI 搜索(可选) | 内置 `web_search`（带引用优先） | Perplexity / Tavily / AnySearch / 秘塔搜索（API 或 MCP，需 key 则跳过） |
-| 微信公众账号文章 | WebSearch 公众号文章 | wechat-article-search skill（平台特定） |
+| 知乎(技术+反馈) | WebSearch 知乎（WebFetch 抓页） | zhihu MCP 🎯（平台特定） |
+| AI 搜索(可选) | 内置 `web_search`（带引用优先） | Perplexity 🎯 / Tavily 🥈 / AnySearch 🎯 / 秘塔搜索 🎯（需 key 则跳过） |
+| 微信公众账号文章 | WebSearch 公众号文章 | wechat-article-search skill 🎯（平台特定） |
 | 宏观经济 | WebSearch（Trading Economics / FRED / 统计局 / 央行 / 财联社） | — |
-| AI 模型/代码/数据集 | Hugging Face Hub API（🆓）/ ModelScope web（用户有 token 直调） | ModelScope MCP / API（平台特定） |
+| AI 模型/代码/数据集 | Hugging Face Hub API（🆓）/ ModelScope web（用户有 token 直调） | ModelScope 🎯（平台特定，需 token） |
 | 开放百科 | WebSearch（Wikipedia / 百度百科） | — |
-| 产品/创投 | WebSearch + WebFetch（Product Hunt / TechCrunch / 36氪） | agent-reach（平台特定） |
-| 开发者社区 | WebSearch（Stack Overflow / HN / Reddit / CSDN） | agent-reach（平台特定） |
-| 知识库 | — | ima-mcp / notion / Obsidian / 本地 wiki（用户自有） |
-| 云存储 / 文件 | — | baidu-netdisk MCP（平台特定） |
-| 文档净化 | WebFetch 原文 + LLM 提取 | markitdown（PDF/Word→Markdown） |
+| 产品/创投 | WebSearch + WebFetch（Product Hunt / TechCrunch / 36氪） | agent-reach 🎯（平台特定） |
+| 开发者社区 | WebSearch（Stack Overflow / HN / Reddit / CSDN） | agent-reach 🎯（平台特定） |
+| 知识库 | — | ima-mcp / notion / Obsidian / 本地 wiki 🎯（用户自有） |
+| 云存储 / 文件 | — | baidu-netdisk MCP 🎯（平台特定） |
+| 文档净化 | WebFetch 原文 + LLM 提取 | markitdown 🎯（PDF/Word→Markdown） |
 | 交叉验证 | 本工作流内 LLM 比对（同一事实多源描述喂模型问"是否矛盾"） | — |
-| URL 验活 | WebSearch 重新索引 / WebFetch HEAD | web-access（平台特定） |
+| URL 验活 | WebSearch 重新索引 / WebFetch HEAD | web-access 🎯（平台特定） |
 | 长报告分块 | 输出 >4k tokens 时按板块分块生成后 LLM 拼接 | — |
-
-> 降级原则：默认层失败 → 换另一默认源（web_search ↔ 免费 API）；可选层未连/无 key → 跳过并在报告注明"未覆盖该维度"，绝不阻断 Step 0→8 主管线。
+> 降级原则：默认层失败 → 换另一默认源（web_search ↔ 免费 API）；可选层未连/无 key → 跳过并注明"未覆盖该维度"，绝不阻断 Step 0–8 主管线。
 > 专业数据源（宏观/工商/行情/法律）可按平台在 Step 1 接入对应可选工具；无则标注未覆盖，不编造。
-
-> **深度研究专用工具（GPT Researcher）**：如需最强自动化深度闭环，可在支持本地进程的平台部署 GPT Researcher（CLI 或 MCP），由它执行三-B 闭环的 Phase 1–3；纯提示词模式（不依赖 GPT Researcher）同样完整可用，仅为"编排由本技能提示词驱动" vs "编排由 GPT Researcher 进程驱动"之差。详见 references/cross-platform-tools.md。
+> **深度研究专用工具（GPT Researcher，非通用推荐）**：GPT Researcher 提供自动化深度研究闭环，但需 `git clone` + `pip install` + 多 API key 配置，依赖重、启动慢，不符合本 skill "大多数人开箱即用"的目标。纯提示词驱动的三-B 闭环已能独立完成高质量深度研究。GPT Researcher 仅建议高级用户在独立 venv/容器中按需部署。详见 references/cross-platform-tools.md。
 
 ---
 
