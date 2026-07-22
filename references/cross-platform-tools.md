@@ -47,8 +47,9 @@
 | Connected Papers | 论文关联图谱 / 引文网络（S2 ShaID → 研究邻里图） | API key（`connectedpapers-py` 客户端）| 早期访问，限量（用户 key 余 ~50 次图谱构建，5 次/分钟）| 🎯 个性化 | 与 dmr 既有 S2/OpenAlex 引文覆盖重叠；仅作深度技术尽调可选源，**不进核心管线**；key 本地仅存 |
 | FRED（美联储经济数据） | 美国经济/金融**结构化时间序列**（GDP/CPI/利率/就业/M2 等 80 万+ 系列） | API key 直调 `api.stlouisfed.org`（或 `scripts/fred_query.py`）| 免费、官方、无限额（需免费 api_key）| 🥈 备选【建议采纳】 | 官方权威宏观数据源，补 dmr **结构化经济数据空白**（exa/tavily 是搜索、非结构化）；免费稳定，强烈建议作为金融/经济深度研究核心可选源；不进核心管线（主流程零依赖），作增强层 |
 | ReadGZH-Agent | 微信公众号**全文**提取（标题/作者/时间/正文 Markdown，50–87% Token 压缩） | 远程 MCP `https://api.readgzh.site/mcp-server`（keyless；Pro 需 Bearer） | 30 次/日免费（注册领取）；Pro ¥39/月 2000 次 | 🥇 首选（公众号全文） | 99.89% 反爬穿透、零安装、永久缓存；与 `wechat-article-search` **互补**（后者只搜元数据，本工具提全文）。缺失→回退 web_search。文章全球共享缓存，勿提交私密链接；AGPL-3.0（自托管须开源）；国内访问需实测 |
-| midu-hotsearch | 抖音/微博/百度/知乎/今日头条等 **30+ 平台热搜/榜单** | WorkBuddy 技能市场安装（原生 skill） | 免费 | 🥈 备选（抖音趋势信号） | 抖音趋势/热榜信号首选，零成本；深度内容见 douyinmcp/TikHub。未装则不覆盖，回退 web_search |
-| douyinmcp | 抖音**深度内容**（搜索/视频详情/评论/用户/首页流） | 本地 MCP（需 `cookies.txt` 登录 Cookie + `a_bogus` 本地 V8 签名） | 免费（需自维护 Cookie） | 🎯 个性化（抖音深度） | 本地 `py_mini_racer` 生成 `a_bogus` 签名，免外部签名服务；需有效抖音登录 Cookie（频繁失效）+ Python 3.14+/uv。Cookie 含敏感信息，只存本地，绝不进云端。**优先免费方案**；规模化稳定需求见 TikHub |
+| midu-hotsearch | 抖音/微博/百度/知乎/今日头条等 **30+ 平台热搜/榜单** | WorkBuddy 技能市场安装（原生 skill） | 免费（但新版蜜度 API 已不兼容）| ❌ **已弃用** | **新版 midu.com 蜜度 API 改用 OAuth（client_id+client_secret→token）且需付费/申请接口权限**，与原 skill 单 key 鉴权不兼容；剩余权限 0 + 错误码 202005/203003 双重卡死。**替代见 § 2.y**：抖音热榜用 `douyinmcp.get_homefeed`（已 8/8 活）、财经热榜用 wallstreetcn（免费无 key）、综合用 web_search+zhihu MCP。不进核心管线 |
+| douyinmcp | 抖音**深度内容 + 热榜**（搜索/视频详情/评论/用户/首页流 + `get_homefeed`） | 本地 MCP（需 `cookies.txt` 登录 Cookie + `a_bogus` 本地 V8 签名） | 免费（需自维护 Cookie） | 🎯 个性化（抖音深度 + 热榜） | 本地 `py_mini_racer` 生成 `a_bogus` 签名，免外部签名服务；需有效抖音登录 Cookie（频繁失效）+ Python 3.14+/uv。Cookie 含敏感信息，只存本地，绝不进云端。**优先免费方案**；规模化稳定需求见 TikHub。**🆕 `get_homefeed` 工具可作抖音实时热榜信号源（已 8/8 工具激活，替代 midu 的抖音维度）** |
+| wallstreetcn（华尔街见闻） | **实时财经热榜/要闻/快讯**（A股/美股/港股/全球/外汇/黄金/原油/数字货币等 5+ 频道） | REST API `https://api-one.wallstcn.com/apiv1/content/{articles,lives,hots,hot-rank}?channel=...&limit=...` | 免费、免 key、无频率声明 | 🛟 兜底（财经热榜信号）| 2026-07 实测 5 频道 + 4 端点全 HTTP 200，实时数据（文章/快讯/热榜）。**替代 midu-hotsearch 的金融维度**，中文财经研究首选；与 douyinmcp 互补（抖音用 douyinmcp、财经用本源）。不进核心管线 |
 | TikHub API | 微信+抖音**结构化数据**（公众号文章+阅读数/赞/评论；抖音视频/评论/搜索/榜单/星图） | REST API（`api.tikhub.io`，大陆用 `api.tikhub.dev`） | $0.001/请求（首充 $0.05≈50 次） | 🎯 个性化（稳定契约） | 付费但稳定（99.9% SLA，10 RPS），免中国开发者资质；主域大陆被墙→用 `.dev`。key 本地仅存。**优先用免费 douyinmcp/ReadGZH**，规模化/高稳定需求再上 TikHub |
 
 ### 1.3 不推荐 / 仅特定场景
@@ -135,17 +136,20 @@
 > `${READGZH_API_KEY}` 仅本地环境变量 / 配置提供，**绝不写进仓库 / SkillHub**。免费档无需 key，但匿名限额更低（10/IP/日）。
 > 风险：文章**全球共享缓存**（勿提交私密 / 敏感链接）；AGPL-3.0（自托管须开源）；国内访问需实测。与 `wechat-article-search` 互补——搜索用 skill、全文用本 MCP；任一缺失 → `web_search` 兜底。
 
-### 2.y 抖音检索（midu-hotsearch + douyinmcp / TikHub · 可选）
+### 2.y 抖音 / 财经热榜检索（douyinmcp / wallstreetcn / TikHub · 可选）
 
-> 定位：抖音反爬极严（`a_bogus` 签名），`web_search` 覆盖弱。dmr 路由到下列可选工具增强；**优先免费**，缺失则回退 `web_search`。
+> 定位：抖音反爬极严（`a_bogus` 签名），`web_search` 覆盖弱；财经热榜是结构化市场情绪信号，web_search 覆盖不全。dmr 路由到下列可选工具增强；**优先免费**，缺失则回退 `web_search`。
+> ⚠️ **midu-hotsearch 已弃用**：新版 midu.com 蜜度 API 改用 OAuth（client_id+client_secret→token）且需付费/申请接口权限（剩余权限 0 + 错误码 202005/203003），与原 skill 单 key 鉴权不兼容。其"抖音热榜"能力由 **douyinmcp.get_homefeed** 替代，"财经热榜"由 **wallstreetcn** 替代，其他平台走 web_search + zhihu MCP。
 
-**① midu-hotsearch（WorkBuddy 原生 skill · 免费 · 趋势信号首选）**
-- 能力：30+ 平台热搜 / 榜单，含**抖音热搜 / 榜单**、微博、百度、知乎、今日头条等
-- 接入：WorkBuddy 技能市场搜索 `midu-hotsearch` 安装（原生 skill，零额外配置）
-- 用途：抖音趋势 / 热榜 / 爆款信号，零成本；**不解决深度内容**（视频详情 / 文案 / 评论）
+**① wallstreetcn（华尔街见闻 · 免费 · 财经热榜信号）**
+- 能力：实时财经热榜 / 要闻 / 快讯，5+ 频道（A股 / 美股 / 港股 / 全球 / 外汇 / 黄金 / 原油 / 数字货币）
+- 端点：`https://api-one.wallstcn.com/apiv1/content/{articles,lives,hots,hot-rank}?channel=<频道>&limit=<N>`
+- 费用：免费、免 key、无频率声明（2026-07 实测 5 频道 + 4 端点全 HTTP 200）
+- 用途：财经 / 市场情绪热榜信号，中文财经研究首选；**替代 midu-hotsearch 的金融维度**
 
-**② douyinmcp（本地 MCP · 免费 · 深度内容）**
+**② douyinmcp（本地 MCP · 免费 · 抖音深度 + 热榜）**
 - 能力：搜索视频 / 视频详情 / 评论 / 子评论 / 用户信息 / 用户作品 / 首页流（8 工具）
+- 🆕 `get_homefeed` = 抖音首页推荐流，即**实时热榜信号**（已 8/8 工具激活，替代 midu-hotsearch 的抖音维度）
 - 机制：内置 `py_mini_racer`（V8）本地生成 `a_bogus` 签名，免外部签名服务
 - 依赖：有效**抖音登录 Cookie**（`cookies.txt`）+ Python 3.14+ / uv
 - 风险：Cookie 频繁失效、签名随平台更新可能失效（持续维护负担）；**Cookie 含敏感信息，只存本地，绝不进云端**

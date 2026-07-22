@@ -31,8 +31,9 @@
 | **agent-reach** | 实测 6 社媒 + 5 基础（Twitter/Reddit/Facebook/Instagram/B 站/小红书 + GitHub/V2EX/RSS/Web-Jina/YouTube）；抖音/微博→web_search 兜底，公众号→wechat-article-search / ReadGZH | 覆盖 MCP 未触及的社媒/UGC 另类数据 | ✅ 吸收为**社媒增强层**（已激活，实测 10/15 渠道） |
 | **agent-browser** | 浏览器自动化 | 与 Firecrawl 重叠且更重 | ⚠️ 仅作交互兜底，不进核心 |
 | **ReadGZH-Agent** | 微信公众号**全文提取**（远程 MCP `https://api.readgzh.site/mcp-server`，4 工具 read/search/list/get，免费 30 积分/日） | 补 wechat-article-search 仅有标题/摘要的缺口，稳定穿透反爬 | ✅ 吸收为**公众号全文可选源**（与 wechat-article-search 互补） |
-| **midu-hotsearch** | 30+ 平台**热搜/榜单**（抖音热点榜 rankType=1、微博、知乎等） | 抖音趋势/舆情监测零爬取成本 | ✅ 吸收为**抖音趋势可选源**（需 `MIDU_APP_SECRET`） |
-| **douyinmcp** | 抖音**深度内容**（搜索/评论/用户/视频，本地 a_bogus 签名） | 抖音深度检索，免费本地 MCP | ✅ 吸收为**抖音深度可选源**（优先免费，需 Chrome 登录 Cookie） |
+| **midu-hotsearch** | 30+ 平台**热搜/榜单**（抖音热点榜 rankType=1、微博、知乎等） | 抖音趋势/舆情监测零爬取成本 | ❌ **已弃用**：新版 midu.com 蜜度 API 改用 OAuth（client_id+client_secret）+ 付费/申请权限（剩余权限 0 + 错误码 202005/203003），与原 skill 单 key 鉴权不兼容。**替代**：抖音热榜用 `douyinmcp.get_homefeed`（已 8/8 活）、财经热榜用 wallstreetcn（免费无 key） |
+| **douyinmcp** | 抖音**深度内容 + 热榜**（搜索/评论/用户/视频/get_homefeed 首页流，本地 a_bogus 签名） | 抖音深度检索 + 实时热榜信号，免费本地 MCP | ✅ 吸收为**抖音深度可选源**（优先免费，需 Chrome 登录 Cookie；`get_homefeed` 已 8/8 工具激活，替代 midu 的抖音维度） |
+| **wallstreetcn（华尔街见闻）** | **实时财经热榜/要闻/快讯**（A股/美股/港股/全球/外汇/黄金/原油/数字货币 5+ 频道） | 中文财经研究首选，替代 midu 的金融维度 | ✅ **吸收为财经热榜可选源**（免费、免 key，2026-07 实测 5 频道 + 4 端点全 HTTP 200） |
 | **TikHub API** | 微信+抖音**结构化 JSON**（阅读/点赞/评论，稳定契约） | 付费稳定备用，规模化检索 | 🥈 备选（付费，按请求计费） |
 
 ### 新增脚本
@@ -44,7 +45,7 @@
 
 - **8 个本地 MCP 连接器**：exa / firecrawl / tavily / huggingface / modelscope / zhihu（search · global · hotlist）
 - **默认层**：LLM 内置 web_search / web_fetch
-- **可选增强源（路由不打包 · 优雅降级）**：FRED（结构化经济数据）、agent-reach（社媒/UGC，实测 10/15 渠道）、Novada（兜底解锁层）、ReadGZH-Agent（公众号全文）、midu-hotsearch（抖音热搜）、douyinmcp（抖音深度，免费优先）、TikHub（微信+抖音结构化，付费备用）
+- **可选增强源（路由不打包 · 优雅降级）**：FRED（结构化经济数据）、agent-reach（社媒/UGC，实测 10/15 渠道）、Novada（兜底解锁层）、ReadGZH-Agent（公众号全文）、douyinmcp（抖音深度 + `get_homefeed` 热榜，免费优先）、wallstreetcn（财经实时热榜/快讯，免费无 key）、TikHub（微信+抖音结构化，付费备用）。**midu-hotsearch 已弃用**（新版蜜度 API 不兼容 + 付费门槛）
 - **原则**：dmr 只做**路由编排 + 优雅降级**，不捆绑任何外部 peer skill / MCP；未连接或缺失 key 时自动回退 `web_search` 并注明「未覆盖该维度」，绝不阻断 Step 0→8 主管线。
 
 ---
@@ -52,9 +53,10 @@
 ## ⚠️ 已知 / 待用户手动
 
 - **agent-reach 频道配置**：已实测 10/15 渠道可用；详见 cross-platform-tools §2.1.1。
-- **ReadGZH-Agent（公众号全文）**：需 API key（免费档 30 积分/日，控制台领取）；`mcp.json` 加 `url: https://api.readgzh.site/mcp-server` 即生效（已实测 HTTP 200 返回真实全文）。
-- **midu-hotsearch（抖音热搜）**：需 `MIDU_APP_SECRET`（WorkBuddy 环境变量）；未配置则抖音趋势回退 web_search。
-- **douyinmcp（抖音深度）**：需从已登录 Chrome 导出 `cookies.txt`；未配置则抖音深度检索回退 web_search。Chrome 登录态经 OpenCLI 浏览器桥已确认可达。
+- **ReadGZH-Agent（公众号全文）**：需 API key（免费档 30 积分/日，控制台领取）；`mcp.json` 加 `url: https://api.readgzh.site/mcp-server` + `headers.Authorization: Bearer <key>` 即生效（已实测 HTTP 200 + 4 工具全回）。
+- **midu-hotsearch（抖音热搜）**：❌ **已弃用** — 新版 midu.com API 不兼容 + 付费门槛。替代：抖音热榜走 `douyinmcp.get_homefeed`，财经热榜走 wallstreetcn，其余 web_search+zhihu MCP 兜底。
+- **douyinmcp（抖音深度 + 热榜）**：需从已登录 Chrome 导出 `cookies.txt`；`get_homefeed` 工具可作抖音实时热榜信号（已 8/8 工具激活）。未配置则抖音检索回退 web_search。Chrome 登录态经 OpenCLI 浏览器桥已确认可达。
+- **wallstreetcn（财经热榜）**：🆕 免费无 key REST API（`https://api-one.wallstcn.com/apiv1/content/{articles,lives,hots,hot-rank}?channel=...&limit=...`），已实测 5 频道全 HTTP 200。
 
 ---
 
