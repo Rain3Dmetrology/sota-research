@@ -60,7 +60,7 @@ compatibility: >
   Engineering-discussion & UGC (cross-validation signals, T4 unless authoritative): Stack Overflow
   + Hacker News (🆓 free Stack Exchange / Algolia APIs), Reddit, Zhihu (zhihu MCP，可选),
   CSDN, Product Hunt, TechCrunch, 36Kr, Bluesky, X, Wikipedia / Baidu Baike (background, T3),
-  plus Xiaohongshu / Bilibili / YouTube / LinkedIn / 微博 / 抖音 via agent-reach (14 platforms).
+  plus Xiaohongshu / Bilibili via agent-reach (实测 6 社媒 + 5 基础; 抖音/微博 走 web_search 兜底, 公众号 走 wechat-article-search skill).
   HONESTY RULE: only list skills/connectors actually available in the environment.
   Firecrawl (and any other absent service) is NOT bundled and must never be claimed as integrated.
 metadata:
@@ -115,7 +115,7 @@ metadata:
 | **macro-monitor** | 宏观数据源清单（Trading Economics/FRED/国家统计局/央行/证监会/财联社/华尔街见闻）作可选"宏观监测"源；"每指标配白话解读 + 超预期/不及预期 vs 预期/前值"规则 | 其 `browser`/OpenClawCLI 路径在本环境不存在→改走 web-access |
 | **news-summary**（v2.2.1 已永久删除，方法论已吸收）| RSS 源（BBC/Reuters/Al Jazeera/NPR）并入可选数据源 | 语音播报（超范围） |
 | **deep-research**（v2.2.1 已永久删除，方法论已吸收）| 命令式入口（`/research`→outline→`/research-deep`并行→`/research-report`）；outline + 并行 per-item 搜索模式；学术/基准/技术选型/尽调模式→第 4 模板 | 不替换确定性 Step0→8 + 三级模板 |
-| **agent-reach** | 补齐 UGC 平台覆盖（X/Reddit/YouTube/GitHub/B站/小红书/抖音/微博/公众号/LinkedIn/Instagram/RSS/Exa） | 不引入其安装/代理复杂度；dmr 仅引用 |
+| **agent-reach** | 补齐 UGC 平台覆盖（实测 6 社媒：X/Reddit/Facebook/Instagram/B站/小红书 + 5 基础：GitHub/V2EX/RSS/Web/YouTube + 3 可选：小宇宙/雪球/LinkedIn；**抖音/微博 走 web_search 兜底，公众号走 wechat-article-search skill，非 agent-reach 频道**） | 不引入其安装/代理复杂度；dmr 仅引用 |
 | **wechat-article-search** | 新增"公众号**文章**检索"为具体中文信号源（补 UGC 评论之外的文章级缺口） | 不复制其 node 依赖规则 |
 | **perplexity**（v2.2.1 已永久删除，方法论已吸收）| 注册为可选 AI 搜索源（仅当 `PERPLEXITY_API_KEY` 存在） | 不作强制入口，仍以 Tavily/WebSearch 为主 |
 | **academic-research-hub**（v2.2.1 已永久删除，方法论已吸收）| 多源学术检索（arXiv/PubMed/Semantic Scholar/Google Scholar）+ 引文处理（BibTeX/RIS/JSON）作学术模块 | 其 OpenClawCLI 硬依赖；**许可 Proprietary**——嵌入脚本前须确认再分发权 |
@@ -265,7 +265,7 @@ metadata:
 │  专业数据库: 通达信(A股F10) 智慧芽(专利) 自选股/westock(财报) │
 │             威科/元典/北大法宝(法律) 天眼查/企查查/启信慧眼(工商风险)    │
 │             GitHub(gh CLI+web,Trending) ima(知识库)/notion              │
-│  社媒/UGC: 知乎(MCP:search+热榜)/小红书/CSDN/Reddit/HN/SO/Bluesky/X/抖音/微博/B站(信号,agent-reach覆盖14平台) │
+│  社媒/UGC: 知乎(MCP:search+热榜)/小红书/CSDN/Reddit/HN/SO/Bluesky/X/B站(信号,agent-reach实测6社媒+5基础;抖音/微博走web_search,公众号走wechat-article-search) │
 │  学术论文(🆓免费API直调优先): OpenAlex/Semantic Scholar/arXiv/PubMed/bioRxiv/EMBL-EBI(Europe PMC) │
 │  引文溯源: Crossref(DOI元数据+参考文献)/OpenCitations(开放引文网络)  │
 │           顶刊: Nature/Science(引DOI,T1-2); CNKI/Google Scholar(仅导出) │

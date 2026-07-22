@@ -54,7 +54,7 @@
 | GPT Researcher（本地进程） | ⚠️ 不推荐通用 | 需 git clone + pip install + 多 API key，依赖重、启动慢；仅高级用户在独立 venv/容器部署 |
 | local-deep-researcher / local-deep-research | ⚠️ 不推荐通用 | 依赖本地 Ollama/LMStudio，与"零本地、泛化优先"定位冲突；仅涉密/离线场景单独考虑 |
 | agent-browser | 🎯 平台专有（已评估） | WorkBuddy 专有浏览器自动化。**抓取/JS 渲染能力与 Firecrawl 重叠且更重**（需 Chromium 500MB+GUI daemon、冷启慢、非无头）。dmr 场景下 Firecrawl 更优 → **不进核心管线**，仅保留为「需登录/点击/表单的交互式高墙源」最后兜底 |
-| agent-reach | 🎯 平台专有（已评估·建议采纳为可选社媒层） | WorkBuddy 专有 14 平台聚合（Twitter/X·Reddit·YouTube·Bilibili·小红书·抖音·微博·公众号·LinkedIn·Instagram·RSS + Exa/web）。**覆盖 8 个 MCP + 默认层均未触及的社媒/草根另类数据**，对深度市场研究情绪/趋势信号价值高 → 建议采纳为可选社交/UGC 增强层。注意：(a) 默认 `disable:true`，需改元数据 `disable:false` 并 `agent-reach doctor` 配置频道；(b) 其 Exa/web 频道与现有 exa/tavily/firecrawl 冗余——只取其社媒频道；(c) 社媒频道经 **OpenCLI 浏览器桥**复用 Chrome 登录态（无需导 cookie / 关浏览器；Windows 需修 `localhost`→IPv4 解析，见 2.1.1）；(d) 抖音/公众号 agent-reach 无独立频道（已被通用检索覆盖）；(e) 不进核心管线 |
+| agent-reach | 🎯 平台专有（已评估·建议采纳为可选社媒层） | WorkBuddy 专有 15 频道聚合（实测 **6 社媒**：Twitter/X·Reddit·Facebook·Instagram·Bilibili·小红书 + **5 基础**：GitHub·V2EX·RSS·Web·YouTube + **3 可选未装**：小宇宙·雪球·LinkedIn）。**覆盖 8 个 MCP + 默认层均未触及的社媒/草根另类数据**，对深度市场研究情绪/趋势信号价值高 → 建议采纳为可选社交/UGC 增强层。注意：(a) 默认 `disable:true`，需改元数据 `disable:false` 并 `agent-reach doctor` 配置频道；(b) 其 Exa/web 频道与现有 exa/tavily/firecrawl 冗余——只取其社媒频道；(c) 社媒频道经 **OpenCLI 浏览器桥**复用 Chrome 登录态（无需导 cookie / 关浏览器；Windows 需修 `localhost`→IPv4 解析，见 2.1.1）；(d) **抖音/微博 非 agent-reach 频道**——走默认 web_search 兜底；**公众号走 wechat-article-search skill**（非 agent-reach）；(e) 不进核心管线 |
 
 
 ---

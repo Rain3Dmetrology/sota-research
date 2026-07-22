@@ -315,7 +315,7 @@ The skill itself works using the agent's built-in web tools (WebSearch / WebFetc
 |-----------|---------------------|---------|---------|
 | **Search entry** | built-in WebSearch/WebFetch (preferred) + **Firecrawl** (keyless MCP) + **Tavily** (key, direct API) + **SearXNG** (key-free metasearch) + **Novada** (free 1000/mo) + **AgentKey** (aggregated API) | general web retrieval, verification, aggregated data | 🛟 Built-in base (always) · 🥇 Firecrawl · 🥈 Tavily/Novada · 🛟 SearXNG/AgentKey (parallel) |
 | **AI search (optional)** | **Perplexity** / **Tavily** (key) / **AnySearch** / **Metaso (秘塔)** | cited AI search; skipped without key | 🎯 Perplexity/Metaso · 🥈 Tavily · 🎯 AnySearch |
-| **Social / reviews** | **agent-reach** / **agent-browser** / web-access | Xiaohongshu/Zhihu/Reddit/Bluesky/X/comments (14 platforms) | 🎯 Platform-specific |
+| **Social / reviews** | **agent-reach** / **agent-browser** / web-access | Xiaohongshu/Zhihu/Reddit/Bluesky/X/comments (agent-reach measured 6 social + 5 base; **Douyin/Weibo → web_search fallback; WeChat OA → wechat-article-search skill, NOT agent-reach**) | 🎯 Platform-specific |
 | **Zhihu (tech + feedback)** | **zhihu MCP** | Chinese tutorials, user feedback, cross-validation | 🎯 Platform-specific |
 | **WeChat official-account articles** | **wechat-article-search** | first-hand Chinese deep articles | 🎯 Platform-specific |
 | **Document cleanup** | **markitdown** | PDF/Word/financial-reports → Markdown | 🎯 Platform-specific |
