@@ -54,7 +54,7 @@
 | GPT Researcher（本地进程） | ⚠️ 不推荐通用 | 需 git clone + pip install + 多 API key，依赖重、启动慢；仅高级用户在独立 venv/容器部署 |
 | local-deep-researcher / local-deep-research | ⚠️ 不推荐通用 | 依赖本地 Ollama/LMStudio，与"零本地、泛化优先"定位冲突；仅涉密/离线场景单独考虑 |
 | agent-browser | 🎯 平台专有（已评估） | WorkBuddy 专有浏览器自动化。**抓取/JS 渲染能力与 Firecrawl 重叠且更重**（需 Chromium 500MB+GUI daemon、冷启慢、非无头）。dmr 场景下 Firecrawl 更优 → **不进核心管线**，仅保留为「需登录/点击/表单的交互式高墙源」最后兜底 |
-| agent-reach | 🎯 平台专有（已评估·建议采纳为可选社媒层） | WorkBuddy 专有 14 平台聚合（Twitter/X·Reddit·YouTube·Bilibili·小红书·抖音·微博·公众号·LinkedIn·Instagram·RSS + Exa/web）。**覆盖 8 个 MCP + 默认层均未触及的社媒/草根另类数据**，对深度市场研究情绪/趋势信号价值高 → 建议采纳为可选社交/UGC 增强层。注意：(a) 默认 `disable:true`，需改元数据 `disable:false` 并 `agent-reach doctor` 配置频道；(b) 其 Exa/web 频道与现有 exa/tavily/firecrawl 冗余——只取其社媒频道；(c) 小红书/抖音/公众号等需登录 cookie；(d) 不进核心管线 |
+| agent-reach | 🎯 平台专有（已评估·建议采纳为可选社媒层） | WorkBuddy 专有 14 平台聚合（Twitter/X·Reddit·YouTube·Bilibili·小红书·抖音·微博·公众号·LinkedIn·Instagram·RSS + Exa/web）。**覆盖 8 个 MCP + 默认层均未触及的社媒/草根另类数据**，对深度市场研究情绪/趋势信号价值高 → 建议采纳为可选社交/UGC 增强层。注意：(a) 默认 `disable:true`，需改元数据 `disable:false` 并 `agent-reach doctor` 配置频道；(b) 其 Exa/web 频道与现有 exa/tavily/firecrawl 冗余——只取其社媒频道；(c) 社媒频道经 **OpenCLI 浏览器桥**复用 Chrome 登录态（无需导 cookie / 关浏览器；Windows 需修 `localhost`→IPv4 解析，见 2.1.1）；(d) 抖音/公众号 agent-reach 无独立频道（已被通用检索覆盖）；(e) 不进核心管线 |
 
 
 ---
@@ -82,7 +82,29 @@
 
 **WorkBuddy 专有 skill**（非跨平台，本地已装）：
 - `agent-browser`：浏览器自动化。**与 Firecrawl 重叠且更重，不进 dmr 核心管线**；仅作需交互/登录的高墙源兜底。
-- `agent-reach`：**建议采纳为可选社媒/UGC 增强层**（Twitter/Reddit/YouTube/Bilibili/小红书/抖音/微博/公众号/LinkedIn/RSS 等）。默认 `disable:true`，需改 `disable:false` + `agent-reach doctor` 配频道；只取其社媒频道（Exa/web 频道冗余已有）。
+- `agent-reach`：**建议采纳为可选社媒/UGC 增强层**（Twitter/Reddit/YouTube/Bilibili/小红书/抖音/微博/公众号/LinkedIn/RSS 等）。默认 `disable:true`，需改 `disable:false` + `agent-reach doctor` 配频道；只取其社媒频道（Exa/web 频道冗余已有）。**实战配置见 [2.1.1](#2111-agent-reach-社媒频道实战opencli-浏览器桥)**。
+
+### 2.1.1 agent-reach 社媒频道实战（OpenCLI 浏览器桥）
+
+> 经验结论（2026-07-23 实测）：社媒频道**不要走 cookie 导出路**（Chrome cookie DB 被 SQLite 锁 + DPAPI 需管理员 + rookiepy 需 Rust，全部阻塞）。**正确路径是 OpenCLI 浏览器桥**——直接复用你 Chrome 当前登录态，无需关浏览器、无需导 cookie。
+
+**架构**：OpenCLI = Chrome 扩展（客户端）+ 本地守护进程（WebSocket 服务端，固定端口 `127.0.0.1:19825`）。社媒频道（Twitter/Reddit/Facebook/Instagram/Bilibili/小红书）经 OpenCLI 复用浏览器登录态。
+
+**安装与连通步骤**：
+1. 装 agent-reach CLI：`pip install https://github.com/Panniantong/agent-reach/archive/main.zip`（建议隔离 venv）
+2. `agent-reach install --env=auto` → 零配置 5 频道（GitHub/V2EX/RSS/Web-Jina/Bilibili basic）
+3. `agent-reach install --channels=twitter,reddit,facebook,xiaohongshu,instagram` → 装 OpenCLI 等后端
+4. Chrome 装 **OpenCLI 扩展**（Chrome Web Store 搜 `opencli`）
+5. **关键修复**：若扩展显示 `Reconnecting...` / daemon 报 `Extension: disconnected`，根因是 **Windows `localhost` 解析为 `::1`(IPv6) 优先，而 daemon 只绑 IPv4 `127.0.0.1:19825`**。修复（管理员 PowerShell 一次）：
+   ```powershell
+   Add-Content -Path "$env:SystemRoot\System32\drivers\etc\hosts" -Value "`n127.0.0.1 localhost" -Encoding ASCII
+   ```
+   改完扩展自动重连 → `Connected`。**无需重装扩展、无需重启 Chrome**。
+6. 验证：`opencli doctor`（应 `[OK] Extension: connected`）+ `agent-reach doctor`（应 `10/15 渠道可用`）
+
+**实测结果（2026-07-23）**：Twitter/Reddit/Facebook/Instagram/Bilibili/小红书 全部返回真实数据；doctor 终态 `10/15 渠道可用`（5 基础 + 6 社媒）。
+
+**注意**：抖音/公众号 agent-reach **无独立频道**（可选频道仅 twitter/reddit/facebook/instagram/小红书/小宇宙/雪球/LinkedIn/bilibili），其内容由 exa/tavily/firecrawl 通用检索覆盖，不构成硬缺口。
 
 ---
 
