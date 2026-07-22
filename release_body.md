@@ -17,7 +17,7 @@
 ## ✨ 新增能力
 
 ### 跨机器 MCP 同步（`scripts/setup_mcp.py`）
-- **零硬编码 key**、读 OneDrive 桌面 key 文件、自动剥前缀（Rule 1）、生成 `~/.workbuddy/mcp.json`
+- **零硬编码 key**、读取使用者本地桌面 key 文件、自动剥前缀（Rule 1）、生成用户级 `mcp.json` 配置
 - 同时输出 `~/.workbuddy/dmr_keys.env`（FRED/Novada 等非 MCP key），完成 dmr 全配置跨机器同步
 - 隐私自查通过：无任何硬编码 key、无绝对路径泄露、GitHub 仓库 grep 无 key 泄露
 
@@ -36,16 +36,11 @@
 
 ---
 
-## 📊 8 个 MCP 实测状态（本机 WorkBuddy 验证 · 2026-07-23）
+## 📊 已集成的检索源
 
-| MCP | 工具数 | 状态 |
-|---|---|---|
-| exa | 2/2 | 🟢 |
-| firecrawl | 26/26 | 🟢 |
-| tavily | 5/5 | 🟢 |
-| huggingface | 10/10 + 2 Prompt + 12 资源 | 🟢 |
-| modelscope | 9/9 | 🟢 |
-| zhihu-search / global / hotlist | 各 1/1 | 🟢 |
+- **8 个本地 MCP 连接器**：exa / firecrawl / tavily / huggingface / modelscope / zhihu（search · global · hotlist）
+- **默认层**：LLM 内置 web_search / web_fetch
+- **可选增强源**：FRED（结构化经济数据）、agent-reach（社媒/UGC）、Novada（兜底解锁层）
 
 ---
 
@@ -60,5 +55,5 @@
 
 - 本仓库**零真实 key**、**零个人 MCP 连接状态**、**零绝对路径泄露**
 - 仅含：连接器类型、官方端点 URL（keyless 远程 MCP）、Rule-1 剥前缀脚本、公开文档
-- 所有 key 仅存于本机 `OneDrive/Desktop/` + `~/.workbuddy/mcp.json` / `dmr_keys.env`
+- 所有密钥仅存于使用者本地环境，由 `scripts/setup_mcp.py` 在本地生成配置，绝不进入仓库
 - 跨机器同步 = 跑 `scripts/setup_mcp.py` + WorkBuddy MCP 管理页对每个 server 点 Trust
