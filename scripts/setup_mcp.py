@@ -136,10 +136,11 @@ def build_servers(keys: dict) -> dict:
         }
 
     if "tavily" in keys:
+        # 官方 stdio 包：读 TAVILY_API_KEY env，免 mcp-remote 桥的浏览器 OAuth，无头可自动化
         servers["tavily"] = {
             "command": "npx",
-            "args": ["-y", "mcp-remote",
-                     f"https://mcp.tavily.com/mcp/?apiKey={keys['tavily']}"],
+            "args": ["-y", "tavily-mcp"],
+            "env": {"TAVILY_API_KEY": keys["tavily"]},
         }
 
     if "huggingface" in keys:
