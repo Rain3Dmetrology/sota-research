@@ -46,7 +46,6 @@
 
 ## ⚠️ 已知 / 待用户手动
 
-- **SkillHub 重发**：旧泄漏 listing `deep-market-webresearch`（v2.2.10）仍在线，需在 SkillHub Web UI 手动删除并用本版重发。
 - **agent-reach 频道配置**：已激活（`disable: false`），社媒频道需跑 `agent-reach doctor` 配置（小红书/抖音/公众号等需登录 cookie）。
 
 ---
