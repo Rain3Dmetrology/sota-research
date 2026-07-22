@@ -5,16 +5,16 @@ setup_mcp.py — 生成本机 ~/.workbuddy/mcp.json (从 OneDrive 桌面 key 文
 
 设计原则：
   1. 本脚本【无任何硬编码 key】，纯读取桌面 key 文件 + 自动剥前缀 (Rule 1)
-  2. 生成的 mcp.json 与「本机已验证」格式一致：env 类 server 保留原 key 文件前缀
-     （因 exa/firecrawl/hf/modelscope 的 MCP server 透传 env 值给上游 API，
-     而上游 API 接受带前缀的 token；header/url 类 server 剥前缀）
+  2. 生成的 mcp.json 与「本机已验证」格式一致：**所有 server 一律剥前缀**（裸 token）
+     ⚠️ 实测结论：exa/firecrawl/hf/modelscope 的 env 值若带 `APIKEY:`/`access token：` 前缀，
+     上游 API 会 401 拒绝；裸 token 才通过。上游 API 不接受带前缀的 token。
   3. 可重复运行：先备份现有 mcp.json，再合并（保留脚本未管理的其他 server）
   4. 跨平台：Desktop 路径可配，默认按 OneDrive 常见位置探测
 
 用法：
   python setup_mcp.py                         # 探测 Desktop，生成并写 ~/.workbuddy/mcp.json
   python setup_mcp.py --dry-run              # 只打印将生成的配置，不写文件
-  python setup_mcp.py --desktop D:/OneDrive/Desktop
+  python setup_mcp.py --desktop ~/OneDrive/Desktop
   python setup_mcp.py --out /path/to/mcp.json
   python setup_mcp.py --no-backup            # 不备份现有 mcp.json
 
@@ -47,21 +47,20 @@ PREFIX_RE = re.compile(
     re.IGNORECASE,
 )
 
-# env 类 server：保留 key 文件原始前缀（与已验证的 mcp.json 一致）
-#   原因：这些 MCP server 把 env 值透传给上游 API；上游接受带前缀 token
-# header/url 类 server：剥前缀（HTTP auth 须裸 token）
-ENV_KEEP_PREFIX = {"exa", "firecrawl", "huggingface", "modelscope"}
-STRIP_PREFIX = {"tavily", "zhihu"}
+# ⚠️ 所有 server 一律剥前缀（实测：带前缀 token 上游 API 全 401 拒，裸 token 才通）
+# 不再区分 env/header/url 类 —— 见设计原则 #2
+KEEP_PREFIX = set()  # 空集 = 全部剥前缀
+STRIP_PREFIX = {"exa", "firecrawl", "tavily", "huggingface", "modelscope", "zhihu"}
 
 
 def detect_desktop() -> str:
-    """探测 OneDrive Desktop 常见路径。"""
+    """探测 OneDrive Desktop 路径（仅用环境变量，不硬编码任何绝对路径以避免泄露机器信息）。"""
     candidates = [
         os.path.expandvars(r"%OneDrive%\Desktop"),
         os.path.expandvars(r"%OneDriveConsumer%\Desktop"),
-        r"D:\OneDrive\Desktop",
-        r"C:\OneDrive\Desktop",
+        os.path.expandvars(r"%OneDriveCommercial%\Desktop"),
         os.path.expanduser(r"~/OneDrive/Desktop"),
+        os.path.expanduser(r"~/OneDrive - Personal/Desktop"),
         os.path.expanduser(r"~/Desktop"),
     ]
     for c in candidates:
@@ -198,7 +197,7 @@ def main():
         if not os.path.isfile(fpath):
             missing.append((srv, fname))
             continue
-        keep = srv in ENV_KEEP_PREFIX
+        keep = srv in KEEP_PREFIX
         tok = extract_key(fpath, keep_prefix=keep)
         if tok:
             keys[srv] = tok
