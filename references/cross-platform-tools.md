@@ -43,6 +43,7 @@
 | ModelScope 魔塔 | 中文模型/数据集/推理 | API token 直调 | 2,000 次/天（需阿里云账号 + 实名认证） | 🎯 个性化 | 国内首选；适合 Qwen/DeepSeek 等中文模型推理 |
 | AnySearch | 统一实时搜索（23 垂直领域） | 远程 MCP `https://api.anysearch.com/mcp`（keyless 匿名）或 API key | 匿名 1,000 次/天；免费 key 更高 | 🎯 个性化 | 新兴工具，垂直领域有特色；质量稳定性待验证 |
 | 秘塔搜索 Metaso | 中文 AI 搜索 / 学术搜索 | Web 免费；API 按次计费 | Web 搜索免费；API 约 ¥0.03/次，新用户 50 次试用 | 🎯 个性化 | 中文搜索体验好；API 非免费，轻量 CN 增强 |
+| Connected Papers | 论文关联图谱 / 引文网络（S2 ShaID → 研究邻里图） | API key（`connectedpapers-py` 客户端）| 早期访问，限量（用户 key 余 ~50 次图谱构建，5 次/分钟）| 🎯 个性化 | 与 dmr 既有 S2/OpenAlex 引文覆盖重叠；仅作深度技术尽调可选源，**不进核心管线**；key 本地仅存 |
 
 ### 1.3 不推荐 / 仅特定场景
 

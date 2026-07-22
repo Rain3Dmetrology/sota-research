@@ -161,15 +161,18 @@ def build_servers(keys: dict) -> dict:
     if "zhihu" in keys:
         z = keys["zhihu"]
         hdr = f"Authorization: Bearer {z}"
+        # 官方 MCP-over-SSE 端点（注意正确路径含 /api 与 /v1）
+        # ⚠️ 必须 --transport sse-only：mcp-remote 默认 http-first 会对 SSE 端点返回 405/SpA HTML 而失败；
+        #    sse-only 直连 SSE 传输，已实测稳定连通并成功 tools/call 返回真实知乎结果。
         zhihu_endpoints = {
-            "zhihu-search":   "https://developer.zhihu.com/mcp/zhihu_search/sse",
-            "zhihu-global":   "https://developer.zhihu.com/mcp/global_search/sse",
-            "zhihu-hotlist":  "https://developer.zhihu.com/mcp/hot_list/sse",
+            "zhihu-search":   "https://developer.zhihu.com/api/mcp/zhihu_search/v1/sse",
+            "zhihu-global":   "https://developer.zhihu.com/api/mcp/global_search/v1/sse",
+            "zhihu-hotlist":  "https://developer.zhihu.com/api/mcp/hot_list/v1/sse",
         }
         for name, url in zhihu_endpoints.items():
             servers[name] = {
                 "command": "npx",
-                "args": ["-y", "mcp-remote", url, "--header", hdr],
+                "args": ["-y", "mcp-remote", url, "--transport", "sse-only", "--header", hdr],
                 "env": {},
             }
 
