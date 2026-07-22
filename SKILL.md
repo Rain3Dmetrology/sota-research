@@ -1,5 +1,8 @@
 ---
 name: deep-market-research
+slug: deep-market-research
+displayName: Deep Market Research
+version: "2.3.0"
 description: >
   Platform-agnostic pure-prompt deep-research workflow (zero local dependency by
   default; optional tools degrade gracefully). NATO-adapted 4-tier source grading,
