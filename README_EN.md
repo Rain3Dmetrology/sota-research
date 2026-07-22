@@ -317,7 +317,8 @@ The skill itself works using the agent's built-in web tools (WebSearch / WebFetc
 | **AI search (optional)** | **Perplexity** / **Tavily** (key) / **AnySearch** / **Metaso (秘塔)** | cited AI search; skipped without key | 🎯 Perplexity/Metaso · 🥈 Tavily · 🎯 AnySearch |
 | **Social / reviews** | **agent-reach** / **agent-browser** / web-access | Xiaohongshu/Zhihu/Reddit/Bluesky/X/comments (agent-reach measured 6 social + 5 base; **Douyin/Weibo → web_search fallback; WeChat OA → wechat-article-search skill, NOT agent-reach**) | 🎯 Platform-specific |
 | **Zhihu (tech + feedback)** | **zhihu MCP** | Chinese tutorials, user feedback, cross-validation | 🎯 Platform-specific |
-| **WeChat official-account articles** | **wechat-article-search** | first-hand Chinese deep articles | 🎯 Platform-specific |
+| **WeChat official-account articles** | **wechat-article-search** (search) + **ReadGZH-Agent MCP** (full-text, keyless remote) | first-hand Chinese deep articles: search via skill, full-text via MCP; complements | 🥇 ReadGZH(full) · 🎯 wechat-article-search(search) |
+| **Douyin (short video)** | **midu-hotsearch** (hot-search/leaderboard) + **douyinmcp MCP** / **TikHub API** (deep content, free preferred) | Douyin trends & deep content; strict anti-bot, free-first, web_search fallback when absent | 🥈 midu-hotsearch · 🎯 douyinmcp/TikHub |
 | **Document cleanup** | **markitdown** | PDF/Word/financial-reports → Markdown | 🎯 Platform-specific |
 | **A-share finance** | **Tongdaxin tdx-connector** | listed-company F10 / shareholders / fund flows | 🎯 Platform-specific |
 | **Patents** | **Patsnap MCP** | barriers, patent families, citation analysis | 🎯 Platform-specific |
@@ -345,6 +346,7 @@ The skill itself works using the agent's built-in web tools (WebSearch / WebFetc
 > **Recommendation**: 🥇 first-choice (default enhancement) · 🥈 alternative · 🛟 fallback (keyless default layer, works without key) · 🎯 personalized (needs key / account / specific platform) · ⚠️ not recommended for general use. Cross-validation snapshot 2026-07; search APIs drift quarterly — re-verify against vendor before production.
 
 > **Honesty statement**: Only connector types that genuinely exist are declared; the connection state of any personal environment is never exposed. Missing sources degrade gracefully and never interrupt research. Services not provided (e.g. Crunchbase Pro, PitchBook) are never falsely labeled — if your platform provides them, append them to the Step 1 search entry yourself.
+> **Routing, not bundling**: all entries above are **external optional peer skills / MCPs**; dmr only routes sources and degrades gracefully — it never bundles their implementations. Missing entries are skipped with the uncovered dimension noted; research never stops.
 
 
 

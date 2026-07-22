@@ -683,7 +683,8 @@ metadata:
 | 科研数据仓库(🆓免费API) | WebFetch 直调：Zenodo / Figshare / 哈佛 Dataverse / NASA（均带 DOI） | — |
 | 知乎(技术+反馈) | WebSearch 知乎（WebFetch 抓页） | zhihu MCP 🎯（平台特定，若已连） |
 | AI 搜索(可选) | 内置 `web_search`（带引用优先） | Perplexity 🎯 / Tavily 🥈 / AnySearch 🎯 / 秘塔搜索 🎯（需 key 则跳过） |
-| 微信公众账号文章 | WebSearch 公众号文章 | wechat-article-search skill 🎯（平台特定） |
+| 微信公众账号文章 | WebSearch 公众号文章（搜索） | wechat-article-search skill 🎯（搜索发现）+ **ReadGZH-Agent MCP** 🥇（全文提取，远程 MCP 零安装，4 工具）|
+| 抖音(短视频) | WebSearch 抖音（web_search 兜底） | midu-hotsearch skill 🥈（热搜/榜单）+ **douyinmcp MCP** 🎯 或 **TikHub API** 🎯（深度内容，优先免费）|
 | 宏观经济 | WebSearch（Trading Economics / FRED / 统计局 / 央行 / 财联社） | — |
 | AI 模型/代码/数据集 | Hugging Face Hub API（🆓）/ ModelScope web（可选 token 直调） | ModelScope 🎯（平台特定，若已连） |
 | 开放百科 | WebSearch（Wikipedia / 百度百科） | — |
@@ -696,6 +697,7 @@ metadata:
 | URL 验活 | WebSearch 重新索引 / WebFetch HEAD | web-access 🎯（平台特定） |
 | 长报告分块 | 输出 >4k tokens 时按板块分块生成后 LLM 拼接 | — |
 > 降级原则：默认层失败 → 换另一默认源（web_search ↔ 免费 API）；可选层未连/无 key → 跳过并注明"未覆盖该维度"，绝不阻断 Step 0–8 主管线。
+> **路由不打包**：dmr 主管线只做"源路由 + 优雅降级"，不复制 / 捆绑任何可选工具的实现；上表可选层均为**外部 peer skill / MCP**，由用户平台按需在 Step 1 接入，缺失则跳过并注明维度未覆盖。
 > 专业数据源（宏观/工商/行情/法律）可按平台在 Step 1 接入对应可选工具；无则标注未覆盖，不编造。
 > **深度研究专用工具（GPT Researcher，非通用推荐）**：GPT Researcher 提供自动化深度研究闭环，但需 `git clone` + `pip install` + 多 API key 配置，依赖重、启动慢，不符合本 skill "大多数人开箱即用"的目标。纯提示词驱动的三-B 闭环已能独立完成高质量深度研究。GPT Researcher 仅建议高级用户在独立 venv/容器中按需部署。详见 references/cross-platform-tools.md。
 
