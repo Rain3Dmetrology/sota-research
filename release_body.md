@@ -46,7 +46,7 @@
 
 ## ⚠️ 已知 / 待用户手动
 
-- **agent-reach 频道配置**：已激活（`disable: false`），社媒频道需跑 `agent-reach doctor` 配置（小红书/抖音/公众号等需登录 cookie）。
+- **agent-reach 频道配置**：已实测 10/15 渠道可用；详见 cross-platform-tools §2.1.1。
 
 ---
 
