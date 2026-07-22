@@ -38,12 +38,14 @@
 | Tavily | AI 搜索 API | 远程 MCP `https://mcp.tavily.com/mcp` 或 API key | 1,000 积分/月 | 🥈 备选 | 2026-02 被 Nebius 收购（$275M–$400M），长期独立性待观察 |
 | Brave Search | 独立索引搜索 | API key 直调 | $5 月度赠金 ≈ 1,000 次 | 🥉 备选 | 独立索引、隐私优先；需绑卡/验证 |
 | Novada | 网页搜索/SERP/抓取/提取/地图/爬取/深度研究（25+ 工具） | 托管 Streamable-HTTP MCP，`npx novada-mcp` | 免费 1,000 次/月 | 🥈 备选 | 新兴 SaaS，免安装，覆盖 195 国；长期可用性待观察 |
+| Novada Web Unblocker | 住宅代理 / 反爬解锁，抓取地理封锁 / 反 bot 受保护的页面 | 代理网关（用户名+密码，或 `NOVADA_API_KEY`）| 付费（按流量）| 🛟 兜底（解锁层）| 与 Firecrawl 反爬能力部分重叠；Firecrawl 已覆盖多数解锁场景。仅作「Firecrawl/WebFetch 仍被墙」的兜底解锁层，不进核心管线；key 本地仅存 |
 | SearXNG | 元搜索引擎（多引擎聚合） | 自托管实例 / 公共实例 MCP | 免费、免 key（自托管） | 🛟 兜底（自托管 keyless） | 元搜索聚合；需自托管或可信公共实例 |
 | Perplexity Sonar | 带引用一站式答案 | API key 直调 | 无永久免费层；Pro 订阅含 $5/月 API 额度 | 🎯 个性化 | 答案质量高，成本随 token 叠加；非纯免费场景 |
 | ModelScope 魔塔 | 中文模型/数据集/推理 | API token 直调 | 2,000 次/天（需阿里云账号 + 实名认证） | 🎯 个性化 | 国内首选；适合 Qwen/DeepSeek 等中文模型推理 |
-| AnySearch | 统一实时搜索（23 垂直领域） | 远程 MCP `https://api.anysearch.com/mcp`（keyless 匿名）或 API key | 匿名 1,000 次/天；免费 key 更高 | 🎯 个性化 | 新兴工具，垂直领域有特色；质量稳定性待验证 |
+| AnySearch | 统一实时搜索（23 垂直领域） | 远程 MCP `https://api.anysearch.com/mcp`（keyless 匿名）或 API key | 匿名 1,000 次/天；免费 key 更高 | 🎯 个性化 | 新兴工具，垂直领域有特色；质量稳定性待验证。**⚠️ 已评估：与 exa/tavily/firecrawl 通用搜索高度重叠，不进核心管线；本地未装 skill（仅存 anysearchAPIKEY.txt），仅作匿名兜底可选** |
 | 秘塔搜索 Metaso | 中文 AI 搜索 / 学术搜索 | Web 免费；API 按次计费 | Web 搜索免费；API 约 ¥0.03/次，新用户 50 次试用 | 🎯 个性化 | 中文搜索体验好；API 非免费，轻量 CN 增强 |
 | Connected Papers | 论文关联图谱 / 引文网络（S2 ShaID → 研究邻里图） | API key（`connectedpapers-py` 客户端）| 早期访问，限量（用户 key 余 ~50 次图谱构建，5 次/分钟）| 🎯 个性化 | 与 dmr 既有 S2/OpenAlex 引文覆盖重叠；仅作深度技术尽调可选源，**不进核心管线**；key 本地仅存 |
+| FRED（美联储经济数据） | 美国经济/金融**结构化时间序列**（GDP/CPI/利率/就业/M2 等 80 万+ 系列） | API key 直调 `api.stlouisfed.org`（或 `scripts/fred_query.py`）| 免费、官方、无限额（需免费 api_key）| 🥈 备选【建议采纳】 | 官方权威宏观数据源，补 dmr **结构化经济数据空白**（exa/tavily 是搜索、非结构化）；免费稳定，强烈建议作为金融/经济深度研究核心可选源；不进核心管线（主流程零依赖），作增强层 |
 
 ### 1.3 不推荐 / 仅特定场景
 
@@ -51,7 +53,8 @@
 |------|----------|------|
 | GPT Researcher（本地进程） | ⚠️ 不推荐通用 | 需 git clone + pip install + 多 API key，依赖重、启动慢；仅高级用户在独立 venv/容器部署 |
 | local-deep-researcher / local-deep-research | ⚠️ 不推荐通用 | 依赖本地 Ollama/LMStudio，与"零本地、泛化优先"定位冲突；仅涉密/离线场景单独考虑 |
-| agent-browser / agent-reach | 🎯 平台专有 | WorkBuddy 生态专有 skill/工具，不跨平台；仅 WorkBuddy 用户按需安装 |
+| agent-browser | 🎯 平台专有（已评估） | WorkBuddy 专有浏览器自动化。**抓取/JS 渲染能力与 Firecrawl 重叠且更重**（需 Chromium 500MB+GUI daemon、冷启慢、非无头）。dmr 场景下 Firecrawl 更优 → **不进核心管线**，仅保留为「需登录/点击/表单的交互式高墙源」最后兜底 |
+| agent-reach | 🎯 平台专有（已评估·建议采纳为可选社媒层） | WorkBuddy 专有 14 平台聚合（Twitter/X·Reddit·YouTube·Bilibili·小红书·抖音·微博·公众号·LinkedIn·Instagram·RSS + Exa/web）。**覆盖 8 个 MCP + 默认层均未触及的社媒/草根另类数据**，对深度市场研究情绪/趋势信号价值高 → 建议采纳为可选社交/UGC 增强层。注意：(a) 默认 `disable:true`，需改元数据 `disable:false` 并 `agent-reach doctor` 配置频道；(b) 其 Exa/web 频道与现有 exa/tavily/firecrawl 冗余——只取其社媒频道；(c) 小红书/抖音/公众号等需登录 cookie；(d) 不进核心管线 |
 
 
 ---
@@ -77,9 +80,9 @@
 
 **API key 直调**（Brave / Perplexity / ModelScope）：在环境变量或配置中提供 key，技能按 `BRAVE_API_KEY` / `PERPLEXITY_API_KEY` / `MODELSCOPE_API_KEY` 等探测。
 
-**WorkBuddy 专有 skill**（非跨平台）：
-- `agent-browser`：官方浏览器自动化 skill，适合需要点击/截图/表单填写的网页任务。
-- `agent-reach`：外部站点/API 访问工具，按需安装。
+**WorkBuddy 专有 skill**（非跨平台，本地已装）：
+- `agent-browser`：浏览器自动化。**与 Firecrawl 重叠且更重，不进 dmr 核心管线**；仅作需交互/登录的高墙源兜底。
+- `agent-reach`：**建议采纳为可选社媒/UGC 增强层**（Twitter/Reddit/YouTube/Bilibili/小红书/抖音/微博/公众号/LinkedIn/RSS 等）。默认 `disable:true`，需改 `disable:false` + `agent-reach doctor` 配频道；只取其社媒频道（Exa/web 频道冗余已有）。
 
 ---
 

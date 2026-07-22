@@ -40,6 +40,15 @@ SERVER_KEYFILES = {
     "zhihu":       "zhihuAPItoken.txt",
 }
 
+# ---------------------------------------------------------------------------
+# 2. 非 MCP 的 key（REST API / 代理）—— 仅写入本机 dmr_keys.env（绝不入仓库）
+#    用于 dmr 可选增强层（FRED 经济数据、Novada Web Unblocker 代理等）跨机器同步
+# ---------------------------------------------------------------------------
+NON_MCP_KEYFILES = {
+    "FRED_API_KEY":   "FREDAPIkey.txt",
+    "NOVADA_API_KEY": "novadaWeb UnblockerAPIkey.txt",
+}
+
 # 前缀正则：匹配 APIKEY: / APIkey：/ access token：/ Key£º / Token: 等
 # 分隔符 [:：£º] 设为可选 —— 应对 GBK 全角冒号在 UTF-8 读取时被静默丢弃的情况
 PREFIX_RE = re.compile(
@@ -94,10 +103,13 @@ def extract_key(path: str, keep_prefix: bool) -> str | None:
     except OSError:
         return None
 
+    first_line = None
     for line in lines:
         line = line.strip()
         if not line:
             continue
+        if first_line is None:
+            first_line = line
         m = PREFIX_RE.match(line)
         if m:
             token = line[m.end():].strip()
@@ -114,6 +126,12 @@ def extract_key(path: str, keep_prefix: bool) -> str | None:
                 if not keep_prefix:
                     token = PREFIX_RE.sub("", token).strip()
                 return token
+    # 兜底：纯裸 key 文件（无前缀、无分隔符，如 novada 单行长 key，可能带前导空格）
+    if first_line:
+        token = first_line
+        if not keep_prefix:
+            token = PREFIX_RE.sub("", token).strip()
+        return token
     return None
 
 
@@ -239,6 +257,16 @@ def main():
     if args.dry_run:
         print("\n[DRY-RUN] 将写入以下 mcp.json:")
         print(json.dumps(out_obj, indent=2, ensure_ascii=False))
+        # 非 MCP key 也预览
+        non_mcp_preview = {}
+        for env_name, fname in NON_MCP_KEYFILES.items():
+            fpath = os.path.join(desktop, fname)
+            if os.path.isfile(fpath):
+                tok = extract_key(fpath, keep_prefix=False)
+                if tok:
+                    non_mcp_preview[env_name] = f"{tok[:6]}…({len(tok)} chars)"
+        if non_mcp_preview:
+            print("[DRY-RUN] 将写入 dmr_keys.env:", non_mcp_preview)
         return
 
     # 备份
@@ -253,6 +281,24 @@ def main():
         json.dump(out_obj, f, indent=2, ensure_ascii=False)
     print(f"\n[✓] 已生成 {args.out}")
     print(f"    共 {len(merged)} 个 server（本次管理 {len(new_servers)}，保留 {len(preserved)}）")
+
+    # 非 MCP key：写入本机 dmr_keys.env（仅本机/跨机器同步用，绝不提交仓库）
+    non_mcp = {}
+    for env_name, fname in NON_MCP_KEYFILES.items():
+        fpath = os.path.join(desktop, fname)
+        if not os.path.isfile(fpath):
+            continue
+        tok = extract_key(fpath, keep_prefix=False)
+        if tok:
+            non_mcp[env_name] = tok
+            print(f"  [✓] {env_name:<16} ← {fname}")
+    if non_mcp:
+        env_path = os.path.join(os.path.dirname(args.out), "dmr_keys.env")
+        with open(env_path, "w", encoding="utf-8") as f:
+            for k, v in non_mcp.items():
+                f.write(f"{k}={v}\n")
+        print(f"[i] 已生成 {env_path}（本机专用，勿提交仓库）")
+
     print("\n下一步：WorkBuddy → MCP 服务管理 → 对每个新 server 点 Trust 激活")
 
 
