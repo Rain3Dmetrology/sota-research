@@ -28,8 +28,12 @@
 | **Novada Web Unblocker** | 住宅代理 / 反爬解锁 | 与 Firecrawl 反爬部分重叠 | ✅ 吸收为**兜底解锁层** |
 | **Connected Papers** | 论文关联图谱（S2 ShaID → 研究邻里） | early-access，余 ~50 次构建 | ✅ 吸收为**深度尽调可选源** |
 | **AnySearch** | 通用实时搜索聚合 | 与 exa/tavily/firecrawl 高度重叠 | ❌ 不吸收（仅存 APIKEY） |
-| **agent-reach** | 14 平台社媒聚合（Twitter/Reddit/B 站/小红书/抖音/微博/公众号 等） | 覆盖 8 MCP 未触及的社媒/UGC 另类数据 | ✅ 吸收为**社媒增强层**（已激活） |
+| **agent-reach** | 实测 6 社媒 + 5 基础（Twitter/Reddit/Facebook/Instagram/B 站/小红书 + GitHub/V2EX/RSS/Web-Jina/YouTube）；抖音/微博→web_search 兜底，公众号→wechat-article-search / ReadGZH | 覆盖 MCP 未触及的社媒/UGC 另类数据 | ✅ 吸收为**社媒增强层**（已激活，实测 10/15 渠道） |
 | **agent-browser** | 浏览器自动化 | 与 Firecrawl 重叠且更重 | ⚠️ 仅作交互兜底，不进核心 |
+| **ReadGZH-Agent** | 微信公众号**全文提取**（远程 MCP `https://api.readgzh.site/mcp-server`，4 工具 read/search/list/get，免费 30 积分/日） | 补 wechat-article-search 仅有标题/摘要的缺口，稳定穿透反爬 | ✅ 吸收为**公众号全文可选源**（与 wechat-article-search 互补） |
+| **midu-hotsearch** | 30+ 平台**热搜/榜单**（抖音热点榜 rankType=1、微博、知乎等） | 抖音趋势/舆情监测零爬取成本 | ✅ 吸收为**抖音趋势可选源**（需 `MIDU_APP_SECRET`） |
+| **douyinmcp** | 抖音**深度内容**（搜索/评论/用户/视频，本地 a_bogus 签名） | 抖音深度检索，免费本地 MCP | ✅ 吸收为**抖音深度可选源**（优先免费，需 Chrome 登录 Cookie） |
+| **TikHub API** | 微信+抖音**结构化 JSON**（阅读/点赞/评论，稳定契约） | 付费稳定备用，规模化检索 | 🥈 备选（付费，按请求计费） |
 
 ### 新增脚本
 - **`scripts/fred_query.py`**：轻量 FRED 查询工具（按系列 ID 查观测 / 按关键词搜索系列），自动读桌面 key（Rule 1 剥前缀）。
@@ -40,13 +44,17 @@
 
 - **8 个本地 MCP 连接器**：exa / firecrawl / tavily / huggingface / modelscope / zhihu（search · global · hotlist）
 - **默认层**：LLM 内置 web_search / web_fetch
-- **可选增强源**：FRED（结构化经济数据）、agent-reach（社媒/UGC）、Novada（兜底解锁层）
+- **可选增强源（路由不打包 · 优雅降级）**：FRED（结构化经济数据）、agent-reach（社媒/UGC，实测 10/15 渠道）、Novada（兜底解锁层）、ReadGZH-Agent（公众号全文）、midu-hotsearch（抖音热搜）、douyinmcp（抖音深度，免费优先）、TikHub（微信+抖音结构化，付费备用）
+- **原则**：dmr 只做**路由编排 + 优雅降级**，不捆绑任何外部 peer skill / MCP；未连接或缺失 key 时自动回退 `web_search` 并注明「未覆盖该维度」，绝不阻断 Step 0→8 主管线。
 
 ---
 
 ## ⚠️ 已知 / 待用户手动
 
 - **agent-reach 频道配置**：已实测 10/15 渠道可用；详见 cross-platform-tools §2.1.1。
+- **ReadGZH-Agent（公众号全文）**：需 API key（免费档 30 积分/日，控制台领取）；`mcp.json` 加 `url: https://api.readgzh.site/mcp-server` 即生效（已实测 HTTP 200 返回真实全文）。
+- **midu-hotsearch（抖音热搜）**：需 `MIDU_APP_SECRET`（WorkBuddy 环境变量）；未配置则抖音趋势回退 web_search。
+- **douyinmcp（抖音深度）**：需从已登录 Chrome 导出 `cookies.txt`；未配置则抖音深度检索回退 web_search。Chrome 登录态经 OpenCLI 浏览器桥已确认可达。
 
 ---
 
