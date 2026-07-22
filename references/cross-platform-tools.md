@@ -1,4 +1,4 @@
-# 跨平台可选工具接入指南（deep-market-research v2.3.0）
+# 跨平台可选工具接入指南（deep-market-research v2.3.1）
 
 > 本文件是 `SKILL.md` 的**可选补充**。核心调研流程（Step 0–8 + 三-B 深度研究闭环）**零依赖、零安装**即可运行，只用 LLM 内置 `web_search` / `web_fetch` + 🆓 免费 REST API。
 > 本文档仅说明：如何为**有需要的用户**在各自平台上接入**可选增强工具**以丰富素材来源。

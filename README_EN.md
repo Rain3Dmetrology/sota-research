@@ -20,7 +20,7 @@ Follows the [Agent Skills open standard](https://agentskills.io/) (initiated by 
 
 
 
-## ✨ Features (v2.3.0)
+## ✨ Features (v2.3.1)
 
 
 
@@ -31,6 +31,8 @@ Follows the [Agent Skills open standard](https://agentskills.io/) (initiated by 
 ### Version evolution (newest first)
 
 
+
+- **v2.3.1 MCP fixes + cross-machine sync + optional sources (maintenance release)**: ① fixed MCP auth `APIKEY:` prefix bug that caused upstream 401 (bare token → all 200); ② Tavily switched to official stdio package (OAuth-free); ③ Zhihu endpoint path corrected + `sse-only` → three endpoints verified live; ④ added `scripts/setup_mcp.py` cross-machine sync (zero hardcoded keys); ⑤ added optional sources FRED / Novada / Connected Papers / agent-reach (social layer, activated) and `scripts/fred_query.py`.
 
 - **v2.3.0 Platform-agnostic + deep-research loop (de-cluttered, generalization-first)**: ① zero-dependency, zero-install by default - no assumption of any platform MCP / agent-team protocol / proprietary backend; ② new **Three-B deep-research loop (platform-agnostic, pure-prompt orchestration)** absorbing the essence of multi-platform deep-research agent teams; ③ competitive-key-param cross-validation raised from >=2 to >=3 sources; ④ quality rules added - optional tools are not a quality prerequisite / no platform lock-in; ⑤ new `references/cross-platform-tools.md` guide for six platforms.
 
@@ -359,7 +361,7 @@ The skill itself works using the agent's built-in web tools (WebSearch / WebFetc
 
 - **End-to-end example**: from the user query "Research China's industrial-robot track + reducer localization + Estun/Inovance positioning" to the per-step outputs of Step 0→8 (collection / dedupe / validation / contradiction resolution / tiering / template / scorecard) — see SKILL.md [Section 9 · Full Example](SKILL.md).
 
-- **Full changelog**: every change detail from v2.0.0 → v2.3.0 — see SKILL.md [Appendix A](SKILL.md#附录-a完整更新史v200--v230).
+- **Full changelog**: every change detail from v2.0.0 → v2.3.1 — see SKILL.md [Appendix A](SKILL.md#附录-a完整更新史v200--v231)。
 
 
 
