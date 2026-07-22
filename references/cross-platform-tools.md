@@ -82,7 +82,7 @@
 
 **WorkBuddy 专有 skill**（非跨平台，本地已装）：
 - `agent-browser`：浏览器自动化。**与 Firecrawl 重叠且更重，不进 dmr 核心管线**；仅作需交互/登录的高墙源兜底。
-- `agent-reach`：**建议采纳为可选社媒/UGC 增强层**（Twitter/Reddit/YouTube/Bilibili/小红书/抖音/微博/公众号/LinkedIn/RSS 等）。默认 `disable:true`，需改 `disable:false` + `agent-reach doctor` 配频道；只取其社媒频道（Exa/web 频道冗余已有）。**实战配置见 [2.1.1](#2111-agent-reach-社媒频道实战opencli-浏览器桥)**。
+- `agent-reach`：**建议采纳为可选社媒/UGC 增强层**（实测 6 社媒：Twitter/Reddit/Facebook/Instagram/Bilibili/小红书 + 5 基础：GitHub/V2EX/RSS/Web/YouTube；**抖音/微博 走 web_search 兜底，公众号走 wechat-article-search skill**）。默认 `disable:true`，需改 `disable:false` + `agent-reach doctor` 配频道；只取其社媒频道（Exa/web 频道冗余已有）。**实战配置见 [2.1.1](#2111-agent-reach-社媒频道实战opencli-浏览器桥)**。
 
 ### 2.1.1 agent-reach 社媒频道实战（OpenCLI 浏览器桥）
 
