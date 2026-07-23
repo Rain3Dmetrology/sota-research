@@ -67,6 +67,7 @@
 - **README 可选数据源表新增「接入方式」列**：以 🟢 零配置 / 🔴 需 API key（优雅降级）/ 🟡 需 Cookie·token·平台授权·连 MCP 三态折叠呈现，仍单表、信息密度↑、篇幅不变。图例铁律：🟢 仅含 ① LLM 自带 web 工具 ② dmr 直连免 key 公共 REST API；**MCP 服务器即使免 key 也归 🟡**（免 key ≠ 零配置）。
 - **关键修正（避免「免 key = 零配置」误判）**：FRED 实为**强需 key**（无 key 直接 HTTP 400，免费申请 32 字符小写字母数字）；HuggingFace 公频浏览免 token、私频/写操作需 `HF_TOKEN`；搜索入口补列 **Exa**；**web-access** 实为独立 CDP 浏览器自动化 skill（非 LLM 内置，需 Node22 + 本地 Chrome）；**DeepWiki / SearXNG / AgentKey** 虽免 key 但仍需连 MCP/账号 → 均归 🟡。
 - **弃用项只进版本说明**：midu-hotsearch 从 README 终态清单删除，原因仅留本文件 + SKILL 附录A + README 版本演进 bullet；英文 README 同步（抖音行删 midu、财经行加 wallstreetcn）。
+- **学术 / 社区源文档精度修正（无功能变动）**：Semantic Scholar 补"无 key 限 ~100 req/5min·IP，可申请免费 key 提额"、literature-search 注明"非可调用 API，仅方法论参考"、Hugging Face 补"gated 模型（如 Llama）需登录 + 接受 EULA 才能下载，公频浏览/公开权重免 token"、Hacker News 注明"Algolia 端点（Firebase 端点 2023 已停服）"、Reddit 注明"2023 起需 OAuth → agent-reach / web_search 兜底"；并标注 HN 部分出口 IP 被 Algolia WAF 屏蔽时回退 web_search。中英 README + SKILL 学术模块表同步。
 
 ---
 
