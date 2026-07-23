@@ -318,7 +318,7 @@ The skill itself works using the agent's built-in web tools (WebSearch / WebFetc
 | **Social / reviews** | **agent-reach** / **agent-browser** / web-access | Xiaohongshu/Zhihu/Reddit/Bluesky/X/comments (agent-reach measured 6 social + 5 base; **Douyin/Weibo → web_search fallback; WeChat OA → wechat-article-search skill, NOT agent-reach**) | 🎯 Platform-specific |
 | **Zhihu (tech + feedback)** | **zhihu MCP** | Chinese tutorials, user feedback, cross-validation | 🎯 Platform-specific |
 | **WeChat official-account articles** | **wechat-article-search** (search) + **ReadGZH-Agent MCP** (full-text, keyless remote) | first-hand Chinese deep articles: search via skill, full-text via MCP; complements | 🥇 ReadGZH(full) · 🎯 wechat-article-search(search) |
-| **Douyin (short video)** | **midu-hotsearch** (hot-search/leaderboard) + **douyinmcp MCP** / **TikHub API** (deep content, free preferred) | Douyin trends & deep content; strict anti-bot, free-first, web_search fallback when absent | 🥈 midu-hotsearch · 🎯 douyinmcp/TikHub |
+| **Douyin (short video)** | **douyinmcp MCP** (get_homefeed hot-list + deep content, free preferred) / **TikHub API** (paid stable fallback) | Douyin trends & deep content; strict anti-bot, free-first, web_search fallback when absent | 🎯 douyinmcp(free) · 🥈 TikHub(paid) |
 | **Document cleanup** | **markitdown** | PDF/Word/financial-reports → Markdown | 🎯 Platform-specific |
 | **A-share finance** | **Tongdaxin tdx-connector** | listed-company F10 / shareholders / fund flows | 🎯 Platform-specific |
 | **Patents** | **Patsnap MCP** | barriers, patent families, citation analysis | 🎯 Platform-specific |
@@ -328,7 +328,7 @@ The skill itself works using the agent's built-in web tools (WebSearch / WebFetc
 | **Research data repos** | **Zenodo** / **Figshare** / **Harvard Dataverse** / **NASA** | datasets/software, DOI-traceable | 🛟 Free API |
 | **AI models / datasets** | **Hugging Face Hub API** / **ModelScope** | models, code, docs, datasets | 🛟 HF Free API · 🎯 ModelScope |
 | **Developer communities** | **Stack Overflow** + **Hacker News** (Stack Exchange / Algolia) / Reddit / CSDN | tech-selection, real-world pitfalls | 🛟 Free API |
-| **Finance** | Tencent self-selected / westock-mcp | fundamentals, quotes, research | 🎯 Platform-specific |
+| **Finance / hot-list** | Tencent self-selected / westock-mcp · **wallstreetcn** (free finance hot-list + flash, key-free) | fundamentals, quotes, research, real-time hot-list signal | 🎯 Platform-specific · 🟢 wallstreetcn |
 | **Legal / compliance** | Wolters Kluwer / YuanDian / **pkulaw** | litigation, penalties, laws | 🎯 Platform-specific |
 | **Enterprise registry / risk** | Tianyancha / Qichacha / **qixinhuiyan** | equity, judiciary, risk | 🎯 Platform-specific |
 | **US stocks / SEC** | SEC EDGAR MCP | 10-K/10-Q footnotes | 🎯 Platform-specific |
