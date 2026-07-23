@@ -60,6 +60,14 @@
 
 ---
 
+## 📝 文档准确性修正（README / SKILL）
+
+- **README 可选数据源表新增「接入方式」列**：以 🟢 零配置 / 🔴 需 API key（优雅降级）/ 🟡 需 Cookie·token·平台授权·连 MCP 三态折叠呈现，仍单表、信息密度↑、篇幅不变。图例铁律：🟢 仅含 ① LLM 自带 web 工具 ② dmr 直连免 key 公共 REST API；**MCP 服务器即使免 key 也归 🟡**（免 key ≠ 零配置）。
+- **关键修正（避免「免 key = 零配置」误判）**：FRED 实为**强需 key**（无 key 直接 HTTP 400，免费申请 32 字符小写字母数字）；HuggingFace 公频浏览免 token、私频/写操作需 `HF_TOKEN`；搜索入口补列 **Exa**；**web-access** 实为独立 CDP 浏览器自动化 skill（非 LLM 内置，需 Node22 + 本地 Chrome）；**DeepWiki / SearXNG / AgentKey** 虽免 key 但仍需连 MCP/账号 → 均归 🟡。
+- **弃用项只进版本说明**：midu-hotsearch 从 README 终态清单删除，原因仅留本文件 + SKILL 附录A + README 版本演进 bullet；英文 README 同步（抖音行删 midu、财经行加 wallstreetcn）。
+
+---
+
 ## 🔐 隐私红线
 
 - 本仓库**零真实 key**、**零个人 MCP 连接状态**、**零绝对路径泄露**
