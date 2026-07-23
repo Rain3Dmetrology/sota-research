@@ -136,7 +136,7 @@ def extract_key(path: str, keep_prefix: bool) -> str | None:
 
 
 def build_servers(keys: dict) -> dict:
-    """根据提取到的 key 构造 8 个 server 配置（无硬编码 key）。"""
+    """根据提取到的 key 构造 8 个 key-based + 1 keyless (deepwiki) server 配置（无硬编码 key）。"""
     servers: dict = {}
 
     if "exa" in keys:
@@ -193,6 +193,12 @@ def build_servers(keys: dict) -> dict:
                 "args": ["-y", "mcp-remote", url, "--transport", "sse-only", "--header", hdr],
                 "env": {},
             }
+
+    # DeepWiki: keyless 远程 MCP（免 key 免 headers 免 env），GitHub 仓库文档问答
+    # 一键连接（WorkBuddy MCP 管理页点 Trust 激活），代码/项目研究层补全
+    servers["deepwiki"] = {
+        "url": "https://mcp.deepwiki.com/mcp"
+    }
 
     return servers
 
