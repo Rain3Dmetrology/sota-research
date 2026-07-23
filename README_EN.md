@@ -311,42 +311,43 @@ The skill itself works using the agent's built-in web tools (WebSearch / WebFetc
 
 
 
-| Dimension | Data source / Skill | Purpose | Recommendation |
-|-----------|---------------------|---------|---------|
-| **Search entry** | built-in WebSearch/WebFetch (preferred) + **Firecrawl** (keyless MCP) + **Tavily** (key, direct API) + **SearXNG** (key-free metasearch) + **Novada** (free 1000/mo) + **AgentKey** (aggregated API) | general web retrieval, verification, aggregated data | 🛟 Built-in base (always) · 🥇 Firecrawl · 🥈 Tavily/Novada · 🛟 SearXNG/AgentKey (parallel) |
-| **AI search (optional)** | **Perplexity** / **Tavily** (key) / **AnySearch** / **Metaso (秘塔)** | cited AI search; skipped without key | 🎯 Perplexity/Metaso · 🥈 Tavily · 🎯 AnySearch |
-| **Social / reviews** | **agent-reach** / **agent-browser** / web-access | Xiaohongshu/Zhihu/Reddit/Bluesky/X/comments (agent-reach measured 6 social + 5 base; **Douyin/Weibo → web_search fallback; WeChat OA → wechat-article-search skill, NOT agent-reach**) | 🎯 Platform-specific |
-| **Zhihu (tech + feedback)** | **zhihu MCP** | Chinese tutorials, user feedback, cross-validation | 🎯 Platform-specific |
-| **WeChat official-account articles** | **wechat-article-search** (search) + **ReadGZH-Agent MCP** (full-text, keyless remote) | first-hand Chinese deep articles: search via skill, full-text via MCP; complements | 🥇 ReadGZH(full) · 🎯 wechat-article-search(search) |
-| **Douyin (short video)** | **douyinmcp MCP** (get_homefeed hot-list + deep content, free preferred) / **TikHub API** (paid stable fallback) | Douyin trends & deep content; strict anti-bot, free-first, web_search fallback when absent | 🎯 douyinmcp(free) · 🥈 TikHub(paid) |
-| **Document cleanup** | **markitdown** | PDF/Word/financial-reports → Markdown | 🎯 Platform-specific |
-| **A-share finance** | **Tongdaxin tdx-connector** | listed-company F10 / shareholders / fund flows | 🎯 Platform-specific |
-| **Patents** | **Patsnap MCP** | barriers, patent families, citation analysis | 🎯 Platform-specific |
-| **Code / projects** | GitHub search + Trending (`github` MCP + `gh` CLI + web) | OSS implementations, tech stacks, Star/PR trends | 🥇 DeepWiki · 🥈 GitHub/gh |
-| **Academic papers / metadata** | **OpenAlex** / **Semantic Scholar** / **arXiv** / **PubMed** / **bioRxiv** / **EMBL-EBI·Europe PMC**; `literature-search` as methodology ref | metadata, citation networks, TLDR, preprints | 🛟 Free API |
-| **Citation tracing** | **Crossref** / **OpenCitations** | DOI metadata, cited/citing relations | 🛟 Free API |
-| **Research data repos** | **Zenodo** / **Figshare** / **Harvard Dataverse** / **NASA** | datasets/software, DOI-traceable | 🛟 Free API |
-| **AI models / datasets** | **Hugging Face Hub API** / **ModelScope** | models, code, docs, datasets | 🛟 HF Free API · 🎯 ModelScope |
-| **Developer communities** | **Stack Overflow** + **Hacker News** (Stack Exchange / Algolia) / Reddit / CSDN | tech-selection, real-world pitfalls | 🛟 Free API |
-| **Finance / hot-list** | Tencent self-selected / westock-mcp · **wallstreetcn** (free finance hot-list + flash, key-free) | fundamentals, quotes, research, real-time hot-list signal | 🎯 Platform-specific · 🟢 wallstreetcn |
-| **Legal / compliance** | Wolters Kluwer / YuanDian / **pkulaw** | litigation, penalties, laws | 🎯 Platform-specific |
-| **Enterprise registry / risk** | Tianyancha / Qichacha / **qixinhuiyan** | equity, judiciary, risk | 🎯 Platform-specific |
-| **US stocks / SEC** | SEC EDGAR MCP | 10-K/10-Q footnotes | 🎯 Platform-specific |
-| **Top journals / Chinese literature** | Nature / Science (DOI) / CNKI / Google Scholar (export) | first-hand top-journal | 🌐 General web |
-| **Macroeconomics** | Trading Economics / FRED / NBS / PBOC·CSRC / Cailian / Wallstreetcn | macro indicators | 🌐 General web |
-| **Patents (public)** | Google Patents / USPTO / EPO / WIPO | patent text, legal status | 🌐 General web |
-| **Open encyclopedias** | Wikipedia / Baidu Baike | concept intro, background | 🌐 General web |
-| **Products / VC** | Product Hunt / TechCrunch / 36Kr / Huxiu | launches, funding, market heat | 🌐 General web |
-| **Chinese communities** | Cnblogs / V2EX / Xiaohongshu / Bilibili | feedback, tutorials | 🌐 General web |
-| **International social** | Bluesky / X / YouTube / LinkedIn | official updates, KOL, sentiment | 🌐 General web |
-| **News / info** | **aihot** (key-free) / BBC / Reuters / Al Jazeera | industry briefs, first-hand news | 🛟 aihot built-in · 🌐 others |
-| **Knowledge base** | ima-mcp / Obsidian / local wiki / **notion** | own materials, incremental Lint | 🎯 Platform-specific |
-| **Cloud storage / files** | **Baidu Netdisk** / **Google Drive** | own files, archiving &amp; delivery | 🎯 Platform-specific |
+| Dimension | Data source / Skill | Purpose | Recommendation | Access |
+|-----------|---------------------|---------|-----------------|--------|
+| **Search entry** | built-in WebSearch/WebFetch (preferred) + **Firecrawl** (keyless MCP) + **Tavily** (key, direct API) + **SearXNG** (key-free metasearch) + **Novada** (free 1000/mo) + **AgentKey** (aggregated API) | general web retrieval, verification, aggregated data | 🛟 Built-in base (always) · 🥇 Firecrawl · 🥈 Tavily/Novada · 🛟 SearXNG/AgentKey (parallel) | 🟢 Built-in base (web_search/web_fetch) · 🔴 Firecrawl/Exa/Tavily/Novada need key · 🟡 SearXNG(self-host)/AgentKey(connector) need MCP/account connection |
+| **AI search (optional)** | **Perplexity** / **Tavily** (key) / **AnySearch** / **Metaso (秘塔)** | cited AI search; skipped without key | 🎯 Perplexity/Metaso · 🥈 Tavily · 🎯 AnySearch | 🔴 All need API key (skipped without key) |
+| **Social / reviews** | **agent-reach** / **agent-browser** / web-access | Xiaohongshu/Zhihu/Reddit/Bluesky/X/comments (agent-reach measured 6 social + 5 base; **Douyin/Weibo → web_search fallback; WeChat OA → wechat-article-search skill, NOT agent-reach**) | 🎯 Platform-specific | 🟡 agent-reach / agent-browser / web-access need skill install (web-access needs Node22 + local Chrome CDP) · 🟢 web_search built-in (LLM native, zero-config) |
+| **Zhihu (tech + feedback)** | **zhihu MCP** | Chinese tutorials, user feedback, cross-validation | 🎯 Platform-specific | 🟡 Built-in auth (30-day renewal) |
+| **WeChat official-account articles** | **wechat-article-search** (search) + **ReadGZH-Agent MCP** (full-text, keyless remote) | first-hand Chinese deep articles: search via skill, full-text via MCP; complements | 🥇 ReadGZH(full) · 🎯 wechat-article-search(search) | 🟡 Install wechat-article-search skill · 🔴 ReadGZH needs READGZH_API_KEY |
+| **Douyin (short video)** | **douyinmcp MCP** (get_homefeed hot-list + deep content, free preferred) / **TikHub API** (paid stable fallback) | Douyin trends & deep content; strict anti-bot, free-first, web_search fallback when absent | 🎯 douyinmcp(free) · 🥈 TikHub(paid) | 🟡 Needs Cookie (Chrome login state) |
+| **Document cleanup** | **markitdown** | PDF/Word/financial-reports → Markdown | 🎯 Platform-specific | 🟡 Needs skill install |
+| **A-share finance** | **Tongdaxin tdx-connector** | listed-company F10 / shareholders / fund flows | 🎯 Platform-specific | 🟡 Needs platform auth |
+| **Patents** | **Patsnap MCP** | barriers, patent families, citation analysis | 🎯 Platform-specific | 🟡 Needs internal token |
+| **Code / projects** | GitHub search + Trending (`github` MCP + `gh` CLI + web) | OSS implementations, tech stacks, Star/PR trends | 🥇 DeepWiki · 🥈 GitHub/gh | 🟡 DeepWiki needs keyless MCP connection (no key, but MCP endpoint config required) · 🟡 github MCP/gh needs auth |
+| **Academic papers / metadata** | **OpenAlex** / **Semantic Scholar** / **arXiv** / **PubMed** / **bioRxiv** / **EMBL-EBI·Europe PMC**; `literature-search` as methodology ref | metadata, citation networks, TLDR, preprints | 🛟 Free API | 🟢 All key-free |
+| **Citation tracing** | **Crossref** / **OpenCitations** | DOI metadata, cited/citing relations | 🛟 Free API | 🟢 Key-free |
+| **Research data repos** | **Zenodo** / **Figshare** / **Harvard Dataverse** / **NASA** | datasets/software, DOI-traceable | 🛟 Free API | 🟢 Key-free (NASA can use DEMO_KEY) |
+| **AI models / datasets** | **Hugging Face Hub API** / **ModelScope** | models, code, docs, datasets | 🛟 HF Free API · 🎯 ModelScope | 🟡 HF needs `HF_TOKEN` (private/high-quota/write; public browse key-free) · 🟡 ModelScope needs token |
+| **Developer communities** | **Stack Overflow** + **Hacker News** (Stack Exchange / Algolia) / Reddit / CSDN | tech-selection, real-world pitfalls | 🛟 Free API | 🟢 Key-free |
+| **Finance / hot-list** | Tencent self-selected / westock-mcp · **wallstreetcn** (free finance hot-list + flash, key-free) | fundamentals, quotes, research, real-time hot-list signal | 🎯 Platform-specific · 🟢 wallstreetcn | 🟢 wallstreetcn key-free · 🟡 self-selected/westock needs auth |
+| **Legal / compliance** | Wolters Kluwer / YuanDian / **pkulaw** | litigation, penalties, laws | 🎯 Platform-specific | 🟡 Needs platform auth |
+| **Enterprise registry / risk** | Tianyancha / Qichacha / **qixinhuiyan** | equity, judiciary, risk | 🎯 Platform-specific | 🟡 Needs platform auth |
+| **US stocks / SEC** | SEC EDGAR MCP | 10-K/10-Q footnotes | 🎯 Platform-specific | 🟡 Needs platform auth |
+| **Top journals / Chinese literature** | Nature / Science (DOI) / CNKI / Google Scholar (export) | first-hand top-journal | 🌐 General web | 🟢 Abstract key-free · 🟡 CNKI/subscription needs auth |
+| **Macroeconomics** | Trading Economics / FRED / NBS / PBOC·CSRC / Cailian / Wallstreetcn | macro indicators | 🌐 General web | 🟡 FRED needs `FRED_API_KEY` (free signup, **strict requirement**: no key → HTTP 400 `Variable api_key is not set`) · 🌐 Others via general web |
+| **Patents (public)** | Google Patents / USPTO / EPO / WIPO | patent text, legal status | 🌐 General web | 🟢 Key-free |
+| **Open encyclopedias** | Wikipedia / Baidu Baike | concept intro, background | 🌐 General web | 🟢 Key-free |
+| **Products / VC** | Product Hunt / TechCrunch / 36Kr / Huxiu | launches, funding, market heat | 🌐 General web | 🟢 Key-free |
+| **Chinese communities** | Cnblogs / V2EX / Xiaohongshu / Bilibili | feedback, tutorials | 🌐 General web | 🟢 Key-free (Xiaohongshu/Bilibili via web_search) |
+| **International social** | Bluesky / X / YouTube / LinkedIn | official updates, KOL, sentiment | 🌐 General web | 🟢 Key-free (via web_search/agent-reach) |
+| **News / info** | **aihot** (key-free) / BBC / Reuters / Al Jazeera | industry briefs, first-hand news | 🛟 aihot built-in · 🌐 others | 🟢 aihot key-free · 🌐 Others via general web |
+| **Knowledge base** | ima-mcp / Obsidian / local wiki / **notion** | own materials, incremental Lint | 🎯 Platform-specific | 🟡 Needs platform auth |
+| **Cloud storage / files** | **Baidu Netdisk** / **Google Drive** | own files, archiving &amp; delivery | 🎯 Platform-specific | 🟡 Needs platform auth |
 
 > **Recommendation**: 🥇 first-choice (default enhancement) · 🥈 alternative · 🛟 fallback (keyless default layer, works without key) · 🎯 personalized (needs key / account / specific platform) · ⚠️ not recommended for general use. Cross-validation snapshot 2026-07; search APIs drift quarterly — re-verify against vendor before production.
 
 > **Honesty statement**: Only connector types that genuinely exist are declared; the connection state of any personal environment is never exposed. Missing sources degrade gracefully and never interrupt research. Services not provided (e.g. Crunchbase Pro, PitchBook) are never falsely labeled — if your platform provides them, append them to the Step 1 search entry yourself.
 > **Routing, not bundling**: all entries above are **external optional peer skills / MCPs**; dmr only routes sources and degrades gracefully — it never bundles their implementations. Missing entries are skipped with the uncovered dimension noted; research never stops.
+> **Access**: 🟢 Zero-config (key-free / token-free, works out of the box: ① LLM built-in `web_search` / `web_fetch` ② dmr's keyless public REST API direct calls, e.g. OpenAlex / wallstreetcn / aihot) · 🔴 Needs API key (degrades gracefully if missing) · 🟡 Needs Cookie / token / platform auth / **MCP server connection** (even if keyless, e.g. DeepWiki / SearXNG / AgentKey still need connection endpoints, NOT zero-config).
 
 
 
