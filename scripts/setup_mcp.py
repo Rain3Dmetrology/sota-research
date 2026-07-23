@@ -50,6 +50,10 @@ NON_MCP_KEYFILES = {
     "NOVADA_API_KEY": "novadaWeb UnblockerAPIkey.txt",
 }
 
+# SEC EDGAR 用户代理标识（name+email，非密钥，SEC 强制要求用于礼貌访问）
+# 仅用于生成 sec-edgar-mcp 的 SEC_EDGAR_USER_AGENT 环境变量，绝不写 dmr_keys.env
+SEC_EDGAR_UA_FILE = "SECEDGAR_UA.txt"
+
 # 前缀正则：匹配 APIKEY: / APIkey：/ access token：/ Key£º / Token: 等
 # 分隔符 [:：£º] 设为可选 —— 应对 GBK 全角冒号在 UTF-8 读取时被静默丢弃的情况
 PREFIX_RE = re.compile(
@@ -137,7 +141,7 @@ def extract_key(path: str, keep_prefix: bool) -> str | None:
 
 
 def build_servers(keys: dict) -> dict:
-    """根据提取到的 key 构造 9 个 key-based + 1 keyless (deepwiki) server 配置（无硬编码 key）。"""
+    """根据提取到的 key / UA 构造 10 个 key/UA-based + 1 keyless (deepwiki) server 配置（无硬编码 key）。"""
     servers: dict = {}
 
     if "exa" in keys:
@@ -203,6 +207,16 @@ def build_servers(keys: dict) -> dict:
             "headers": {"Authorization": f"Bearer {keys['readgzh']}"},
         }
 
+    if "sec_edgar_ua" in keys:
+        # SEC EDGAR：美国 SEC 官方 filings（10-K/10-Q/8-K/内幕交易 XBRL 财报）
+        # 免 API key，仅需 SEC 强制要求的 User-Agent（name+email，非密钥）
+        # uvx 拉取官方 sec-edgar-mcp 包运行（与 huggingface/modelscope 一致）
+        servers["sec-edgar-mcp"] = {
+            "command": "uvx",
+            "args": ["--from", "git+https://github.com/stefanoamorelli/sec-edgar-mcp.git", "sec-edgar-mcp"],
+            "env": {"SEC_EDGAR_USER_AGENT": keys["sec_edgar_ua"]},
+        }
+
     # DeepWiki: keyless 远程 MCP（免 key 免 headers 免 env），GitHub 仓库文档问答
     # 一键连接（WorkBuddy MCP 管理页点 Trust 激活），代码/项目研究层补全
     servers["deepwiki"] = {
@@ -246,8 +260,16 @@ def main():
     if missing:
         print(f"[!] 未找到/未提取: {', '.join(m[0] for m in missing)}")
 
+    # SEC EDGAR User-Agent（非密钥，但同样从桌面文件读取；SEC 强制要求）
+    ua_path = os.path.join(desktop, SEC_EDGAR_UA_FILE)
+    if os.path.isfile(ua_path):
+        ua = read_text(ua_path).strip()
+        if ua:
+            keys["sec_edgar_ua"] = ua
+            print(f"  [✓] {'sec_edgar_ua':<12} ← {SEC_EDGAR_UA_FILE} ({len(ua)} chars)")
+
     if not keys:
-        print("[!] 无任何 key 可配置，退出", file=sys.stderr)
+        print("[!] 无任何 key / UA 可配置，退出", file=sys.stderr)
         sys.exit(1)
 
     new_servers = build_servers(keys)

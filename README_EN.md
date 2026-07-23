@@ -331,7 +331,7 @@ The skill itself works using the agent's built-in web tools (WebSearch / WebFetc
 | **Finance / hot-list** | Tencent self-selected / westock-mcp · **wallstreetcn** (free finance hot-list + flash, key-free) | fundamentals, quotes, research, real-time hot-list signal | 🎯 Platform-specific · 🟢 wallstreetcn | 🟢 wallstreetcn key-free · 🟡 self-selected/westock needs auth |
 | **Legal / compliance** | Wolters Kluwer / YuanDian / **pkulaw** | litigation, penalties, laws | 🎯 Platform-specific | 🟡 Needs platform auth |
 | **Enterprise registry / risk** | Tianyancha / Qichacha / **qixinhuiyan** | equity, judiciary, risk | 🎯 Platform-specific | 🟡 Needs platform auth |
-| **US stocks / SEC** | SEC EDGAR MCP | 10-K/10-Q footnotes | 🎯 Platform-specific | 🟡 Needs platform auth |
+| **US stocks / SEC** | SEC EDGAR MCP | 10-K/10-Q footnotes / XBRL financials / insider Form 4 | 🎯 Platform-specific | 🟡 Needs MCP connection (key-free, only User-Agent identifier) |
 | **Top journals / Chinese literature** | Nature / Science (DOI) / CNKI / Google Scholar (export) | first-hand top-journal | 🌐 General web | 🟢 Abstract key-free · 🟡 CNKI/subscription needs auth |
 | **Macroeconomics** | Trading Economics / FRED / NBS / PBOC·CSRC / Cailian / Wallstreetcn | macro indicators | 🌐 General web | 🟡 FRED needs `FRED_API_KEY` (free signup, **strict requirement**: no key → HTTP 400 `Variable api_key is not set`) · 🌐 Others via general web |
 | **Patents (public)** | Google Patents / USPTO / EPO / WIPO | patent text, legal status | 🌐 General web | 🟢 Key-free |
