@@ -38,6 +38,7 @@ SERVER_KEYFILES = {
     "huggingface": "huggingfaceaccestoken.txt",
     "modelscope":  "modelscopeToken.txt",
     "zhihu":       "zhihuAPItoken.txt",
+    "readgzh":     "ReadGZH .txt",   # 远程 MCP（url + Bearer header），公众号全文提取
 }
 
 # ---------------------------------------------------------------------------
@@ -59,7 +60,7 @@ PREFIX_RE = re.compile(
 # ⚠️ 所有 server 一律剥前缀（实测：带前缀 token 上游 API 全 401 拒，裸 token 才通）
 # 不再区分 env/header/url 类 —— 见设计原则 #2
 KEEP_PREFIX = set()  # 空集 = 全部剥前缀
-STRIP_PREFIX = {"exa", "firecrawl", "tavily", "huggingface", "modelscope", "zhihu"}
+STRIP_PREFIX = {"exa", "firecrawl", "tavily", "huggingface", "modelscope", "zhihu", "readgzh"}
 
 
 def detect_desktop() -> str:
@@ -136,7 +137,7 @@ def extract_key(path: str, keep_prefix: bool) -> str | None:
 
 
 def build_servers(keys: dict) -> dict:
-    """根据提取到的 key 构造 8 个 key-based + 1 keyless (deepwiki) server 配置（无硬编码 key）。"""
+    """根据提取到的 key 构造 9 个 key-based + 1 keyless (deepwiki) server 配置（无硬编码 key）。"""
     servers: dict = {}
 
     if "exa" in keys:
@@ -193,6 +194,14 @@ def build_servers(keys: dict) -> dict:
                 "args": ["-y", "mcp-remote", url, "--transport", "sse-only", "--header", hdr],
                 "env": {},
             }
+
+    if "readgzh" in keys:
+        # 远程 MCP（url + Bearer header），微信公众号全文提取（ReadGZH-Agent）
+        # 键文件 ReadGZH .txt 已被统一剥前缀（APIKey: 前缀去除 → 裸 token）
+        servers["readgzh"] = {
+            "url": "https://api.readgzh.site/mcp-server",
+            "headers": {"Authorization": f"Bearer {keys['readgzh']}"},
+        }
 
     # DeepWiki: keyless 远程 MCP（免 key 免 headers 免 env），GitHub 仓库文档问答
     # 一键连接（WorkBuddy MCP 管理页点 Trust 激活），代码/项目研究层补全
