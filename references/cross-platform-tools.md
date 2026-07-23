@@ -181,7 +181,7 @@
 
 **SEC EDGAR MCP**（`stefanoamorelli/sec-edgar-mcp`，AGPL-3.0，v1.0.8，免 API key）：
 - 工具：Company（`lookup_company_cik` / `get_company_info` / `get_company_facts`）、Filings（`get_recent_filings` / `get_filing_content` / `analyze_8k_filing`）、Financials（`get_financial_statements` / `extract_financial_data` XBRL）、Insider（`get_insider_transactions` / `analyze_form_345`）
-- 费用：免费、官方、无限额；SEC 强制要求 `SEC_EDGAR_USER_AGENT`（name+email，非密钥，用于礼貌访问与限频追踪）
+- 费用：免费、官方、无限额；SEC 强制要求 `SEC_EDGAR_USER_AGENT`（name+email，**属个人信息·等同 API key 保管，仅本地提供、绝不提交仓库**，SEC 用于礼貌访问与限频追踪）
 - 运行：`uvx --from git+https://github.com/stefanoamorelli/sec-edgar-mcp.git sec-edgar-mcp`（与 huggingface/modelscope 一致，免本地安装）
 - 配置（WorkBuddy `~/.workbuddy/mcp.json`）：
 
@@ -197,7 +197,7 @@
 }
 ```
 
-> `${SEC_EDGAR_USER_AGENT}` 仅本地提供（推荐存桌面 `SECEDGAR_UA.txt`，由 `scripts/setup_mcp.py` 自动读取，**非密钥、不写 dmr_keys.env、可随 dmr 公开仓库描述其格式**）。缺失 → 回退 `web_search`，不中断主管线。
+> 真实 `SEC_EDGAR_USER_AGENT` **仅存于本地 `SECEDGAR_UA.txt`（桌面），由 `scripts/setup_mcp.py` 自动读取注入，等同 API key 保管——绝不写进仓库 / Release / dmr_keys.env**。上例为占位符，请替换为你的真实 UA。缺失 → 回退 `web_search`，不中断主管线。
 
 ---
 
